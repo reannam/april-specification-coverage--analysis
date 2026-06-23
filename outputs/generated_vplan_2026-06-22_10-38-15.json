@@ -1,0 +1,1970 @@
+{
+  "metadata": {
+    "requirements_file": "example-requirements.json",
+    "date_created": "June 22 2026",
+    "time_created": "10:38am",
+    "number_of_requirements": 72,
+    "number_of_tests": 103
+  },
+  "feature_list": [
+    {
+      "test_id": "TEST_REQ_I2C_001",
+      "requirement_id": "REQ_I2C_001",
+      "requirement_text": "The interface defines 3 transmission speeds:\n- Normal: 100Kbps\nOnly 100Kbps and 400Kbps modes are supported directly.",
+      "test_type": "positive",
+      "test_description": "Verify the core directly supports 100 Kbps normal-mode I2C operation.",
+      "test_constraints": "Configure the core for 100 Kbps operation using available prescale mechanism; exact prescale value not specified in this requirement.",
+      "test_steps": [
+        "Configure the core for 100 Kbps I2C operation.",
+        "Initiate an I2C transfer on SCL/SDA.",
+        "Measure the resulting bus clock rate on SCL during transfer."
+      ],
+      "expected_results": [
+        "The core operates in normal mode at 100 Kbps on the I2C bus.",
+        "SCL/SDA activity shows successful direct 100 Kbps operation."
+      ],
+      "priority": 1,
+      "priority_reason": "Directly verifies a primary supported I2C operating speed.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_002",
+      "requirement_id": "REQ_I2C_002",
+      "requirement_text": "The interface defines 3 transmission speeds:\n- Fast: 400Kbps\nOnly 100Kbps and 400Kbps modes are supported directly.",
+      "test_type": "positive",
+      "test_description": "Verify the core directly supports 400 Kbps fast-mode I2C operation.",
+      "test_constraints": "Configure the core for 400 Kbps I2C operation using available prescale mechanism; exact prescale value not specified in this requirement.",
+      "test_steps": [
+        "Configure the core for 400 Kbps I2C operation.",
+        "Initiate an I2C transfer on SCL/SDA.",
+        "Measure the resulting bus clock rate on SCL during transfer."
+      ],
+      "expected_results": [
+        "The core operates in fast mode at 400 Kbps on the I2C bus.",
+        "SCL/SDA activity shows successful direct 400 Kbps operation."
+      ],
+      "priority": 1,
+      "priority_reason": "Directly verifies a primary supported I2C operating speed.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_003",
+      "requirement_id": "REQ_I2C_003",
+      "requirement_text": "The core features a WISHBONE RevB.3 compliant WISHBONE Classic interface.",
+      "test_type": "positive",
+      "test_description": "Verify the core exposes and functions through the specified WISHBONE Classic interface signals.",
+      "test_constraints": "Only signal presence and basic bus access behavior are testable from the provided information; full RevB.3 compliance details are not provided.",
+      "test_steps": [
+        "Drive wb_clk_i and wb_rst_i appropriately.",
+        "Perform a WISHBONE write access using wb_adr_i, wb_dat_i, wb_we_i, wb_stb_i, and wb_cyc_i.",
+        "Perform a WISHBONE read access and observe wb_dat_o and wb_ack_o.",
+        "Observe wb_inta_o during an interrupt-producing condition if available."
+      ],
+      "expected_results": [
+        "The core responds through the listed WISHBONE interface signals.",
+        "Read and write accesses are possible via the WISHBONE Classic interface.",
+        "Interface behavior is consistent with a WISHBONE Classic peripheral at a basic level."
+      ],
+      "priority": 1,
+      "priority_reason": "Bus interface accessibility is fundamental to all register and functional verification.",
+      "coverage": "partially_covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_004",
+      "requirement_id": "REQ_I2C_004",
+      "requirement_text": "Each access takes 2 clock cycles.",
+      "test_type": "positive",
+      "test_description": "Verify each WISHBONE access completes in two clock cycles.",
+      "test_constraints": "Assumes a standard access definition from assertion of wb_cyc_i and wb_stb_i to acknowledgement.",
+      "test_steps": [
+        "Initiate a WISHBONE read access.",
+        "Count wb_clk_i cycles from the start of the access until wb_ack_o is asserted.",
+        "Repeat for a WISHBONE write access."
+      ],
+      "expected_results": [
+        "Each read access completes in 2 clock cycles.",
+        "Each write access completes in 2 clock cycles."
+      ],
+      "priority": 1,
+      "priority_reason": "Interface timing is core functional behavior and impacts all software accesses.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_005_001",
+      "requirement_id": "REQ_I2C_005",
+      "requirement_text": "The asynchronous reset level can be set to either active high (1\u2019b1) or active low (1\u2019b0)",
+      "test_type": "positive",
+      "test_description": "Verify asynchronous reset works when configured as active high.",
+      "test_constraints": "Requires the reset configuration ARST_LVL to be set for active-high behavior.",
+      "test_steps": [
+        "Configure ARST_LVL for active-high reset.",
+        "Drive arst_i high.",
+        "Observe that the core resets."
+      ],
+      "expected_results": [
+        "The core resets when arst_i is asserted high under active-high configuration."
+      ],
+      "priority": 1,
+      "priority_reason": "Reset behavior is fundamental and must work in each supported polarity mode.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_005_002",
+      "requirement_id": "REQ_I2C_005",
+      "requirement_text": "The asynchronous reset level can be set to either active high (1\u2019b1) or active low (1\u2019b0)",
+      "test_type": "positive",
+      "test_description": "Verify asynchronous reset works when configured as active low.",
+      "test_constraints": "Requires the reset configuration ARST_LVL to be set for active-low behavior.",
+      "test_steps": [
+        "Configure ARST_LVL for active-low reset.",
+        "Drive arst_i low.",
+        "Observe that the core resets."
+      ],
+      "expected_results": [
+        "The core resets when arst_i is asserted low under active-low configuration."
+      ],
+      "priority": 1,
+      "priority_reason": "Reset behavior is fundamental and must work in each supported polarity mode.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_006_001",
+      "requirement_id": "REQ_I2C_006",
+      "requirement_text": "scl_pad_i | 1 | Input | Serial Clock line input\nscl_pad_o | 1 | Output | Serial Clock line output\nscl_pad_oe | 1 | Output | Serial Clock line output enable\nsda_pad_i | 1 | Input | Serial Data line input\nsda_pad_o | 1 | Output | Serial Data line output\nsda_pad_oe | 1 | Output | Serial Data line output enable",
+      "test_type": "positive",
+      "test_description": "Verify SCL pad input, output, and output-enable signals are exposed.",
+      "test_constraints": "Signal existence and directional use are testable; electrical implementation details are not specified here.",
+      "test_steps": [
+        "Inspect or instantiate the core interface.",
+        "Confirm presence of scl_pad_i, scl_pad_o, and scl_pad_oe.",
+        "Exercise I2C activity and observe these signals change consistently with operation."
+      ],
+      "expected_results": [
+        "scl_pad_i exists as an input.",
+        "scl_pad_o exists as an output.",
+        "scl_pad_oe exists as an output."
+      ],
+      "priority": 1,
+      "priority_reason": "External bus connection depends on these mandatory pad signals.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_006_002",
+      "requirement_id": "REQ_I2C_006",
+      "requirement_text": "scl_pad_i | 1 | Input | Serial Clock line input\nscl_pad_o | 1 | Output | Serial Clock line output\nscl_pad_oe | 1 | Output | Serial Clock line output enable\nsda_pad_i | 1 | Input | Serial Data line input\nsda_pad_o | 1 | Output | Serial Data line output\nsda_pad_oe | 1 | Output | Serial Data line output enable",
+      "test_type": "positive",
+      "test_description": "Verify SDA pad input, output, and output-enable signals are exposed.",
+      "test_constraints": "Signal existence and directional use are testable; electrical implementation details are not specified here.",
+      "test_steps": [
+        "Inspect or instantiate the core interface.",
+        "Confirm presence of sda_pad_i, sda_pad_o, and sda_pad_oe.",
+        "Exercise I2C activity and observe these signals change consistently with operation."
+      ],
+      "expected_results": [
+        "sda_pad_i exists as an input.",
+        "sda_pad_o exists as an output.",
+        "sda_pad_oe exists as an output."
+      ],
+      "priority": 1,
+      "priority_reason": "External bus connection depends on these mandatory pad signals.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_007",
+      "requirement_id": "REQ_I2C_007",
+      "requirement_text": "All devices connected to these two signals must have open drain or open collector outputs",
+      "test_type": "positive",
+      "test_description": "Verify the bus connection uses open-drain or open-collector behavior on SCL and SDA.",
+      "test_constraints": "This is primarily an external electrical integration rule; internal enforcement by the core is not defined.",
+      "test_steps": [
+        "Connect the core to an external I2C bus implementation intended for open-drain signaling.",
+        "Observe bus behavior during drive and release conditions on SCL and SDA."
+      ],
+      "expected_results": [
+        "SCL and SDA connections are compatible with open-drain/open-collector signaling.",
+        "No push-pull drive requirement is implied by the core interface."
+      ],
+      "priority": 2,
+      "priority_reason": "Important electrical integration behavior, but partly depends on external system implementation.",
+      "coverage": "partially_covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_008_001",
+      "requirement_id": "REQ_I2C_008",
+      "requirement_text": "Connections should be made according to the figure.",
+      "test_type": "positive",
+      "test_description": "Verify scl_pad_oe controls whether the core drives or releases the external SCL line.",
+      "test_constraints": "Exact figure details are not provided; only drive-versus-release behavior is testable from the requirement description.",
+      "test_steps": [
+        "Operate the core so SCL is actively driven.",
+        "Observe scl_pad_oe in the driven phase.",
+        "Operate the core so SCL is released.",
+        "Observe scl_pad_oe in the released phase."
+      ],
+      "expected_results": [
+        "When SCL is driven, scl_pad_oe indicates drive enable.",
+        "When SCL is released, scl_pad_oe indicates release of the external line."
+      ],
+      "priority": 1,
+      "priority_reason": "Output-enable control is central to correct external I2C signaling.",
+      "coverage": "partially_covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_008_002",
+      "requirement_id": "REQ_I2C_008",
+      "requirement_text": "Connections should be made according to the figure.",
+      "test_type": "positive",
+      "test_description": "Verify sda_pad_oe controls whether the core drives or releases the external SDA line.",
+      "test_constraints": "Exact figure details are not provided; only drive-versus-release behavior is testable from the requirement description.",
+      "test_steps": [
+        "Operate the core so SDA is actively driven.",
+        "Observe sda_pad_oe in the driven phase.",
+        "Operate the core so SDA is released.",
+        "Observe sda_pad_oe in the released phase."
+      ],
+      "expected_results": [
+        "When SDA is driven, sda_pad_oe indicates drive enable.",
+        "When SDA is released, sda_pad_oe indicates release of the external line."
+      ],
+      "priority": 1,
+      "priority_reason": "Output-enable control is central to correct external I2C signaling.",
+      "coverage": "partially_covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_009",
+      "requirement_id": "REQ_I2C_009",
+      "requirement_text": "PRERlo | 0x00 | 8 | RW | Clock Prescale register lo-byte",
+      "test_type": "positive",
+      "test_description": "Verify PRERlo is an 8-bit read/write register at address 0x00.",
+      "test_constraints": "None specified.",
+      "test_steps": [
+        "Write an 8-bit value to WISHBONE address 0x00.",
+        "Read back from WISHBONE address 0x00."
+      ],
+      "expected_results": [
+        "The write to address 0x00 is accepted as PRERlo.",
+        "The read from address 0x00 returns the written 8-bit PRERlo value."
+      ],
+      "priority": 1,
+      "priority_reason": "Register map correctness is foundational for configuration.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_010",
+      "requirement_id": "REQ_I2C_010",
+      "requirement_text": "PRERhi | 0x01 | 8 | RW | Clock Prescale register hi-byte",
+      "test_type": "positive",
+      "test_description": "Verify PRERhi is an 8-bit read/write register at address 0x01.",
+      "test_constraints": "None specified.",
+      "test_steps": [
+        "Write an 8-bit value to WISHBONE address 0x01.",
+        "Read back from WISHBONE address 0x01."
+      ],
+      "expected_results": [
+        "The write to address 0x01 is accepted as PRERhi.",
+        "The read from address 0x01 returns the written 8-bit PRERhi value."
+      ],
+      "priority": 1,
+      "priority_reason": "Register map correctness is foundational for configuration.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_011",
+      "requirement_id": "REQ_I2C_011",
+      "requirement_text": "CTR | 0x02 | 8 | RW | Control register",
+      "test_type": "positive",
+      "test_description": "Verify CTR is an 8-bit read/write register at address 0x02.",
+      "test_constraints": "Reserved bits may read as zero per separate requirement.",
+      "test_steps": [
+        "Write a valid control value to WISHBONE address 0x02.",
+        "Read back from WISHBONE address 0x02."
+      ],
+      "expected_results": [
+        "The write to address 0x02 is accepted as CTR.",
+        "The readable control bits return the written values as defined."
+      ],
+      "priority": 1,
+      "priority_reason": "Control register access is essential for enable and interrupt behavior.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_012_001",
+      "requirement_id": "REQ_I2C_012",
+      "requirement_text": "TXR | 0x03 | 8 | W | Transmit register",
+      "test_type": "positive",
+      "test_description": "Verify TXR is an 8-bit write-only register at address 0x03 for write accesses.",
+      "test_constraints": "Readback behavior is not defined by this requirement because TXR is write-only.",
+      "test_steps": [
+        "Write an 8-bit value to WISHBONE address 0x03 with wb_we_i asserted for write.",
+        "Use the written value in a transmit-related operation if needed to confirm acceptance."
+      ],
+      "expected_results": [
+        "The write to address 0x03 is accepted as TXR.",
+        "The transmitted operation uses the written TXR value."
+      ],
+      "priority": 1,
+      "priority_reason": "Transmit path register access is fundamental to bus transfers.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_012_002",
+      "requirement_id": "REQ_I2C_012",
+      "requirement_text": "TXR | 0x03 | 8 | W | Transmit register",
+      "test_type": "negative",
+      "test_description": "Verify TXR is not readable as a write-only register at address 0x03.",
+      "test_constraints": "Because address 0x03 is also defined as RXR for read access, this test verifies that reads do not expose TXR contents as TXR.",
+      "test_steps": [
+        "Write a known 8-bit value to address 0x03 as TXR.",
+        "Perform a read access from address 0x03."
+      ],
+      "expected_results": [
+        "The read access does not behave as a TXR readback.",
+        "Address 0x03 read path corresponds to RXR, not TXR."
+      ],
+      "priority": 1,
+      "priority_reason": "Access-type enforcement on aliased register addresses is important for software correctness.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_013_001",
+      "requirement_id": "REQ_I2C_013",
+      "requirement_text": "RXR | 0x03 | 8 | R | Receive register",
+      "test_type": "positive",
+      "test_description": "Verify RXR is an 8-bit read-only register at address 0x03 for read accesses.",
+      "test_constraints": "Requires received data to be available or a known reset state if only basic accessibility is checked.",
+      "test_steps": [
+        "Ensure RXR contains a known value, either by reset or by receiving a byte.",
+        "Read from WISHBONE address 0x03."
+      ],
+      "expected_results": [
+        "The read from address 0x03 returns the 8-bit RXR value."
+      ],
+      "priority": 1,
+      "priority_reason": "Receive path register access is fundamental to bus transfers.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_013_002",
+      "requirement_id": "REQ_I2C_013",
+      "requirement_text": "RXR | 0x03 | 8 | R | Receive register",
+      "test_type": "negative",
+      "test_description": "Verify RXR is not writable as a read-only register at address 0x03.",
+      "test_constraints": "Because address 0x03 is also defined as TXR for writes, this test verifies that write access does not update RXR as RXR.",
+      "test_steps": [
+        "Establish a known RXR value.",
+        "Attempt a write access to address 0x03 and then read address 0x03 after a condition where RXR would otherwise remain unchanged."
+      ],
+      "expected_results": [
+        "The write access does not behave as an RXR write.",
+        "RXR contents are not updated by software write as a writable RXR register."
+      ],
+      "priority": 1,
+      "priority_reason": "Access-type enforcement on aliased register addresses is important for software correctness.",
+      "coverage": "partially_covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_014_001",
+      "requirement_id": "REQ_I2C_014",
+      "requirement_text": "CR | 0x04 | 8 | W | Command register",
+      "test_type": "positive",
+      "test_description": "Verify CR is an 8-bit write-only register at address 0x04 for write accesses.",
+      "test_constraints": "Readback behavior is not defined by this requirement because CR is write-only.",
+      "test_steps": [
+        "Write a command value to WISHBONE address 0x04.",
+        "Observe resulting command-related behavior if applicable."
+      ],
+      "expected_results": [
+        "The write to address 0x04 is accepted as CR.",
+        "The written command affects operation as defined by command bits."
+      ],
+      "priority": 1,
+      "priority_reason": "Command register access drives all I2C actions.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_014_002",
+      "requirement_id": "REQ_I2C_014",
+      "requirement_text": "CR | 0x04 | 8 | W | Command register",
+      "test_type": "negative",
+      "test_description": "Verify CR is not readable as a write-only register at address 0x04.",
+      "test_constraints": "Because address 0x04 is also defined as SR for read access, this test verifies that reads do not expose CR contents as CR.",
+      "test_steps": [
+        "Write a known command value to address 0x04.",
+        "Perform a read access from address 0x04."
+      ],
+      "expected_results": [
+        "The read access does not behave as a CR readback.",
+        "Address 0x04 read path corresponds to SR, not CR."
+      ],
+      "priority": 1,
+      "priority_reason": "Access-type enforcement on aliased register addresses is important for software correctness.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_015_001",
+      "requirement_id": "REQ_I2C_015",
+      "requirement_text": "SR | 0x04 | 8 | R | Status register",
+      "test_type": "positive",
+      "test_description": "Verify SR is an 8-bit read-only register at address 0x04 for read accesses.",
+      "test_constraints": "Requires a known status state, such as after reset, or during a controlled operation.",
+      "test_steps": [
+        "Place the core in a known status condition.",
+        "Read from WISHBONE address 0x04."
+      ],
+      "expected_results": [
+        "The read from address 0x04 returns the 8-bit SR value."
+      ],
+      "priority": 1,
+      "priority_reason": "Status visibility is essential for polling and interrupt servicing.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_015_002",
+      "requirement_id": "REQ_I2C_015",
+      "requirement_text": "SR | 0x04 | 8 | R | Status register",
+      "test_type": "negative",
+      "test_description": "Verify SR is not writable as a read-only register at address 0x04.",
+      "test_constraints": "Because address 0x04 is also defined as CR for writes, this test verifies that write access does not update SR as SR.",
+      "test_steps": [
+        "Capture SR in a known state.",
+        "Attempt a write access to address 0x04 intended as a data write.",
+        "Read back SR from address 0x04 in the same status condition."
+      ],
+      "expected_results": [
+        "The write access does not behave as an SR write.",
+        "SR contents are not software-writable as a normal writable register."
+      ],
+      "priority": 1,
+      "priority_reason": "Access-type enforcement on aliased register addresses is important for software correctness.",
+      "coverage": "partially_covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_016",
+      "requirement_id": "REQ_I2C_016",
+      "requirement_text": "Due to the structure of the I2C interface, the core uses a 5SCL clock internally. The prescale register must be programmed to this 5*SCL frequency (minus 1).",
+      "test_type": "positive",
+      "test_description": "Verify the Prescale Register configures SCL frequency from the WISHBONE input clock according to the stated 5*SCL prescale rule.",
+      "test_constraints": "Exact wb_clk_i frequency and programmed values must be chosen by the testbench; the formula text is the only provided basis.",
+      "test_steps": [
+        "Choose a known wb_clk_i frequency.",
+        "Program PRERlo/PRERhi to a value corresponding to a target SCL frequency using the 5*SCL minus 1 rule.",
+        "Initiate an I2C transfer and measure SCL frequency."
+      ],
+      "expected_results": [
+        "Measured SCL frequency matches the programmed prescale relationship to wb_clk_i per the stated 5*SCL minus 1 rule."
+      ],
+      "priority": 1,
+      "priority_reason": "Prescaler functionality directly determines supported I2C timing modes.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_017",
+      "requirement_id": "REQ_I2C_017",
+      "requirement_text": "Change the value of the prescale register only when the \u2018EN\u2019 bit is cleared.",
+      "test_type": "negative",
+      "test_description": "Verify prescale register changes are only allowed when EN is cleared.",
+      "test_constraints": "This is phrased as a software usage rule; hardware enforcement is not explicitly specified.",
+      "test_steps": [
+        "Set EN to 1.",
+        "Attempt to change PRERlo/PRERhi while EN remains set.",
+        "Observe whether hardware blocks, ignores, or allows the change."
+      ],
+      "expected_results": [
+        "Hardware enforcement is not fully defined by the requirement text.",
+        "Any observed behavior can only partially verify the rule as a software restriction."
+      ],
+      "priority": 3,
+      "priority_reason": "This is software guidance with unclear hardware enforcement.",
+      "coverage": "partially_covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_018",
+      "requirement_id": "REQ_I2C_018",
+      "requirement_text": "Reset value: 0xFFFF",
+      "test_type": "positive",
+      "test_description": "Verify Prescale Register reset value is 0xFFFF.",
+      "test_constraints": "None specified.",
+      "test_steps": [
+        "Apply reset.",
+        "Read PRERlo and PRERhi."
+      ],
+      "expected_results": [
+        "PRERlo reads as 0xFF after reset.",
+        "PRERhi reads as 0xFF after reset.",
+        "Combined prescale register reset value is 0xFFFF."
+      ],
+      "priority": 1,
+      "priority_reason": "Reset defaults are critical for deterministic startup behavior.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_019_001",
+      "requirement_id": "REQ_I2C_019",
+      "requirement_text": "7 | RW | EN, I2C core enable bit. When set to \u20181\u2019, the core is enabled. When set to \u20180\u2019, the core is disabled.",
+      "test_type": "positive",
+      "test_description": "Verify CTR bit 7 is a read/write EN bit and enables the core when set to 1.",
+      "test_constraints": "Core enable effect may be observed by command acceptance or other enabled behavior.",
+      "test_steps": [
+        "Write CTR with bit 7 set to 1.",
+        "Read back CTR.",
+        "Issue a valid command sequence."
+      ],
+      "expected_results": [
+        "CTR bit 7 reads back as 1.",
+        "The core is enabled and responds to valid commands."
+      ],
+      "priority": 1,
+      "priority_reason": "Core enable control is fundamental to operation.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_019_002",
+      "requirement_id": "REQ_I2C_019",
+      "requirement_text": "7 | RW | EN, I2C core enable bit. When set to \u20181\u2019, the core is enabled. When set to \u20180\u2019, the core is disabled.",
+      "test_type": "negative",
+      "test_description": "Verify CTR bit 7 disables the core when cleared to 0.",
+      "test_constraints": "Command non-response is further specified by REQ_I2C_020.",
+      "test_steps": [
+        "Write CTR with bit 7 cleared to 0.",
+        "Read back CTR.",
+        "Attempt to issue a new command."
+      ],
+      "expected_results": [
+        "CTR bit 7 reads back as 0.",
+        "The core is disabled.",
+        "New commands are not responded to while disabled."
+      ],
+      "priority": 1,
+      "priority_reason": "Disabled-state behavior is key functional control and has defined non-happy-path behavior.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_020_001",
+      "requirement_id": "REQ_I2C_020",
+      "requirement_text": "The core responds to new commands only when the \u2018EN\u2019 bit is set.",
+      "test_type": "positive",
+      "test_description": "Verify the core responds to new commands when EN is set.",
+      "test_constraints": "Use any valid command that produces observable behavior.",
+      "test_steps": [
+        "Set EN to 1.",
+        "Write a valid new command to CR.",
+        "Observe command execution."
+      ],
+      "expected_results": [
+        "The core responds to the new command when EN is set."
+      ],
+      "priority": 1,
+      "priority_reason": "Command gating by enable is a primary control behavior.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_020_002",
+      "requirement_id": "REQ_I2C_020",
+      "requirement_text": "The core responds to new commands only when the \u2018EN\u2019 bit is set.",
+      "test_type": "negative",
+      "test_description": "Verify the core does not respond to new commands when EN is cleared.",
+      "test_constraints": "Use any valid command that would otherwise produce observable behavior.",
+      "test_steps": [
+        "Clear EN to 0.",
+        "Write a valid new command to CR.",
+        "Observe for lack of command execution."
+      ],
+      "expected_results": [
+        "The core does not respond to the new command when EN is cleared."
+      ],
+      "priority": 1,
+      "priority_reason": "Defined disabled-state behavior should be verified explicitly.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_021",
+      "requirement_id": "REQ_I2C_021",
+      "requirement_text": "Clear the \u2018EN\u2019 bit only when no transfer is in progress, i.e. after a STOP command, or when the command register has the STO bit set.",
+      "test_type": "negative",
+      "test_description": "Assess behavior when software clears EN outside the allowed conditions.",
+      "test_constraints": "This is a software usage rule; hardware reaction is not defined.",
+      "test_steps": [
+        "Begin a transfer so TIP indicates transfer in progress and no STOP completion has occurred.",
+        "Clear EN before the allowed condition.",
+        "Observe resulting behavior."
+      ],
+      "expected_results": [
+        "The requirement defines a software restriction, but not a mandatory hardware error response.",
+        "Only partial verification is possible from the provided information."
+      ],
+      "priority": 3,
+      "priority_reason": "Software guidance with unclear hardware enforcement.",
+      "coverage": "partially_covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_022_001",
+      "requirement_id": "REQ_I2C_022",
+      "requirement_text": "6 | RW | IEN, I2C core interrupt enable bit. When set to \u20181\u2019, interrupt is enabled. When set to \u20180\u2019, interrupt is disabled.",
+      "test_type": "positive",
+      "test_description": "Verify CTR bit 6 is a read/write IEN bit and enables interrupt generation when set to 1.",
+      "test_constraints": "Requires a condition that creates a pending interrupt.",
+      "test_steps": [
+        "Write CTR with bit 6 set to 1.",
+        "Read back CTR.",
+        "Create a pending interrupt condition.",
+        "Observe wb_inta_o."
+      ],
+      "expected_results": [
+        "CTR bit 6 reads back as 1.",
+        "Interrupt generation is enabled.",
+        "wb_inta_o asserts for a pending interrupt condition."
+      ],
+      "priority": 1,
+      "priority_reason": "Interrupt enable control is primary externally visible behavior.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_022_002",
+      "requirement_id": "REQ_I2C_022",
+      "requirement_text": "6 | RW | IEN, I2C core interrupt enable bit. When set to \u20181\u2019, interrupt is enabled. When set to \u20180\u2019, interrupt is disabled.",
+      "test_type": "negative",
+      "test_description": "Verify CTR bit 6 disables interrupt generation when cleared to 0.",
+      "test_constraints": "Requires a condition that creates a pending interrupt.",
+      "test_steps": [
+        "Write CTR with bit 6 cleared to 0.",
+        "Read back CTR.",
+        "Create a pending interrupt condition.",
+        "Observe wb_inta_o."
+      ],
+      "expected_results": [
+        "CTR bit 6 reads back as 0.",
+        "Interrupt generation is disabled.",
+        "wb_inta_o does not assert solely due to the pending interrupt condition."
+      ],
+      "priority": 1,
+      "priority_reason": "Defined disabled interrupt state should be verified explicitly.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_023",
+      "requirement_id": "REQ_I2C_023",
+      "requirement_text": "Reset Value: 0x00",
+      "test_type": "positive",
+      "test_description": "Verify Control Register reset value is 0x00.",
+      "test_constraints": "None specified.",
+      "test_steps": [
+        "Apply reset.",
+        "Read CTR."
+      ],
+      "expected_results": [
+        "CTR reads as 0x00 after reset."
+      ],
+      "priority": 1,
+      "priority_reason": "Reset defaults are critical for deterministic startup behavior.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_024_001",
+      "requirement_id": "REQ_I2C_024",
+      "requirement_text": "7:1 | W | Next byte to transmit via I2C\n0 | W | In case of a data transfer this bit represent the data\u2019s LSB. In case of a slave address transfer this bit represents the RW bit.",
+      "test_type": "positive",
+      "test_description": "Verify TXR[7:1] and TXR[0] are transmitted as an 8-bit data byte during data transfer, with bit 0 as the data LSB.",
+      "test_constraints": "Requires a data write transfer path.",
+      "test_steps": [
+        "Load TXR with a known 8-bit data value.",
+        "Initiate a data transfer write.",
+        "Observe the transmitted byte on SDA across 8 SCL cycles."
+      ],
+      "expected_results": [
+        "TXR[7:1] are transmitted as the upper 7 bits of the data byte.",
+        "TXR[0] is transmitted as the data LSB."
+      ],
+      "priority": 1,
+      "priority_reason": "Transmit data encoding is core protocol functionality.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_024_002",
+      "requirement_id": "REQ_I2C_024",
+      "requirement_text": "7:1 | W | Next byte to transmit via I2C\n0 | W | In case of a data transfer this bit represent the data\u2019s LSB. In case of a slave address transfer this bit represents the RW bit.",
+      "test_type": "positive",
+      "test_description": "Verify TXR[0] acts as the RW bit during slave address transfer.",
+      "test_constraints": "Requires a slave address transfer.",
+      "test_steps": [
+        "Load TXR with a 7-bit slave address and set bit 0 to a chosen RW value.",
+        "Initiate a slave address transfer.",
+        "Observe the transmitted address byte on SDA."
+      ],
+      "expected_results": [
+        "The first 7 transmitted bits correspond to the slave address.",
+        "TXR[0] is transmitted as the RW bit in the slave address byte."
+      ],
+      "priority": 1,
+      "priority_reason": "Address transfer encoding is core protocol functionality.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_025_001",
+      "requirement_id": "REQ_I2C_025",
+      "requirement_text": "\u20181\u2019 = reading from slave\n\u20180\u2019 = writing to slave",
+      "test_type": "positive",
+      "test_description": "Verify RW value 1 indicates reading from the slave during slave address transfer.",
+      "test_constraints": "Requires a slave address phase followed by read-direction activity.",
+      "test_steps": [
+        "Prepare a slave address byte with TXR[0]=1.",
+        "Initiate the slave address transfer.",
+        "Continue with transfer behavior for the selected direction."
+      ],
+      "expected_results": [
+        "RW value 1 corresponds to reading from the slave."
+      ],
+      "priority": 1,
+      "priority_reason": "Read/write direction encoding is fundamental protocol behavior.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_025_002",
+      "requirement_id": "REQ_I2C_025",
+      "requirement_text": "\u20181\u2019 = reading from slave\n\u20180\u2019 = writing to slave",
+      "test_type": "positive",
+      "test_description": "Verify RW value 0 indicates writing to the slave during slave address transfer.",
+      "test_constraints": "Requires a slave address phase followed by write-direction activity.",
+      "test_steps": [
+        "Prepare a slave address byte with TXR[0]=0.",
+        "Initiate the slave address transfer.",
+        "Continue with transfer behavior for the selected direction."
+      ],
+      "expected_results": [
+        "RW value 0 corresponds to writing to the slave."
+      ],
+      "priority": 1,
+      "priority_reason": "Read/write direction encoding is fundamental protocol behavior.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_026",
+      "requirement_id": "REQ_I2C_026",
+      "requirement_text": "Reset value: 0x00",
+      "test_type": "positive",
+      "test_description": "Verify Transmit Register reset value is 0x00.",
+      "test_constraints": "TXR is write-only in the register map, so direct readback is not defined.",
+      "test_steps": [
+        "Apply reset.",
+        "Attempt to observe TXR reset state through any directly visible mechanism."
+      ],
+      "expected_results": [
+        "The requirement specifies TXR reset value 0x00, but direct useful observation is not defined from the provided information for a write-only register."
+      ],
+      "priority": 3,
+      "priority_reason": "Reset value exists, but direct observability is unclear for a write-only register.",
+      "coverage": "blocked"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_027",
+      "requirement_id": "REQ_I2C_027",
+      "requirement_text": "7:0 | R | Last byte received via I2C",
+      "test_type": "positive",
+      "test_description": "Verify RXR contains the last byte received via I2C.",
+      "test_constraints": "Requires a controlled slave response with known received data.",
+      "test_steps": [
+        "Perform an I2C read to receive a known byte from the slave.",
+        "After completion, read RXR."
+      ],
+      "expected_results": [
+        "RXR contains the last byte received via I2C."
+      ],
+      "priority": 1,
+      "priority_reason": "Receive data visibility is core functionality.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_028",
+      "requirement_id": "REQ_I2C_028",
+      "requirement_text": "Reset value: 0x00",
+      "test_type": "positive",
+      "test_description": "Verify Receive Register reset value is 0x00.",
+      "test_constraints": "None specified.",
+      "test_steps": [
+        "Apply reset.",
+        "Read RXR."
+      ],
+      "expected_results": [
+        "RXR reads as 0x00 after reset."
+      ],
+      "priority": 1,
+      "priority_reason": "Reset defaults are critical for deterministic startup behavior.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_029",
+      "requirement_id": "REQ_I2C_029",
+      "requirement_text": "7 | W | STA, generate (repeated) start condition",
+      "test_type": "positive",
+      "test_description": "Verify Command Register bit 7 is the write-only STA bit used to generate a START or Repeated START condition.",
+      "test_constraints": "Generation condition details involving RD or WR are separately specified elsewhere.",
+      "test_steps": [
+        "Write CR with STA set in a valid command sequence.",
+        "Observe the bus for START-related behavior."
+      ],
+      "expected_results": [
+        "Writing STA causes generation of a START or Repeated START condition under a valid command sequence.",
+        "STA functions as a write-only command bit."
+      ],
+      "priority": 1,
+      "priority_reason": "START command generation is central to protocol initiation.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_030",
+      "requirement_id": "REQ_I2C_030",
+      "requirement_text": "6 | W | STO, generate stop condition",
+      "test_type": "positive",
+      "test_description": "Verify Command Register bit 6 is the write-only STO bit used to generate a STOP condition.",
+      "test_constraints": "None specified.",
+      "test_steps": [
+        "Write CR with STO set in a valid transfer context.",
+        "Observe the bus for STOP-related behavior."
+      ],
+      "expected_results": [
+        "Writing STO causes generation of a STOP condition.",
+        "STO functions as a write-only command bit."
+      ],
+      "priority": 1,
+      "priority_reason": "STOP command generation is central to protocol completion.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_031",
+      "requirement_id": "REQ_I2C_031",
+      "requirement_text": "5 | W | RD, read from slave",
+      "test_type": "positive",
+      "test_description": "Verify Command Register bit 5 is the write-only RD bit used to initiate a read from the slave.",
+      "test_constraints": "Requires an addressed slave available to provide data.",
+      "test_steps": [
+        "Write CR with RD set in a valid read context.",
+        "Observe the bus and receive path behavior."
+      ],
+      "expected_results": [
+        "Writing RD initiates a read from the slave.",
+        "RD functions as a write-only command bit."
+      ],
+      "priority": 1,
+      "priority_reason": "Read command initiation is core functionality.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_032",
+      "requirement_id": "REQ_I2C_032",
+      "requirement_text": "4 | W | WR, write to slave",
+      "test_type": "positive",
+      "test_description": "Verify Command Register bit 4 is the write-only WR bit used to initiate a write to the slave.",
+      "test_constraints": "Requires valid TXR data and an addressed slave target.",
+      "test_steps": [
+        "Load TXR with a known byte.",
+        "Write CR with WR set in a valid write context.",
+        "Observe the bus transmit behavior."
+      ],
+      "expected_results": [
+        "Writing WR initiates a write to the slave.",
+        "WR functions as a write-only command bit."
+      ],
+      "priority": 1,
+      "priority_reason": "Write command initiation is core functionality.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_033_001",
+      "requirement_id": "REQ_I2C_033",
+      "requirement_text": "3 | W | ACK, when a receiver, sent ACK (ACK = \u20180\u2019) or NACK (ACK = \u20181\u2019)",
+      "test_type": "positive",
+      "test_description": "Verify Command Register bit 3 sends ACK when written as 0 while acting as receiver.",
+      "test_constraints": "Requires receiver context, such as end of a read byte reception.",
+      "test_steps": [
+        "Place the core in receiver mode.",
+        "Write CR with ACK bit = 0 in the appropriate read command context.",
+        "Observe the acknowledge bit on the bus."
+      ],
+      "expected_results": [
+        "The core sends ACK when ACK command bit is 0."
+      ],
+      "priority": 1,
+      "priority_reason": "ACK/NACK control is important protocol behavior in read transfers.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_033_002",
+      "requirement_id": "REQ_I2C_033",
+      "requirement_text": "3 | W | ACK, when a receiver, sent ACK (ACK = \u20180\u2019) or NACK (ACK = \u20181\u2019)",
+      "test_type": "positive",
+      "test_description": "Verify Command Register bit 3 sends NACK when written as 1 while acting as receiver.",
+      "test_constraints": "Requires receiver context, such as end of a read byte reception.",
+      "test_steps": [
+        "Place the core in receiver mode.",
+        "Write CR with ACK bit = 1 in the appropriate read command context.",
+        "Observe the acknowledge bit on the bus."
+      ],
+      "expected_results": [
+        "The core sends NACK when ACK command bit is 1."
+      ],
+      "priority": 1,
+      "priority_reason": "ACK/NACK control is important protocol behavior in read transfers.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_034",
+      "requirement_id": "REQ_I2C_034",
+      "requirement_text": "0 | W | IACK, Interrupt acknowledge. When set, clears a pending interrupt.",
+      "test_type": "positive",
+      "test_description": "Verify Command Register bit 0 is the write-only IACK bit used to clear a pending interrupt.",
+      "test_constraints": "Requires a pending interrupt to exist before issuing IACK.",
+      "test_steps": [
+        "Create a pending interrupt so IF is set and interrupt output may assert.",
+        "Write CR with IACK set.",
+        "Observe IF and wb_inta_o."
+      ],
+      "expected_results": [
+        "A pending interrupt is cleared by writing IACK.",
+        "IF clears after IACK.",
+        "Interrupt request output deasserts if it was asserted due to the pending interrupt."
+      ],
+      "priority": 1,
+      "priority_reason": "Interrupt clearing is critical for correct interrupt servicing.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_035_001",
+      "requirement_id": "REQ_I2C_035",
+      "requirement_text": "The STA, STO, RD, WR, and IACK bits are cleared automatically. These bits are always read as zeros.",
+      "test_type": "positive",
+      "test_description": "Verify STA is automatically cleared and always reads as zero.",
+      "test_constraints": "CR is write-only in the register map and read path aliases to SR, so direct per-bit readback of CR is not available from the provided information.",
+      "test_steps": [
+        "Write CR with STA set.",
+        "Observe command execution and subsequent command state behavior.",
+        "Perform a read at address 0x04 and observe that CR bits are not readable there as command bits."
+      ],
+      "expected_results": [
+        "STA does not remain asserted as a persistent command bit after use.",
+        "Command register readback is not exposed; no nonzero STA readback is observed as a CR read."
+      ],
+      "priority": 1,
+      "priority_reason": "Auto-clearing command behavior is important for command sequencing.",
+      "coverage": "partially_covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_035_002",
+      "requirement_id": "REQ_I2C_035",
+      "requirement_text": "The STA, STO, RD, WR, and IACK bits are cleared automatically. These bits are always read as zeros.",
+      "test_type": "positive",
+      "test_description": "Verify STO is automatically cleared and always reads as zero.",
+      "test_constraints": "CR is write-only in the register map and read path aliases to SR, so direct per-bit readback of CR is not available from the provided information.",
+      "test_steps": [
+        "Write CR with STO set.",
+        "Observe command execution and subsequent command state behavior.",
+        "Perform a read at address 0x04 and observe that CR bits are not readable there as command bits."
+      ],
+      "expected_results": [
+        "STO does not remain asserted as a persistent command bit after use.",
+        "Command register readback is not exposed; no nonzero STO readback is observed as a CR read."
+      ],
+      "priority": 1,
+      "priority_reason": "Auto-clearing command behavior is important for command sequencing.",
+      "coverage": "partially_covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_035_003",
+      "requirement_id": "REQ_I2C_035",
+      "requirement_text": "The STA, STO, RD, WR, and IACK bits are cleared automatically. These bits are always read as zeros.",
+      "test_type": "positive",
+      "test_description": "Verify RD is automatically cleared and always reads as zero.",
+      "test_constraints": "CR is write-only in the register map and read path aliases to SR, so direct per-bit readback of CR is not available from the provided information.",
+      "test_steps": [
+        "Write CR with RD set.",
+        "Observe command execution and subsequent command state behavior.",
+        "Perform a read at address 0x04 and observe that CR bits are not readable there as command bits."
+      ],
+      "expected_results": [
+        "RD does not remain asserted as a persistent command bit after use.",
+        "Command register readback is not exposed; no nonzero RD readback is observed as a CR read."
+      ],
+      "priority": 1,
+      "priority_reason": "Auto-clearing command behavior is important for command sequencing.",
+      "coverage": "partially_covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_035_004",
+      "requirement_id": "REQ_I2C_035",
+      "requirement_text": "The STA, STO, RD, WR, and IACK bits are cleared automatically. These bits are always read as zeros.",
+      "test_type": "positive",
+      "test_description": "Verify WR is automatically cleared and always reads as zero.",
+      "test_constraints": "CR is write-only in the register map and read path aliases to SR, so direct per-bit readback of CR is not available from the provided information.",
+      "test_steps": [
+        "Write CR with WR set.",
+        "Observe command execution and subsequent command state behavior.",
+        "Perform a read at address 0x04 and observe that CR bits are not readable there as command bits."
+      ],
+      "expected_results": [
+        "WR does not remain asserted as a persistent command bit after use.",
+        "Command register readback is not exposed; no nonzero WR readback is observed as a CR read."
+      ],
+      "priority": 1,
+      "priority_reason": "Auto-clearing command behavior is important for command sequencing.",
+      "coverage": "partially_covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_035_005",
+      "requirement_id": "REQ_I2C_035",
+      "requirement_text": "The STA, STO, RD, WR, and IACK bits are cleared automatically. These bits are always read as zeros.",
+      "test_type": "positive",
+      "test_description": "Verify IACK is automatically cleared and always reads as zero.",
+      "test_constraints": "CR is write-only in the register map and read path aliases to SR, so direct per-bit readback of CR is not available from the provided information.",
+      "test_steps": [
+        "Write CR with IACK set.",
+        "Observe interrupt clear behavior and subsequent command state behavior.",
+        "Perform a read at address 0x04 and observe that CR bits are not readable there as command bits."
+      ],
+      "expected_results": [
+        "IACK does not remain asserted as a persistent command bit after use.",
+        "Command register readback is not exposed; no nonzero IACK readback is observed as a CR read."
+      ],
+      "priority": 1,
+      "priority_reason": "Auto-clearing command behavior is important for command sequencing.",
+      "coverage": "partially_covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_036",
+      "requirement_id": "REQ_I2C_036",
+      "requirement_text": "Reset Value: 0x00",
+      "test_type": "positive",
+      "test_description": "Verify Command Register reset value is 0x00.",
+      "test_constraints": "CR is write-only in the register map, so direct readback is not defined.",
+      "test_steps": [
+        "Apply reset.",
+        "Attempt to observe CR reset state through any directly visible mechanism."
+      ],
+      "expected_results": [
+        "The requirement specifies CR reset value 0x00, but direct useful observation is not defined from the provided information for a write-only register."
+      ],
+      "priority": 3,
+      "priority_reason": "Reset value exists, but direct observability is unclear for a write-only register.",
+      "coverage": "blocked"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_037_001",
+      "requirement_id": "REQ_I2C_037",
+      "requirement_text": "RxACK, Received acknowledge from slave. This flag represents acknowledge from the addressed slave. \u20181\u2019 = No acknowledge received. \u20180\u2019 = Acknowledge received.",
+      "test_type": "positive",
+      "test_description": "Verify RxACK indicates no acknowledge received when set to 1.",
+      "test_constraints": "Requires a slave or bus condition that does not acknowledge the transfer.",
+      "test_steps": [
+        "Perform an addressed transfer to a non-acknowledging target or force a no-ack condition.",
+        "Read SR[7]."
+      ],
+      "expected_results": [
+        "RxACK is 1 when no acknowledge is received from the addressed slave."
+      ],
+      "priority": 1,
+      "priority_reason": "Acknowledge status is central for transfer outcome handling.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_037_002",
+      "requirement_id": "REQ_I2C_037",
+      "requirement_text": "RxACK, Received acknowledge from slave. This flag represents acknowledge from the addressed slave. \u20181\u2019 = No acknowledge received. \u20180\u2019 = Acknowledge received.",
+      "test_type": "positive",
+      "test_description": "Verify RxACK indicates acknowledge received when cleared to 0.",
+      "test_constraints": "Requires a slave that acknowledges the transfer.",
+      "test_steps": [
+        "Perform an addressed transfer to an acknowledging slave.",
+        "Read SR[7]."
+      ],
+      "expected_results": [
+        "RxACK is 0 when acknowledge is received from the addressed slave."
+      ],
+      "priority": 1,
+      "priority_reason": "Acknowledge status is central for transfer outcome handling.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_038_001",
+      "requirement_id": "REQ_I2C_038",
+      "requirement_text": "6 | R | Busy, I2C bus busy. \u20181\u2019 after START signal detected. \u20180\u2019 after STOP signal detected.",
+      "test_type": "positive",
+      "test_description": "Verify BUSY sets to 1 after START signal detection.",
+      "test_constraints": "Requires observation after a START event.",
+      "test_steps": [
+        "Generate or detect a START condition on the I2C bus.",
+        "Read SR[6]."
+      ],
+      "expected_results": [
+        "BUSY is 1 after START signal detection."
+      ],
+      "priority": 1,
+      "priority_reason": "Bus busy status is a primary protocol-visible state.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_038_002",
+      "requirement_id": "REQ_I2C_038",
+      "requirement_text": "6 | R | Busy, I2C bus busy. \u20181\u2019 after START signal detected. \u20180\u2019 after STOP signal detected.",
+      "test_type": "positive",
+      "test_description": "Verify BUSY clears to 0 after STOP signal detection.",
+      "test_constraints": "Requires observation after a STOP event.",
+      "test_steps": [
+        "Generate or detect a STOP condition on the I2C bus.",
+        "Read SR[6]."
+      ],
+      "expected_results": [
+        "BUSY is 0 after STOP signal detection."
+      ],
+      "priority": 1,
+      "priority_reason": "Bus busy status is a primary protocol-visible state.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_039",
+      "requirement_id": "REQ_I2C_039",
+      "requirement_text": "5 | R | AL, Arbitration lost. This bit is set when the core lost arbitration.",
+      "test_type": "positive",
+      "test_description": "Verify AL indicates arbitration lost.",
+      "test_constraints": "Arbitration-loss causes are specified in separate requirements and can be used to create the condition.",
+      "test_steps": [
+        "Create an arbitration-lost condition.",
+        "Read SR[5]."
+      ],
+      "expected_results": [
+        "AL is set when the core loses arbitration."
+      ],
+      "priority": 1,
+      "priority_reason": "Arbitration-loss indication is critical multi-master behavior.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_040",
+      "requirement_id": "REQ_I2C_040",
+      "requirement_text": "Arbitration is lost when: a STOP signal is detected, but non requested",
+      "test_type": "negative",
+      "test_description": "Verify arbitration is considered lost when an unrequested STOP signal is detected.",
+      "test_constraints": "Requires creating a STOP on the bus without the core requesting STO.",
+      "test_steps": [
+        "Begin a transfer without requesting STOP.",
+        "Force or observe an external STOP signal detection on the bus.",
+        "Read arbitration status."
+      ],
+      "expected_results": [
+        "AL is set when a STOP signal is detected but was not requested."
+      ],
+      "priority": 1,
+      "priority_reason": "Explicit arbitration-loss cause must be verified as a defined non-happy-path behavior.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_041",
+      "requirement_id": "REQ_I2C_041",
+      "requirement_text": "Arbitration is lost when: The master drives SDA high, but SDA is low.",
+      "test_type": "negative",
+      "test_description": "Verify arbitration is considered lost when the master drives SDA high but the observed SDA line is low.",
+      "test_constraints": "Requires creating a conflicting bus drive condition.",
+      "test_steps": [
+        "Drive a transfer condition where the core releases or drives SDA high.",
+        "Force sda_pad_i low externally during that bit time.",
+        "Read arbitration status."
+      ],
+      "expected_results": [
+        "AL is set when the master drives SDA high but the observed SDA line is low."
+      ],
+      "priority": 1,
+      "priority_reason": "Explicit arbitration-loss cause must be verified as a defined non-happy-path behavior.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_042_001",
+      "requirement_id": "REQ_I2C_042",
+      "requirement_text": "1 | R | TIP, Transfer in progress. \u20181\u2019 when transferring data. \u20180\u2019 when transfer complete.",
+      "test_type": "positive",
+      "test_description": "Verify TIP is 1 while transferring data.",
+      "test_constraints": "Requires an active transfer.",
+      "test_steps": [
+        "Initiate a data transfer.",
+        "Read SR[1] during the transfer."
+      ],
+      "expected_results": [
+        "TIP is 1 when transferring data."
+      ],
+      "priority": 1,
+      "priority_reason": "Transfer progress status is essential for command sequencing.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_042_002",
+      "requirement_id": "REQ_I2C_042",
+      "requirement_text": "1 | R | TIP, Transfer in progress. \u20181\u2019 when transferring data. \u20180\u2019 when transfer complete.",
+      "test_type": "positive",
+      "test_description": "Verify TIP is 0 when transfer is complete.",
+      "test_constraints": "Requires transfer completion.",
+      "test_steps": [
+        "Initiate and complete a data transfer.",
+        "Read SR[1] after completion."
+      ],
+      "expected_results": [
+        "TIP is 0 when transfer is complete."
+      ],
+      "priority": 1,
+      "priority_reason": "Transfer progress status is essential for command sequencing.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_043",
+      "requirement_id": "REQ_I2C_043",
+      "requirement_text": "0 | R | IF, Interrupt Flag. This bit is set when an interrupt is pending",
+      "test_type": "positive",
+      "test_description": "Verify IF indicates a pending interrupt when set.",
+      "test_constraints": "Requires creation of an interrupt-pending condition.",
+      "test_steps": [
+        "Create an interrupt-pending condition.",
+        "Read SR[0]."
+      ],
+      "expected_results": [
+        "IF is set when an interrupt is pending."
+      ],
+      "priority": 1,
+      "priority_reason": "Interrupt status visibility is essential for software servicing.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_044_001",
+      "requirement_id": "REQ_I2C_044",
+      "requirement_text": "This bit is set when an interrupt is pending, which will cause a processor interrupt request if the IEN bit is set.",
+      "test_type": "positive",
+      "test_description": "Verify a pending interrupt causes a processor interrupt request when IEN is set.",
+      "test_constraints": "Requires IF to become set under a known event.",
+      "test_steps": [
+        "Set IEN to 1.",
+        "Create a pending interrupt so IF is set.",
+        "Observe wb_inta_o."
+      ],
+      "expected_results": [
+        "wb_inta_o asserts when IF is set and IEN is 1."
+      ],
+      "priority": 1,
+      "priority_reason": "Interrupt output generation is a high-priority externally visible behavior.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_044_002",
+      "requirement_id": "REQ_I2C_044",
+      "requirement_text": "This bit is set when an interrupt is pending, which will cause a processor interrupt request if the IEN bit is set.",
+      "test_type": "negative",
+      "test_description": "Verify a pending interrupt does not cause a processor interrupt request when IEN is cleared.",
+      "test_constraints": "Requires IF to become set under a known event.",
+      "test_steps": [
+        "Clear IEN to 0.",
+        "Create a pending interrupt so IF is set.",
+        "Observe wb_inta_o."
+      ],
+      "expected_results": [
+        "wb_inta_o does not assert when IF is set and IEN is 0."
+      ],
+      "priority": 1,
+      "priority_reason": "Disabled interrupt behavior is explicitly defined and externally visible.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_045_001",
+      "requirement_id": "REQ_I2C_045",
+      "requirement_text": "The Interrupt Flag is set when: one byte transfer has been completed; arbitration is lost",
+      "test_type": "positive",
+      "test_description": "Verify IF is set when one byte transfer has completed.",
+      "test_constraints": "Requires a completed byte transfer.",
+      "test_steps": [
+        "Perform a one-byte transfer to completion.",
+        "Read SR[0]."
+      ],
+      "expected_results": [
+        "IF is set when one byte transfer has completed."
+      ],
+      "priority": 1,
+      "priority_reason": "Defines a primary interrupt source condition.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_045_002",
+      "requirement_id": "REQ_I2C_045",
+      "requirement_text": "The Interrupt Flag is set when: one byte transfer has been completed; arbitration is lost",
+      "test_type": "negative",
+      "test_description": "Verify IF is set when arbitration is lost.",
+      "test_constraints": "Requires creation of an arbitration-loss condition.",
+      "test_steps": [
+        "Create an arbitration-loss condition.",
+        "Read SR[0]."
+      ],
+      "expected_results": [
+        "IF is set when arbitration is lost."
+      ],
+      "priority": 1,
+      "priority_reason": "Defines an error/event interrupt source condition.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_046",
+      "requirement_id": "REQ_I2C_046",
+      "requirement_text": "Reset Value: 0x00",
+      "test_type": "positive",
+      "test_description": "Verify Status Register reset value is 0x00.",
+      "test_constraints": "None specified.",
+      "test_steps": [
+        "Apply reset.",
+        "Read SR."
+      ],
+      "expected_results": [
+        "SR reads as 0x00 after reset."
+      ],
+      "priority": 1,
+      "priority_reason": "Reset defaults are critical for deterministic startup behavior.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_047_001",
+      "requirement_id": "REQ_I2C_047",
+      "requirement_text": "Please note that all reserved bits are read as zeros. To ensure forward compatibility, they should be written as zeros.",
+      "test_type": "positive",
+      "test_description": "Verify reserved status bits SR[4:2] read as zero.",
+      "test_constraints": "None specified.",
+      "test_steps": [
+        "Read SR under one or more operating conditions.",
+        "Inspect bits [4:2]."
+      ],
+      "expected_results": [
+        "SR[4:2] read as 0."
+      ],
+      "priority": 1,
+      "priority_reason": "Reserved-bit read behavior is directly software-visible register behavior.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_047_002",
+      "requirement_id": "REQ_I2C_047",
+      "requirement_text": "Please note that all reserved bits are read as zeros. To ensure forward compatibility, they should be written as zeros.",
+      "test_type": "positive",
+      "test_description": "Verify reserved command bits CR[2:1] read as zero.",
+      "test_constraints": "CR is write-only in the register map, so direct readback of CR[2:1] is not available from the provided information.",
+      "test_steps": [
+        "Attempt to observe CR reserved bits through read access at address 0x04."
+      ],
+      "expected_results": [
+        "Direct useful read verification of CR[2:1] is not available because address 0x04 reads SR, not CR."
+      ],
+      "priority": 3,
+      "priority_reason": "Reserved-bit guidance is lower priority here due to lack of direct observability.",
+      "coverage": "blocked"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_047_003",
+      "requirement_id": "REQ_I2C_047",
+      "requirement_text": "Please note that all reserved bits are read as zeros. To ensure forward compatibility, they should be written as zeros.",
+      "test_type": "positive",
+      "test_description": "Verify reserved control bits CTR[5:0] read as zero where not otherwise defined.",
+      "test_constraints": "Bit 6 and bit 7 are defined as IEN and EN; reserved subset within [5:0] is not individually identified beyond this statement.",
+      "test_steps": [
+        "Write CTR with EN and IEN in a known state.",
+        "Read back CTR and inspect reserved positions within bits [5:0]."
+      ],
+      "expected_results": [
+        "Reserved control bits within CTR[5:0] read as 0."
+      ],
+      "priority": 1,
+      "priority_reason": "Reserved-bit read behavior is directly software-visible register behavior.",
+      "coverage": "partially_covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_048",
+      "requirement_id": "REQ_I2C_048",
+      "requirement_text": "Data is transferred between a Master and a Slave synchronously to SCL on the SDA line on a byte-by-byte basis.",
+      "test_type": "positive",
+      "test_description": "Verify data is transferred synchronously to SCL on SDA, byte by byte.",
+      "test_constraints": "Requires observation of an active I2C transfer.",
+      "test_steps": [
+        "Initiate a transfer between master and slave.",
+        "Observe SDA transitions and bit sampling relative to SCL across one or more bytes."
+      ],
+      "expected_results": [
+        "Data transfer occurs on SDA in synchronization with SCL.",
+        "Transfer proceeds on a byte-by-byte basis."
+      ],
+      "priority": 1,
+      "priority_reason": "Core protocol transfer behavior is fundamental.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_049_001",
+      "requirement_id": "REQ_I2C_049",
+      "requirement_text": "Each data byte is 8 bits long. There is one SCL clock pulse for each data bit with the MSB being transmitted first.",
+      "test_type": "positive",
+      "test_description": "Verify each I2C data byte is 8 bits long.",
+      "test_constraints": "Requires observation of a transmitted or received byte.",
+      "test_steps": [
+        "Initiate a byte transfer.",
+        "Count SCL pulses associated with the data bits before the acknowledge cycle."
+      ],
+      "expected_results": [
+        "Exactly 8 data bits are transferred per byte."
+      ],
+      "priority": 1,
+      "priority_reason": "Basic byte framing is fundamental protocol behavior.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_049_002",
+      "requirement_id": "REQ_I2C_049",
+      "requirement_text": "Each data byte is 8 bits long. There is one SCL clock pulse for each data bit with the MSB being transmitted first.",
+      "test_type": "positive",
+      "test_description": "Verify each data byte is transmitted most significant bit first.",
+      "test_constraints": "Requires a known non-symmetric test byte.",
+      "test_steps": [
+        "Load or expect a known 8-bit value with distinguishable bit order.",
+        "Initiate transfer and observe SDA across the 8 data bit periods."
+      ],
+      "expected_results": [
+        "The transmitted bit order is MSB first."
+      ],
+      "priority": 1,
+      "priority_reason": "Bit ordering is fundamental protocol behavior.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_050",
+      "requirement_id": "REQ_I2C_050",
+      "requirement_text": "An acknowledge bit follows each transferred byte. Each transferred byte is followed by an acknowledge bit on the 9th SCL clock cycle.",
+      "test_type": "positive",
+      "test_description": "Verify each transferred byte is followed by an acknowledge bit on the ninth SCL clock cycle.",
+      "test_constraints": "Requires observation of at least one complete byte transfer.",
+      "test_steps": [
+        "Perform a byte transfer.",
+        "Count SCL clock cycles for the 8 data bits and the following acknowledge phase.",
+        "Observe SDA during the ninth cycle."
+      ],
+      "expected_results": [
+        "An acknowledge bit follows the transferred byte.",
+        "The acknowledge phase occurs on the 9th SCL clock cycle."
+      ],
+      "priority": 1,
+      "priority_reason": "Acknowledge timing is core I2C protocol behavior.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_051_001",
+      "requirement_id": "REQ_I2C_051",
+      "requirement_text": "Each bit is sampled during the high period of SCL. The SDA line may be changed only during the low period of SCL and must be held stable during the high period of SCL.",
+      "test_type": "positive",
+      "test_description": "Verify data bits are sampled during the high period of SCL.",
+      "test_constraints": "Requires observation of active transfer timing.",
+      "test_steps": [
+        "Initiate an I2C transfer.",
+        "Observe the timing relationship between SCL high periods and data sampling points."
+      ],
+      "expected_results": [
+        "Data bits are sampled during SCL high periods."
+      ],
+      "priority": 1,
+      "priority_reason": "Bit sampling timing is essential I2C protocol behavior.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_051_002",
+      "requirement_id": "REQ_I2C_051",
+      "requirement_text": "Each bit is sampled during the high period of SCL. The SDA line may be changed only during the low period of SCL and must be held stable during the high period of SCL.",
+      "test_type": "negative",
+      "test_description": "Verify SDA remains stable while SCL is high during data transfer.",
+      "test_constraints": "START and STOP are special protocol conditions and are not part of normal data-bit stability checking.",
+      "test_steps": [
+        "Initiate an I2C data transfer.",
+        "Observe SDA during SCL high periods for each data bit."
+      ],
+      "expected_results": [
+        "SDA does not change during SCL high while data bits are being transferred.",
+        "SDA changes only during SCL low for data transfer."
+      ],
+      "priority": 1,
+      "priority_reason": "SDA stability during SCL high is a critical non-happy-path protocol constraint.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_052",
+      "requirement_id": "REQ_I2C_052",
+      "requirement_text": "Normally, a standard communication consists of four parts: 1) START signal generation 2) Slave address transfer 3) Data transfer 4) STOP signal generation",
+      "test_type": "positive",
+      "test_description": "Verify a standard I2C communication follows the sequence START, slave address transfer, data transfer, and STOP.",
+      "test_constraints": "Requires a normal standard communication scenario.",
+      "test_steps": [
+        "Initiate a standard I2C communication.",
+        "Observe bus activity from beginning to end."
+      ],
+      "expected_results": [
+        "The communication sequence is START, then slave address transfer, then data transfer, then STOP."
+      ],
+      "priority": 1,
+      "priority_reason": "Overall transaction sequencing is central protocol behavior.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_053",
+      "requirement_id": "REQ_I2C_053",
+      "requirement_text": "A START signal, usually referred to as the S-bit, is defined as a high-to-low transition of SDA while SCL is high.",
+      "test_type": "positive",
+      "test_description": "Verify a START signal is a high-to-low transition of SDA while SCL is high.",
+      "test_constraints": "None specified.",
+      "test_steps": [
+        "Generate or observe a START condition.",
+        "Measure SDA and SCL around the transition."
+      ],
+      "expected_results": [
+        "START is identified by SDA transitioning high-to-low while SCL is high."
+      ],
+      "priority": 1,
+      "priority_reason": "START condition definition is fundamental protocol behavior.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_054",
+      "requirement_id": "REQ_I2C_054",
+      "requirement_text": "A Repeated START is a START signal without first generating a STOP signal.",
+      "test_type": "positive",
+      "test_description": "Verify a Repeated START is generated without a preceding STOP.",
+      "test_constraints": "Requires a multi-part transaction without bus release.",
+      "test_steps": [
+        "Begin a transfer and generate a START condition.",
+        "Without generating a STOP, command another START.",
+        "Observe bus activity."
+      ],
+      "expected_results": [
+        "A START occurs without an intervening STOP.",
+        "This condition is recognized as a Repeated START."
+      ],
+      "priority": 1,
+      "priority_reason": "Repeated START is a key I2C protocol sequence.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_055",
+      "requirement_id": "REQ_I2C_055",
+      "requirement_text": "The core generates a START signal when the STA-bit in the Command Register is set and the RD or WR bits are set.",
+      "test_type": "positive",
+      "test_description": "Verify the core generates a START signal when STA and RD are set.",
+      "test_constraints": "Requires enabled core and a valid command context.",
+      "test_steps": [
+        "Set EN if required for command acceptance.",
+        "Write CR with STA and RD set.",
+        "Observe SDA and SCL for START generation."
+      ],
+      "expected_results": [
+        "The core generates a START signal when STA and RD are set."
+      ],
+      "priority": 1,
+      "priority_reason": "Directly verifies one defined START generation command combination.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_055_002",
+      "requirement_id": "REQ_I2C_055",
+      "requirement_text": "The core generates a START signal when the STA-bit in the Command Register is set and the RD or WR bits are set.",
+      "test_type": "positive",
+      "test_description": "Verify the core generates a START signal when STA and WR are set.",
+      "test_constraints": "Requires enabled core and a valid command context.",
+      "test_steps": [
+        "Set EN if required for command acceptance.",
+        "Write CR with STA and WR set.",
+        "Observe SDA and SCL for START generation."
+      ],
+      "expected_results": [
+        "The core generates a START signal when STA and WR are set."
+      ],
+      "priority": 1,
+      "priority_reason": "Directly verifies one defined START generation command combination.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_056",
+      "requirement_id": "REQ_I2C_056",
+      "requirement_text": "A STOP signal, usually referred to as the P-bit, is defined as a low-to-high transition of SDA while SCL is at logical \u20181\u2019.",
+      "test_type": "positive",
+      "test_description": "Verify a STOP signal is a low-to-high transition of SDA while SCL is high.",
+      "test_constraints": "None specified.",
+      "test_steps": [
+        "Generate or observe a STOP condition.",
+        "Measure SDA and SCL around the transition."
+      ],
+      "expected_results": [
+        "STOP is identified by SDA transitioning low-to-high while SCL is high."
+      ],
+      "priority": 1,
+      "priority_reason": "STOP condition definition is fundamental protocol behavior.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_057",
+      "requirement_id": "REQ_I2C_057",
+      "requirement_text": "The first byte of data transferred by the master immediately after the START signal is the slave address. This is a seven-bits calling address followed by a RW bit.",
+      "test_type": "positive",
+      "test_description": "Verify the first byte after START is the 7-bit slave address followed by the RW bit.",
+      "test_constraints": "Requires a master-initiated addressing sequence.",
+      "test_steps": [
+        "Generate a START and begin an address transfer.",
+        "Observe the first transmitted byte after START."
+      ],
+      "expected_results": [
+        "The first 7 bits are the slave address.",
+        "The 8th bit is the RW bit."
+      ],
+      "priority": 1,
+      "priority_reason": "Slave addressing format is fundamental protocol behavior.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_058",
+      "requirement_id": "REQ_I2C_058",
+      "requirement_text": "Only the slave with an address that matches the one transmitted by the master will respond by returning an acknowledge bit by pulling the SDA low at the 9th SCL clock cycle.",
+      "test_type": "positive",
+      "test_description": "Verify the addressed slave acknowledges by pulling SDA low on the ninth SCL cycle.",
+      "test_constraints": "Requires a matching slave address on the bus.",
+      "test_steps": [
+        "Transmit a matching slave address.",
+        "Observe SDA during the 9th SCL clock cycle."
+      ],
+      "expected_results": [
+        "The addressed slave pulls SDA low on the 9th SCL cycle to acknowledge."
+      ],
+      "priority": 1,
+      "priority_reason": "Address acknowledge timing is core protocol behavior.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_059",
+      "requirement_id": "REQ_I2C_059",
+      "requirement_text": "The core supports 10bit slave addresses by generating two address transfers.",
+      "test_type": "positive",
+      "test_description": "Verify the core supports 10-bit slave addresses by generating two address transfers.",
+      "test_constraints": "Exact 10-bit address encoding content is not specified here; only two address transfers are specified.",
+      "test_steps": [
+        "Initiate a 10-bit addressing operation.",
+        "Observe the address phase on the bus."
+      ],
+      "expected_results": [
+        "The core generates two address transfers for a 10-bit slave address transaction."
+      ],
+      "priority": 1,
+      "priority_reason": "10-bit addressing support is a defined protocol capability.",
+      "coverage": "partially_covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_060",
+      "requirement_id": "REQ_I2C_060",
+      "requirement_text": "The core treats a Slave Address Transfer as any other write action. Store the slave device\u2019s address in the Transmit Register and set the WR bit. The core will then transfer the slave address on the bus.",
+      "test_type": "positive",
+      "test_description": "Verify slave address transfer is performed by storing the address in TXR and setting WR.",
+      "test_constraints": "Requires a valid slave address transfer context.",
+      "test_steps": [
+        "Write the slave address byte into TXR.",
+        "Set WR.",
+        "Observe the bus transfer."
+      ],
+      "expected_results": [
+        "The core transfers the slave address on the bus after TXR is loaded and WR is set.",
+        "Slave address transfer is treated as a write action."
+      ],
+      "priority": 1,
+      "priority_reason": "Defines the command mechanism for addressing.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_061_001",
+      "requirement_id": "REQ_I2C_061",
+      "requirement_text": "Once successful slave addressing has been achieved, the data transfer can proceed on a byte-by-byte basis in the direction specified by the RW bit sent by the master.",
+      "test_type": "positive",
+      "test_description": "Verify that after successful slave addressing, data transfer proceeds byte by byte in the read direction when RW indicates read.",
+      "test_constraints": "Requires successful addressing and a slave capable of read transfer.",
+      "test_steps": [
+        "Perform successful slave addressing with RW indicating read.",
+        "Continue the transfer and observe subsequent bytes."
+      ],
+      "expected_results": [
+        "After successful addressing, data transfer proceeds byte by byte in the read direction."
+      ],
+      "priority": 1,
+      "priority_reason": "Post-address directional transfer is fundamental protocol behavior.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_061_002",
+      "requirement_id": "REQ_I2C_061",
+      "requirement_text": "Once successful slave addressing has been achieved, the data transfer can proceed on a byte-by-byte basis in the direction specified by the RW bit sent by the master.",
+      "test_type": "positive",
+      "test_description": "Verify that after successful slave addressing, data transfer proceeds byte by byte in the write direction when RW indicates write.",
+      "test_constraints": "Requires successful addressing and a slave capable of write transfer.",
+      "test_steps": [
+        "Perform successful slave addressing with RW indicating write.",
+        "Continue the transfer and observe subsequent bytes."
+      ],
+      "expected_results": [
+        "After successful addressing, data transfer proceeds byte by byte in the write direction."
+      ],
+      "priority": 1,
+      "priority_reason": "Post-address directional transfer is fundamental protocol behavior.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_062_001",
+      "requirement_id": "REQ_I2C_062",
+      "requirement_text": "If the slave signals a No Acknowledge, the master can generate a STOP signal to abort the data transfer or generate a Repeated START signal and start a new transfer cycle.",
+      "test_type": "positive",
+      "test_description": "Verify that after No Acknowledge from the slave, the master may generate a STOP signal.",
+      "test_constraints": "Requirement expresses an allowed behavior after No Acknowledge.",
+      "test_steps": [
+        "Create a No Acknowledge condition from the slave.",
+        "Issue a STOP-generating command.",
+        "Observe the bus."
+      ],
+      "expected_results": [
+        "After No Acknowledge, the master can generate a STOP signal to abort the transfer."
+      ],
+      "priority": 2,
+      "priority_reason": "Valid protocol recovery behavior after NACK is important but scenario-dependent.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_062_002",
+      "requirement_id": "REQ_I2C_062",
+      "requirement_text": "If the slave signals a No Acknowledge, the master can generate a STOP signal to abort the data transfer or generate a Repeated START signal and start a new transfer cycle.",
+      "test_type": "positive",
+      "test_description": "Verify that after No Acknowledge from the slave, the master may generate a Repeated START signal.",
+      "test_constraints": "Requirement expresses an allowed behavior after No Acknowledge.",
+      "test_steps": [
+        "Create a No Acknowledge condition from the slave.",
+        "Issue a START-generating command without a preceding STOP.",
+        "Observe the bus."
+      ],
+      "expected_results": [
+        "After No Acknowledge, the master can generate a Repeated START signal and begin a new transfer cycle."
+      ],
+      "priority": 2,
+      "priority_reason": "Valid protocol recovery behavior after NACK is important but scenario-dependent.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_063",
+      "requirement_id": "REQ_I2C_063",
+      "requirement_text": "To write data to a slave, store the data to be transmitted in the Transmit Register and set the WR bit.",
+      "test_type": "positive",
+      "test_description": "Verify data is written to a slave by storing the data in TXR and setting WR.",
+      "test_constraints": "This is a software usage rule but directly maps to observable behavior.",
+      "test_steps": [
+        "Load a known byte into TXR.",
+        "Set WR.",
+        "Observe the bus transfer to the slave."
+      ],
+      "expected_results": [
+        "The data byte loaded in TXR is transmitted to the slave when WR is set."
+      ],
+      "priority": 1,
+      "priority_reason": "Defines the software-visible mechanism for write transfers.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_064",
+      "requirement_id": "REQ_I2C_064",
+      "requirement_text": "To read data from a slave, set the RD bit.",
+      "test_type": "positive",
+      "test_description": "Verify data is read from a slave by setting the RD bit.",
+      "test_constraints": "This is a software usage rule but directly maps to observable behavior.",
+      "test_steps": [
+        "Set RD in a valid read context.",
+        "Observe bus read activity and resulting receive data."
+      ],
+      "expected_results": [
+        "A read from the slave is initiated when RD is set."
+      ],
+      "priority": 1,
+      "priority_reason": "Defines the software-visible mechanism for read transfers.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_065_001",
+      "requirement_id": "REQ_I2C_065",
+      "requirement_text": "When the transfer is done the TIP flag is reset, the IF flag set",
+      "test_type": "positive",
+      "test_description": "Verify TIP resets when a transfer is done.",
+      "test_constraints": "Requires completion of a transfer.",
+      "test_steps": [
+        "Initiate a transfer and wait for completion.",
+        "Read status flags after completion."
+      ],
+      "expected_results": [
+        "TIP is reset when the transfer is done."
+      ],
+      "priority": 1,
+      "priority_reason": "Completion status behavior is fundamental to software sequencing.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_065_002",
+      "requirement_id": "REQ_I2C_065",
+      "requirement_text": "When the transfer is done the TIP flag is reset, the IF flag set",
+      "test_type": "positive",
+      "test_description": "Verify IF is set when a transfer is done.",
+      "test_constraints": "Requires completion of a transfer.",
+      "test_steps": [
+        "Initiate a transfer and wait for completion.",
+        "Read status flags after completion."
+      ],
+      "expected_results": [
+        "IF is set when the transfer is done."
+      ],
+      "priority": 1,
+      "priority_reason": "Completion interrupt-flag behavior is fundamental to software sequencing.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_066",
+      "requirement_id": "REQ_I2C_066",
+      "requirement_text": "When the transfer is done the TIP flag is reset, the IF flag set and, when enabled, an interrupt generated.",
+      "test_type": "positive",
+      "test_description": "Verify an interrupt is generated when a transfer is done and interrupt generation is enabled.",
+      "test_constraints": "Requires IEN enabled and a completed transfer.",
+      "test_steps": [
+        "Set IEN to 1.",
+        "Initiate a transfer and wait for completion.",
+        "Observe wb_inta_o."
+      ],
+      "expected_results": [
+        "An interrupt is generated when the transfer completes and interrupt generation is enabled."
+      ],
+      "priority": 1,
+      "priority_reason": "Transfer-complete interrupt is key externally visible behavior.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_067",
+      "requirement_id": "REQ_I2C_067",
+      "requirement_text": "The Receive Register contains valid data after the IF flag has been set.",
+      "test_type": "positive",
+      "test_description": "Verify RXR contains valid data after IF is set.",
+      "test_constraints": "Requires a read transfer that produces received data.",
+      "test_steps": [
+        "Perform a read transfer from a slave.",
+        "Wait until IF is set.",
+        "Read RXR."
+      ],
+      "expected_results": [
+        "RXR contains valid received data after IF is set."
+      ],
+      "priority": 1,
+      "priority_reason": "Data-valid timing relative to IF is essential for software use.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_068",
+      "requirement_id": "REQ_I2C_068",
+      "requirement_text": "The user may issue a new write or read command when the TIP flag is reset.",
+      "test_type": "positive",
+      "test_description": "Verify software may issue a new read or write command when TIP is reset.",
+      "test_constraints": "This is a software usage rule; acceptance behavior can be observed through command execution.",
+      "test_steps": [
+        "Complete a transfer so TIP is reset.",
+        "Issue a new RD or WR command.",
+        "Observe command acceptance and execution."
+      ],
+      "expected_results": [
+        "A new read or write command can be issued and responded to when TIP is reset."
+      ],
+      "priority": 2,
+      "priority_reason": "Important software sequencing rule with observable behavior.",
+      "coverage": "covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_069",
+      "requirement_id": "REQ_I2C_069",
+      "requirement_text": "If two or more masters simultaneously try to control the bus, a clock synchronization procedure determines the bus clock.",
+      "test_type": "positive",
+      "test_description": "Verify clock synchronization determines the bus clock when multiple masters simultaneously control the bus.",
+      "test_constraints": "Requires a multi-master test environment.",
+      "test_steps": [
+        "Operate two or more masters simultaneously on the same I2C bus.",
+        "Observe the resulting bus clock on SCL."
+      ],
+      "expected_results": [
+        "A clock synchronization procedure determines the resulting bus clock under simultaneous multi-master control."
+      ],
+      "priority": 2,
+      "priority_reason": "Important multi-master integration behavior requiring external setup.",
+      "coverage": "partially_covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_070_001",
+      "requirement_id": "REQ_I2C_070",
+      "requirement_text": "the SCL line will therefore be held low by the device with the longest low period and held high by the device with the shortest high period.",
+      "test_type": "positive",
+      "test_description": "Verify during clock synchronization that SCL low is held by the device with the longest low period.",
+      "test_constraints": "Requires a multi-master test environment with different low periods.",
+      "test_steps": [
+        "Set up multiple masters with different SCL low periods.",
+        "Run simultaneous bus control and observe SCL low timing."
+      ],
+      "expected_results": [
+        "The SCL low period on the bus follows the device with the longest low period."
+      ],
+      "priority": 2,
+      "priority_reason": "Specific multi-master timing behavior requiring integration setup.",
+      "coverage": "partially_covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_070_002",
+      "requirement_id": "REQ_I2C_070",
+      "requirement_text": "the SCL line will therefore be held low by the device with the longest low period and held high by the device with the shortest high period.",
+      "test_type": "positive",
+      "test_description": "Verify during clock synchronization that SCL high is held by the device with the shortest high period.",
+      "test_constraints": "Requires a multi-master test environment with different high periods.",
+      "test_steps": [
+        "Set up multiple masters with different SCL high periods.",
+        "Run simultaneous bus control and observe SCL high timing."
+      ],
+      "expected_results": [
+        "The SCL high period on the bus follows the device with the shortest high period."
+      ],
+      "priority": 2,
+      "priority_reason": "Specific multi-master timing behavior requiring integration setup.",
+      "coverage": "partially_covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_071",
+      "requirement_id": "REQ_I2C_071",
+      "requirement_text": "After the master has driven SCL low, the slave can drive SCL low for the required period and then release it.",
+      "test_type": "positive",
+      "test_description": "Verify a slave may slow the transfer bit rate by holding SCL low after the master drives SCL low.",
+      "test_constraints": "Requires a slave model capable of clock stretching.",
+      "test_steps": [
+        "Initiate a transfer to a slave configured to stretch the clock.",
+        "Observe SCL after the master drives it low."
+      ],
+      "expected_results": [
+        "The slave holds SCL low for an extended period and then releases it.",
+        "The transfer bit rate is slowed accordingly."
+      ],
+      "priority": 2,
+      "priority_reason": "Clock stretching is important integration behavior dependent on slave interaction.",
+      "coverage": "partially_covered"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_072",
+      "requirement_id": "REQ_I2C_072",
+      "requirement_text": "If the slave\u2019s SCL low period is greater than the master\u2019s SCL low period, the resulting SCL bus signal low period is stretched, thus inserting wait-states.",
+      "test_type": "positive",
+      "test_description": "Verify that when the slave SCL low period exceeds the master's low period, the bus low period is stretched and wait states are inserted.",
+      "test_constraints": "Requires a slave model capable of controlled clock stretching.",
+      "test_steps": [
+        "Configure a slave to hold SCL low longer than the master's programmed low period.",
+        "Initiate a transfer and observe SCL bus timing."
+      ],
+      "expected_results": [
+        "The resulting SCL bus low period is stretched beyond the master's nominal low period.",
+        "Wait states are effectively inserted into the transfer."
+      ],
+      "priority": 2,
+      "priority_reason": "Clock stretching timing behavior is important integration behavior dependent on slave interaction.",
+      "coverage": "partially_covered"
+    }
+  ]
+}
