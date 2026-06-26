@@ -1,0 +1,39 @@
+{
+  "metadata": {
+    "requirements_file": "/home/eng-7038/Documents/Specification-Analyser/april-specification-coverage--analysis/uploads/ecb237f1d0704302ad67e664fb67ef96_ambiguous-requirements.json",
+    "weak_language_file": "../outputs/weak_language/weak_words_2026-06-25_10-53-35.json",
+    "date_created": "June 25 2026",
+    "time_created": "10:53am",
+    "total_requirements": 6,
+    "number_of_weak_language_instances": 6,
+    "number_of_flagged_requirements": 3,
+    "number_of_edge_case_candidates": 4,
+    "langsmith_trace_id": "a9402485-0ff5-487d-a711-08b323050a6f"
+  },
+  "edge_cases": [
+    {
+      "edge_case_id": "EDGE_REQ_I2C_001",
+      "requirement_id": "REQ_I2C_001",
+      "edge_case_type": "unclear_mandatory_status",
+      "edge_case_description": "The phrase 'can directly support' combined with 'where implemented' leaves it unclear whether 100 Kbps normal-mode support is mandatory in all core configurations or optional in some implementations, creating a verification split between variants that include the mode and variants that do not."
+    },
+    {
+      "edge_case_id": "EDGE_REQ_I2C_002",
+      "requirement_id": "REQ_I2C_002",
+      "edge_case_type": "conditional_behaviour",
+      "edge_case_description": "The wording 'can support 400 Kbps' and 'where correct hardware is included' makes 400 Kbps fast-mode behaviour conditional on unspecified hardware inclusion, so verification must consider the edge case of builds or integrations where the mode is absent or not testable."
+    },
+    {
+      "edge_case_id": "EDGE_REQ_I2C_003",
+      "requirement_id": "REQ_I2C_002",
+      "edge_case_type": "unclear_mandatory_status",
+      "edge_case_description": "Because the requirement lacks strong mandatory language, it is unclear whether direct 400 Kbps support is required for compliance or merely a capability that may be omitted, affecting whether failure to operate at 400 Kbps is a design bug or an allowed configuration outcome."
+    },
+    {
+      "edge_case_id": "EDGE_REQ_I2C_004",
+      "requirement_id": "REQ_I2C_005",
+      "edge_case_type": "implementation_dependent",
+      "edge_case_description": "The statement that reset level 'can be set to either active high or active low' does not define whether both polarities must be supported by every implementation or whether support may be fixed per build/parameterization, creating an implementation-dependent verification case across reset configurations."
+    }
+  ]
+}

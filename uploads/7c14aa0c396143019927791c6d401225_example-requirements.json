@@ -1,0 +1,871 @@
+[
+   {
+      "id":"REQ_I2C_001",
+      "description":"The core must directly support 100 Kbps normal-mode I2C operation.",
+      "text":"The interface defines 3 transmission speeds:\n- Normal: 100Kbps\nOnly 100Kbps and 400Kbps modes are supported directly.",
+      "source_section":"1 Introduction",
+      "signals":[
+         "SCL",
+         "SDA"
+      ],
+      "type":"timing_requirement"
+   },
+   {
+      "id":"REQ_I2C_002",
+      "description":"The core must directly support 400 Kbps fast-mode I2C operation.",
+      "text":"The interface defines 3 transmission speeds:\n- Fast: 400Kbps\nOnly 100Kbps and 400Kbps modes are supported directly.",
+      "source_section":"1 Introduction",
+      "signals":[
+         "SCL",
+         "SDA"
+      ],
+      "type":"timing_requirement"
+   },
+   {
+      "id":"REQ_I2C_003",
+      "description":"The core must implement a WISHBONE RevB.3 compliant WISHBONE Classic interface.",
+      "text":"The core features a WISHBONE RevB.3 compliant WISHBONE Classic interface.",
+      "source_section":"2.2 WISHBONE interface signals",
+      "signals":[
+         "wb_clk_i",
+         "wb_rst_i",
+         "wb_adr_i",
+         "wb_dat_i",
+         "wb_dat_o",
+         "wb_we_i",
+         "wb_stb_i",
+         "wb_cyc_i",
+         "wb_ack_o",
+         "wb_inta_o"
+      ],
+      "type":"interface_requirement"
+   },
+   {
+      "id":"REQ_I2C_004",
+      "description":"Each WISHBONE access must take two clock cycles.",
+      "text":"Each access takes 2 clock cycles.",
+      "source_section":"2.2 WISHBONE interface signals",
+      "signals":[
+         "wb_clk_i",
+         "wb_ack_o",
+         "wb_cyc_i",
+         "wb_stb_i"
+      ],
+      "type":"interface_timing_requirement"
+   },
+   {
+      "id":"REQ_I2C_005",
+      "description":"The asynchronous reset level must be configurable as active high or active low.",
+      "text":"The asynchronous reset level can be set to either active high (1’b1) or active low (1’b0)",
+      "source_section":"2.1.1 ARST_LVL",
+      "signals":[
+         "ARST_LVL",
+         "arst_i"
+      ],
+      "type":"reset_requirement"
+   },
+   {
+      "id":"REQ_I2C_006",
+      "description":"The core must expose SCL and SDA pad input, output, and output-enable signals for external open-drain bus connection.",
+      "text":"scl_pad_i | 1 | Input | Serial Clock line input\nscl_pad_o | 1 | Output | Serial Clock line output\nscl_pad_oe | 1 | Output | Serial Clock line output enable\nsda_pad_i | 1 | Input | Serial Data line input\nsda_pad_o | 1 | Output | Serial Data line output\nsda_pad_oe | 1 | Output | Serial Data line output enable",
+      "source_section":"2.3 External Connections",
+      "signals":[
+         "scl_pad_i",
+         "scl_pad_o",
+         "scl_pad_oe",
+         "sda_pad_i",
+         "sda_pad_o",
+         "sda_pad_oe"
+      ],
+      "type":"interface_requirement"
+   },
+   {
+      "id":"REQ_I2C_007",
+      "description":"Devices connected to SCL and SDA must use open-drain or open-collector outputs.",
+      "text":"All devices connected to these two signals must have open drain or open collector outputs",
+      "source_section":"2.3 External connections",
+      "signals":[
+         "SCL",
+         "SDA"
+      ],
+      "type":"electrical_requirement"
+   },
+   {
+      "id":"REQ_I2C_008",
+      "description":"The SCL and SDA output-enable signals must control whether the core drives or releases the external bus lines.",
+      "text":"Connections should be made according to the figure.",
+      "source_section":"2.3 External connections figure",
+      "signals":[
+         "scl_pad_oe",
+         "scl_pad_o",
+         "sda_pad_oe",
+         "sda_pad_o",
+         "SCL",
+         "SDA"
+      ],
+      "type":"interface_requirement"
+   },
+   {
+      "id":"REQ_I2C_009",
+      "description":"PRERlo must be an 8-bit read/write Clock Prescale low-byte register at address 0x00.",
+      "text":"PRERlo | 0x00 | 8 | RW | Clock Prescale register lo-byte",
+      "source_section":"3.1 Registers list",
+      "signals":[
+         "PRERlo",
+         "wb_adr_i",
+         "wb_dat_i",
+         "wb_dat_o",
+         "wb_we_i"
+      ],
+      "type":"register_map_requirement"
+   },
+   {
+      "id":"REQ_I2C_010",
+      "description":"PRERhi must be an 8-bit read/write Clock Prescale high-byte register at address 0x01.",
+      "text":"PRERhi | 0x01 | 8 | RW | Clock Prescale register hi-byte",
+      "source_section":"3.1 Registers list",
+      "signals":[
+         "PRERhi",
+         "wb_adr_i",
+         "wb_dat_i",
+         "wb_dat_o",
+         "wb_we_i"
+      ],
+      "type":"register_map_requirement"
+   },
+   {
+      "id":"REQ_I2C_011",
+      "description":"CTR must be an 8-bit read/write Control register at address 0x02.",
+      "text":"CTR | 0x02 | 8 | RW | Control register",
+      "source_section":"3.1 Registers list",
+      "signals":[
+         "CTR",
+         "wb_adr_i",
+         "wb_dat_i",
+         "wb_dat_o",
+         "wb_we_i"
+      ],
+      "type":"register_map_requirement"
+   },
+   {
+      "id":"REQ_I2C_012",
+      "description":"TXR must be an 8-bit write-only Transmit register at address 0x03.",
+      "text":"TXR | 0x03 | 8 | W | Transmit register",
+      "source_section":"3.1 Registers list",
+      "signals":[
+         "TXR",
+         "wb_adr_i",
+         "wb_dat_i",
+         "wb_we_i"
+      ],
+      "type":"register_map_requirement"
+   },
+   {
+      "id":"REQ_I2C_013",
+      "description":"RXR must be an 8-bit read-only Receive register at address 0x03.",
+      "text":"RXR | 0x03 | 8 | R | Receive register",
+      "source_section":"3.1 Registers list",
+      "signals":[
+         "RXR",
+         "wb_adr_i",
+         "wb_dat_o",
+         "wb_we_i"
+      ],
+      "type":"register_map_requirement"
+   },
+   {
+      "id":"REQ_I2C_014",
+      "description":"CR must be an 8-bit write-only Command register at address 0x04.",
+      "text":"CR | 0x04 | 8 | W | Command register",
+      "source_section":"3.1 Registers list",
+      "signals":[
+         "CR",
+         "wb_adr_i",
+         "wb_dat_i",
+         "wb_we_i"
+      ],
+      "type":"register_map_requirement"
+   },
+   {
+      "id":"REQ_I2C_015",
+      "description":"SR must be an 8-bit read-only Status register at address 0x04.",
+      "text":"SR | 0x04 | 8 | R | Status register",
+      "source_section":"3.1 Registers list",
+      "signals":[
+         "SR",
+         "wb_adr_i",
+         "wb_dat_o",
+         "wb_we_i"
+      ],
+      "type":"register_map_requirement"
+   },
+   {
+      "id":"REQ_I2C_016",
+      "description":"The Prescale Register must configure the SCL clock using the WISHBONE input clock and the 5SCL prescale formula.",
+      "text":"Due to the structure of the I2C interface, the core uses a 5SCL clock internally. The prescale register must be programmed to this 5*SCL frequency (minus 1).",
+      "source_section":"3.2.1 Prescale Register",
+      "signals":[
+         "PRERlo",
+         "PRERhi",
+         "SCL",
+         "wb_clk_i"
+      ],
+      "type":"configuration_requirement"
+   },
+   {
+      "id":"REQ_I2C_017",
+      "description":"The Prescale Register value must only be changed when the EN bit is cleared.",
+      "text":"Change the value of the prescale register only when the ‘EN’ bit is cleared.",
+      "source_section":"3.2.1 Prescale Register",
+      "signals":[
+         "PRERlo",
+         "PRERhi",
+         "EN"
+      ],
+      "type":"software_usage_rule"
+   },
+   {
+      "id":"REQ_I2C_018",
+      "description":"The Prescale Register reset value must be 0xFFFF.",
+      "text":"Reset value: 0xFFFF",
+      "source_section":"3.2.1 Prescale Register",
+      "signals":[
+         "PRERlo",
+         "PRERhi"
+      ],
+      "type":"reset_requirement"
+   },
+   {
+      "id":"REQ_I2C_019",
+      "description":"Control Register bit 7 must be the read/write EN bit used to enable or disable the I2C core.",
+      "text":"7 | RW | EN, I2C core enable bit. When set to ‘1’, the core is enabled. When set to ‘0’, the core is disabled.",
+      "source_section":"3.2.2 Control register",
+      "signals":[
+         "CTR[7]",
+         "EN"
+      ],
+      "type":"register_bit_requirement"
+   },
+   {
+      "id":"REQ_I2C_020",
+      "description":"The core must only respond to new commands when EN is set.",
+      "text":"The core responds to new commands only when the ‘EN’ bit is set.",
+      "source_section":"3.2.2 Control register",
+      "signals":[
+         "EN",
+         "CR"
+      ],
+      "type":"control_requirement"
+   },
+   {
+      "id":"REQ_I2C_021",
+      "description":"Software must only clear EN when no transfer is in progress, after a STOP command, or when STO is set.",
+      "text":"Clear the ‘EN’ bit only when no transfer is in progress, i.e. after a STOP command, or when the command register has the STO bit set.",
+      "source_section":"3.2.2 Control register",
+      "signals":[
+         "EN",
+         "STO",
+         "TIP",
+         "CR"
+      ],
+      "type":"software_usage_rule"
+   },
+   {
+      "id":"REQ_I2C_022",
+      "description":"Control Register bit 6 must be the read/write IEN bit used to enable or disable interrupt generation.",
+      "text":"6 | RW | IEN, I2C core interrupt enable bit. When set to ‘1’, interrupt is enabled. When set to ‘0’, interrupt is disabled.",
+      "source_section":"3.2.2 Control register",
+      "signals":[
+         "CTR[6]",
+         "IEN",
+         "wb_inta_o"
+      ],
+      "type":"register_bit_requirement"
+   },
+   {
+      "id":"REQ_I2C_023",
+      "description":"The Control Register reset value must be 0x00.",
+      "text":"Reset Value: 0x00",
+      "source_section":"3.2.2 Control register",
+      "signals":[
+         "CTR"
+      ],
+      "type":"reset_requirement"
+   },
+   {
+      "id":"REQ_I2C_024",
+      "description":"The Transmit Register must hold the byte to transmit, with bit 0 acting as the data LSB during data transfer or the RW bit during slave address transfer.",
+      "text":"7:1 | W | Next byte to transmit via I2C\n0 | W | In case of a data transfer this bit represent the data’s LSB. In case of a slave address transfer this bit represents the RW bit.",
+      "source_section":"3.2.3 Transmit register",
+      "signals":[
+         "TXR[7:0]",
+         "RW",
+         "SDA"
+      ],
+      "type":"register_bit_requirement"
+   },
+   {
+      "id":"REQ_I2C_025",
+      "description":"During a slave address transfer, RW value 1 must indicate reading from the slave and RW value 0 must indicate writing to the slave.",
+      "text":"‘1’ = reading from slave\n‘0’ = writing to slave",
+      "source_section":"3.2.3 Transmit register",
+      "signals":[
+         "TXR[0]",
+         "RW"
+      ],
+      "type":"protocol_rule"
+   },
+   {
+      "id":"REQ_I2C_026",
+      "description":"The Transmit Register reset value must be 0x00.",
+      "text":"Reset value: 0x00",
+      "source_section":"3.2.3 Transmit register",
+      "signals":[
+         "TXR"
+      ],
+      "type":"reset_requirement"
+   },
+   {
+      "id":"REQ_I2C_027",
+      "description":"The Receive Register must contain the last byte received via I2C.",
+      "text":"7:0 | R | Last byte received via I2C",
+      "source_section":"3.2.4 Receive register",
+      "signals":[
+         "RXR[7:0]",
+         "SDA"
+      ],
+      "type":"register_bit_requirement"
+   },
+   {
+      "id":"REQ_I2C_028",
+      "description":"The Receive Register reset value must be 0x00.",
+      "text":"Reset value: 0x00",
+      "source_section":"3.2.4 Receive register",
+      "signals":[
+         "RXR"
+      ],
+      "type":"reset_requirement"
+   },
+   {
+      "id":"REQ_I2C_029",
+      "description":"Command Register bit 7 must be the write-only STA bit used to generate a START or Repeated START condition.",
+      "text":"7 | W | STA, generate (repeated) start condition",
+      "source_section":"3.2.5 Command register",
+      "signals":[
+         "CR[7]",
+         "STA",
+         "SCL",
+         "SDA"
+      ],
+      "type":"command_requirement"
+   },
+   {
+      "id":"REQ_I2C_030",
+      "description":"Command Register bit 6 must be the write-only STO bit used to generate a STOP condition.",
+      "text":"6 | W | STO, generate stop condition",
+      "source_section":"3.2.5 Command register",
+      "signals":[
+         "CR[6]",
+         "STO",
+         "SCL",
+         "SDA"
+      ],
+      "type":"command_requirement"
+   },
+   {
+      "id":"REQ_I2C_031",
+      "description":"Command Register bit 5 must be the write-only RD bit used to initiate a read from the slave.",
+      "text":"5 | W | RD, read from slave",
+      "source_section":"3.2.5 Command register",
+      "signals":[
+         "CR[5]",
+         "RD",
+         "SDA"
+      ],
+      "type":"command_requirement"
+   },
+   {
+      "id":"REQ_I2C_032",
+      "description":"Command Register bit 4 must be the write-only WR bit used to initiate a write to the slave.",
+      "text":"4 | W | WR, write to slave",
+      "source_section":"3.2.5 Command register",
+      "signals":[
+         "CR[4]",
+         "WR",
+         "SDA"
+      ],
+      "type":"command_requirement"
+   },
+   {
+      "id":"REQ_I2C_033",
+      "description":"Command Register bit 3 must be the write-only ACK bit used by a receiver to send ACK when 0 or NACK when 1.",
+      "text":"3 | W | ACK, when a receiver, sent ACK (ACK = ‘0’) or NACK (ACK = ‘1’)",
+      "source_section":"3.2.5 Command register",
+      "signals":[
+         "CR[3]",
+         "ACK",
+         "SDA"
+      ],
+      "type":"command_requirement"
+   },
+   {
+      "id":"REQ_I2C_034",
+      "description":"Command Register bit 0 must be the write-only IACK bit used to clear a pending interrupt.",
+      "text":"0 | W | IACK, Interrupt acknowledge. When set, clears a pending interrupt.",
+      "source_section":"3.2.5 Command register",
+      "signals":[
+         "CR[0]",
+         "IACK",
+         "IF",
+         "wb_inta_o"
+      ],
+      "type":"interrupt_requirement"
+   },
+   {
+      "id":"REQ_I2C_035",
+      "description":"The STA, STO, RD, WR, and IACK command bits must be cleared automatically and must always read as zero.",
+      "text":"The STA, STO, RD, WR, and IACK bits are cleared automatically. These bits are always read as zeros.",
+      "source_section":"3.2.5 Command register",
+      "signals":[
+         "STA",
+         "STO",
+         "RD",
+         "WR",
+         "IACK",
+         "CR[7]",
+         "CR[6]",
+         "CR[5]",
+         "CR[4]",
+         "CR[0]"
+      ],
+      "type":"register_bit_requirement"
+   },
+   {
+      "id":"REQ_I2C_036",
+      "description":"The Command Register reset value must be 0x00.",
+      "text":"Reset Value: 0x00",
+      "source_section":"3.2.5 Command register",
+      "signals":[
+         "CR"
+      ],
+      "type":"reset_requirement"
+   },
+   {
+      "id":"REQ_I2C_037",
+      "description":"RxACK must indicate whether acknowledge was received from the addressed slave.",
+      "text":"RxACK, Received acknowledge from slave. This flag represents acknowledge from the addressed slave. ‘1’ = No acknowledge received. ‘0’ = Acknowledge received.",
+      "source_section":"3.2.6 Status register",
+      "signals":[
+         "SR[7]",
+         "RxACK",
+         "SDA"
+      ],
+      "type":"status_requirement"
+   },
+   {
+      "id":"REQ_I2C_038",
+      "description":"BUSY must indicate whether the I2C bus is busy, setting after START detection and clearing after STOP detection.",
+      "text":"6 | R | Busy, I2C bus busy. ‘1’ after START signal detected. ‘0’ after STOP signal detected.",
+      "source_section":"3.2.6 Status register",
+      "signals":[
+         "SR[6]",
+         "BUSY",
+         "SCL",
+         "SDA"
+      ],
+      "type":"status_requirement"
+   },
+   {
+      "id":"REQ_I2C_039",
+      "description":"AL must indicate arbitration lost.",
+      "text":"5 | R | AL, Arbitration lost. This bit is set when the core lost arbitration.",
+      "source_section":"3.2.6 Status register",
+      "signals":[
+         "SR[5]",
+         "AL",
+         "SCL",
+         "SDA"
+      ],
+      "type":"arbitration_requirement"
+   },
+   {
+      "id":"REQ_I2C_040",
+      "description":"Arbitration must be considered lost when a STOP signal is detected but was not requested.",
+      "text":"Arbitration is lost when: a STOP signal is detected, but non requested",
+      "source_section":"3.2.6 Status register",
+      "signals":[
+         "AL",
+         "STO",
+         "SCL",
+         "SDA"
+      ],
+      "type":"arbitration_requirement"
+   },
+   {
+      "id":"REQ_I2C_041",
+      "description":"Arbitration must be considered lost when the master drives SDA high but SDA is low.",
+      "text":"Arbitration is lost when: The master drives SDA high, but SDA is low.",
+      "source_section":"3.2.6 Status register",
+      "signals":[
+         "AL",
+         "SDA",
+         "sda_pad_o",
+         "sda_pad_i"
+      ],
+      "type":"arbitration_requirement"
+   },
+   {
+      "id":"REQ_I2C_042",
+      "description":"TIP must indicate whether a transfer is in progress.",
+      "text":"1 | R | TIP, Transfer in progress. ‘1’ when transferring data. ‘0’ when transfer complete.",
+      "source_section":"3.2.6 Status register",
+      "signals":[
+         "SR[1]",
+         "TIP"
+      ],
+      "type":"status_requirement"
+   },
+   {
+      "id":"REQ_I2C_043",
+      "description":"IF must indicate whether an interrupt is pending.",
+      "text":"0 | R | IF, Interrupt Flag. This bit is set when an interrupt is pending",
+      "source_section":"3.2.6 Status register",
+      "signals":[
+         "SR[0]",
+         "IF"
+      ],
+      "type":"interrupt_requirement"
+   },
+   {
+      "id":"REQ_I2C_044",
+      "description":"A pending interrupt must cause a processor interrupt request when IEN is set.",
+      "text":"This bit is set when an interrupt is pending, which will cause a processor interrupt request if the IEN bit is set.",
+      "source_section":"3.2.6 Status register",
+      "signals":[
+         "IF",
+         "IEN",
+         "wb_inta_o"
+      ],
+      "type":"interrupt_requirement"
+   },
+   {
+      "id":"REQ_I2C_045",
+      "description":"IF must be set when one byte transfer has completed or arbitration is lost.",
+      "text":"The Interrupt Flag is set when: one byte transfer has been completed; arbitration is lost",
+      "source_section":"3.2.6 Status register",
+      "signals":[
+         "IF",
+         "SR[0]",
+         "TIP",
+         "AL"
+      ],
+      "type":"interrupt_requirement"
+   },
+   {
+      "id":"REQ_I2C_046",
+      "description":"The Status Register reset value must be 0x00.",
+      "text":"Reset Value: 0x00",
+      "source_section":"3.2.6 Status register",
+      "signals":[
+         "SR"
+      ],
+      "type":"reset_requirement"
+   },
+   {
+      "id":"REQ_I2C_047",
+      "description":"Reserved bits must read as zero, and writable reserved bits should be written as zero.",
+      "text":"Please note that all reserved bits are read as zeros. To ensure forward compatibility, they should be written as zeros.",
+      "source_section":"3.2.6 Status register",
+      "signals":[
+         "SR[4:2]",
+         "CR[2:1]",
+         "CTR[5:0]"
+      ],
+      "type":"reserved_bit_requirement"
+   },
+   {
+      "id":"REQ_I2C_048",
+      "description":"Data must be transferred between a Master and Slave synchronously to SCL on SDA, byte by byte.",
+      "text":"Data is transferred between a Master and a Slave synchronously to SCL on the SDA line on a byte-by-byte basis.",
+      "source_section":"4.1 System Configuration",
+      "signals":[
+         "SCL",
+         "SDA"
+      ],
+      "type":"protocol_rule"
+   },
+   {
+      "id":"REQ_I2C_049",
+      "description":"Each I2C data byte must be 8 bits long and transmitted most significant bit first.",
+      "text":"Each data byte is 8 bits long. There is one SCL clock pulse for each data bit with the MSB being transmitted first.",
+      "source_section":"4.1 System Configuration",
+      "signals":[
+         "SCL",
+         "SDA"
+      ],
+      "type":"protocol_rule"
+   },
+   {
+      "id":"REQ_I2C_050",
+      "description":"Each transferred byte must be followed by an acknowledge bit on the ninth SCL clock cycle.",
+      "text":"An acknowledge bit follows each transferred byte. Each transferred byte is followed by an acknowledge bit on the 9th SCL clock cycle.",
+      "source_section":"4.1 System Configuration / 4.2.3 Data Transfer",
+      "signals":[
+         "SDA",
+         "SCL",
+         "ACK",
+         "RxACK"
+      ],
+      "type":"timing_requirement"
+   },
+   {
+      "id":"REQ_I2C_051",
+      "description":"Data bits must be sampled during SCL high, and SDA must remain stable while SCL is high during data transfer.",
+      "text":"Each bit is sampled during the high period of SCL. The SDA line may be changed only during the low period of SCL and must be held stable during the high period of SCL.",
+      "source_section":"4.1 System Configuration",
+      "signals":[
+         "SDA",
+         "SCL"
+      ],
+      "type":"timing_requirement"
+   },
+   {
+      "id":"REQ_I2C_052",
+      "description":"A standard I2C communication must follow the sequence START, slave address transfer, data transfer, and STOP.",
+      "text":"Normally, a standard communication consists of four parts: 1) START signal generation 2) Slave address transfer 3) Data transfer 4) STOP signal generation",
+      "source_section":"4.2 I2C Protocol",
+      "signals":[
+         "SDA",
+         "SCL"
+      ],
+      "type":"protocol_sequence_requirement"
+   },
+   {
+      "id":"REQ_I2C_053",
+      "description":"A START signal must be a high-to-low transition of SDA while SCL is high.",
+      "text":"A START signal, usually referred to as the S-bit, is defined as a high-to-low transition of SDA while SCL is high.",
+      "source_section":"4.2.1 START signal",
+      "signals":[
+         "SDA",
+         "SCL"
+      ],
+      "type":"protocol_rule"
+   },
+   {
+      "id":"REQ_I2C_054",
+      "description":"A Repeated START must be a START signal generated without first generating a STOP signal.",
+      "text":"A Repeated START is a START signal without first generating a STOP signal.",
+      "source_section":"4.2.1 START signal",
+      "signals":[
+         "SDA",
+         "SCL"
+      ],
+      "type":"protocol_rule"
+   },
+   {
+      "id":"REQ_I2C_055",
+      "description":"The core must generate a START signal when STA is set and either RD or WR is set.",
+      "text":"The core generates a START signal when the STA-bit in the Command Register is set and the RD or WR bits are set.",
+      "source_section":"4.2.1 START signal",
+      "signals":[
+         "STA",
+         "RD",
+         "WR",
+         "SDA",
+         "SCL"
+      ],
+      "type":"command_requirement"
+   },
+   {
+      "id":"REQ_I2C_056",
+      "description":"A STOP signal must be a low-to-high transition of SDA while SCL is high.",
+      "text":"A STOP signal, usually referred to as the P-bit, is defined as a low-to-high transition of SDA while SCL is at logical ‘1’.",
+      "source_section":"4.2.4 STOP signal",
+      "signals":[
+         "SDA",
+         "SCL"
+      ],
+      "type":"protocol_rule"
+   },
+   {
+      "id":"REQ_I2C_057",
+      "description":"The first byte transferred by the master after a START signal must be the slave address with a seven-bit address followed by an RW bit.",
+      "text":"The first byte of data transferred by the master immediately after the START signal is the slave address. This is a seven-bits calling address followed by a RW bit.",
+      "source_section":"4.2.2 Slave Address Transfer",
+      "signals":[
+         "SDA",
+         "SCL",
+         "RW"
+      ],
+      "type":"protocol_sequence_requirement"
+   },
+   {
+      "id":"REQ_I2C_058",
+      "description":"The addressed slave must acknowledge by pulling SDA low at the ninth SCL clock cycle.",
+      "text":"Only the slave with an address that matches the one transmitted by the master will respond by returning an acknowledge bit by pulling the SDA low at the 9th SCL clock cycle.",
+      "source_section":"4.2.2 Slave Address Transfer",
+      "signals":[
+         "SDA",
+         "SCL",
+         "ACK"
+      ],
+      "type":"timing_requirement"
+   },
+   {
+      "id":"REQ_I2C_059",
+      "description":"The core must support 10-bit slave addresses by generating two address transfers.",
+      "text":"The core supports 10bit slave addresses by generating two address transfers.",
+      "source_section":"4.2.2 Slave Address Transfer",
+      "signals":[
+         "SDA",
+         "SCL"
+      ],
+      "type":"protocol_sequence_requirement"
+   },
+   {
+      "id":"REQ_I2C_060",
+      "description":"The core must treat a slave address transfer as a write action using the Transmit Register and WR bit.",
+      "text":"The core treats a Slave Address Transfer as any other write action. Store the slave device’s address in the Transmit Register and set the WR bit. The core will then transfer the slave address on the bus.",
+      "source_section":"4.2.2 Slave Address Transfer",
+      "signals":[
+         "TXR",
+         "WR",
+         "SDA",
+         "SCL"
+      ],
+      "type":"command_requirement"
+   },
+   {
+      "id":"REQ_I2C_061",
+      "description":"After successful slave addressing, data transfer must proceed byte by byte in the direction specified by the RW bit.",
+      "text":"Once successful slave addressing has been achieved, the data transfer can proceed on a byte-by-byte basis in the direction specified by the RW bit sent by the master.",
+      "source_section":"4.2.3 Data Transfer",
+      "signals":[
+         "SDA",
+         "SCL",
+         "RW"
+      ],
+      "type":"protocol_sequence_requirement"
+   },
+   {
+      "id":"REQ_I2C_062",
+      "description":"If the slave signals No Acknowledge, the master may generate a STOP or Repeated START signal.",
+      "text":"If the slave signals a No Acknowledge, the master can generate a STOP signal to abort the data transfer or generate a Repeated START signal and start a new transfer cycle.",
+      "source_section":"4.2.3 Data Transfer",
+      "signals":[
+         "SDA",
+         "SCL",
+         "STO",
+         "STA",
+         "RxACK"
+      ],
+      "type":"protocol_rule"
+   },
+   {
+      "id":"REQ_I2C_063",
+      "description":"To write data to a slave, software must store the data in the Transmit Register and set the WR bit.",
+      "text":"To write data to a slave, store the data to be transmitted in the Transmit Register and set the WR bit.",
+      "source_section":"4.2.3 Data Transfer",
+      "signals":[
+         "TXR",
+         "WR"
+      ],
+      "type":"software_usage_rule"
+   },
+   {
+      "id":"REQ_I2C_064",
+      "description":"To read data from a slave, software must set the RD bit.",
+      "text":"To read data from a slave, set the RD bit.",
+      "source_section":"4.2.3 Data Transfer",
+      "signals":[
+         "RD"
+      ],
+      "type":"software_usage_rule"
+   },
+   {
+      "id":"REQ_I2C_065",
+      "description":"When a transfer is done, the core must reset TIP and set IF.",
+      "text":"When the transfer is done the TIP flag is reset, the IF flag set",
+      "source_section":"4.2.3 Data Transfer",
+      "signals":[
+         "TIP",
+         "IF"
+      ],
+      "type":"status_requirement"
+   },
+   {
+      "id":"REQ_I2C_066",
+      "description":"When interrupt generation is enabled and a transfer is done, the core must generate an interrupt.",
+      "text":"When the transfer is done the TIP flag is reset, the IF flag set and, when enabled, an interrupt generated.",
+      "source_section":"4.2.3 Data Transfer",
+      "signals":[
+         "IF",
+         "IEN",
+         "wb_inta_o"
+      ],
+      "type":"interrupt_requirement"
+   },
+   {
+      "id":"REQ_I2C_067",
+      "description":"The Receive Register must contain valid data after IF has been set.",
+      "text":"The Receive Register contains valid data after the IF flag has been set.",
+      "source_section":"4.2.3 Data Transfer",
+      "signals":[
+         "RXR",
+         "IF"
+      ],
+      "type":"data_validity_requirement"
+   },
+   {
+      "id":"REQ_I2C_068",
+      "description":"Software may issue a new read or write command when TIP is reset.",
+      "text":"The user may issue a new write or read command when the TIP flag is reset.",
+      "source_section":"4.2.3 Data Transfer",
+      "signals":[
+         "RD",
+         "WR",
+         "TIP"
+      ],
+      "type":"software_usage_rule"
+   },
+   {
+      "id":"REQ_I2C_069",
+      "description":"When two or more masters try to control the bus simultaneously, clock synchronization must determine the bus clock.",
+      "text":"If two or more masters simultaneously try to control the bus, a clock synchronization procedure determines the bus clock.",
+      "source_section":"4.3.1 Clock Synchronization",
+      "signals":[
+         "SCL"
+      ],
+      "type":"clock_synchronization_requirement"
+   },
+   {
+      "id":"REQ_I2C_070",
+      "description":"During clock synchronization, SCL must be held low by the device with the longest low period and held high by the device with the shortest high period.",
+      "text":"the SCL line will therefore be held low by the device with the longest low period and held high by the device with the shortest high period.",
+      "source_section":"4.3.1 Clock Synchronization",
+      "signals":[
+         "SCL"
+      ],
+      "type":"clock_synchronization_requirement"
+   },
+   {
+      "id":"REQ_I2C_071",
+      "description":"Slave devices may slow the transfer bit rate by holding SCL low after the master has driven SCL low.",
+      "text":"After the master has driven SCL low, the slave can drive SCL low for the required period and then release it.",
+      "source_section":"4.3.2 Clock Stretching",
+      "signals":[
+         "SCL"
+      ],
+      "type":"clock_stretching_requirement"
+   },
+   {
+      "id":"REQ_I2C_072",
+      "description":"If the slave SCL low period is greater than the master SCL low period, the resulting SCL bus low period must be stretched and wait states inserted.",
+      "text":"If the slave’s SCL low period is greater than the master’s SCL low period, the resulting SCL bus signal low period is stretched, thus inserting wait-states.",
+      "source_section":"4.3.2 Clock Stretching",
+      "signals":[
+         "SCL"
+      ],
+      "type":"clock_stretching_requirement"
+   }
+]

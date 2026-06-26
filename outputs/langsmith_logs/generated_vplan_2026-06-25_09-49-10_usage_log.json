@@ -1,0 +1,29 @@
+{
+  "output_file": "generated_vplan_2026-06-25_09-49-10.json",
+  "trace_ids": {
+    "vplan_trace_id": "066dcfbb-d972-47c1-8542-c356605344f1",
+    "edge_case_trace_id": "d5e8b620-9df5-4a1d-96c6-bb99602606f4"
+  },
+  "summary": {
+    "prompt_tokens": 3290,
+    "completion_tokens": 1407,
+    "total_tokens": 4697,
+    "total_cost": "0.0",
+    "agents": [
+      {
+        "agent_name": "vplan_generator",
+        "prompt_tokens": 1495,
+        "completion_tokens": 1080,
+        "total_tokens": 2575,
+        "total_cost": "0.0"
+      },
+      {
+        "agent_name": "edge_case_extractor",
+        "prompt_tokens": 1795,
+        "completion_tokens": 327,
+        "total_tokens": 2122,
+        "total_cost": "0.0"
+      }
+    ]
+  }
+}

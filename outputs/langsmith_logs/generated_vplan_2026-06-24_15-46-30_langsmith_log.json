@@ -1,0 +1,15 @@
+{
+  "vplan_file": "generated_vplan_2026-06-24_15-46-30.json",
+  "trace_id": "069987e4-147b-4569-aa4e-f8bcfbf4a94b",
+  "number_of_runs": 0,
+  "summary": {
+    "number_of_llm_runs": 0,
+    "total_tokens": 0,
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_cost": "0",
+    "prompt_cost": "0",
+    "completion_cost": "0"
+  },
+  "runs": []
+}

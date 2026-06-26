@@ -1,16 +1,24 @@
 from langchain.agents import create_agent
-from data_class import Table
+from Backend.data_class import Table
 import json
 from dotenv import load_dotenv
 import os
 from datetime import datetime
 from pathlib import Path
-import argparse
-from vplan_traceability_check import check_traceability, add_requirement_text
+from Backend.vplan_traceability_check import check_traceability, add_requirement_text
 import uuid
-from langsmith_trace_export import save_langsmith_trace_log
+from langchain_community.callbacks.manager import get_openai_callback
+from Backend.usage_logger import normalise_usage
 
 load_dotenv()
+
+BASE_DIR = Path(__file__).resolve().parents[2]
+
+OUTPUT_DIR = BASE_DIR / "outputs"
+OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+
+LANGSMITH_LOGS_DIR = OUTPUT_DIR / "langsmith_logs"
+LANGSMITH_LOGS_DIR.mkdir(parents=True, exist_ok=True)
 
 if not os.getenv("OPENAI_API_KEY"):
     raise ValueError("OPENAI_API_KEY not found. Check your .env file.")
@@ -55,7 +63,6 @@ Priority:
 - 3 = lower priority software guidance or unclear hardware enforcement
 """
 
-REQUIREMENTS_FILE = "../example-requirements.json"
 
 agent = create_agent(
     model="openai:gpt-5.4",
@@ -63,102 +70,97 @@ agent = create_agent(
     system_prompt=SYSTEM_PROMPT,
 )
 
-def invoke_agent(requirements, run_id: uuid.UUID) -> dict:
-    """Invoke the agent using the requirements JSON file."""
+def invoke_agent(requirements, run_id: uuid.UUID) -> tuple[dict, dict]:
+    """Invoke the agent using the requirements JSON file and capture token usage."""
 
-    with open(requirements, "r") as file:
+    with open(requirements, "r", encoding="utf-8") as file:
         specification = json.load(file)
 
-    return agent.invoke(
-        {
-            "messages": [
-                {
-                    "role": "user",
-                    "content": (
-                        "Create a vPlan table from this JSON specification:\n"
-                        f"{json.dumps(specification, separators=(',', ':'))}"
-                    ),
-                }
-            ]
-        },
-        config={
-            "run_id": run_id,
-            "run_name": "vplan_generation",
-            "metadata": {
-                "requirements_file": Path(requirements).name,
+    with get_openai_callback() as callback:
+        result = agent.invoke(
+            {
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": (
+                            "Create a vPlan table from this JSON specification:\n"
+                            f"{json.dumps(specification, separators=(',', ':'))}"
+                        ),
+                    }
+                ]
             },
-            "tags": ["vplan-generator"],
-        },
-    )
+            config={
+                "run_id": run_id,
+                "run_name": "vplan_generation",
+                "metadata": {
+                    "requirements_file": Path(requirements).name,
+                    "ls_provider": "openai",
+                    "ls_model_name": "gpt-5.4",
+                },
+                "tags": ["vplan-generator"],
+            },
+        )
+
+        usage = normalise_usage(
+            agent_name="vplan_generator",
+            input_tokens=callback.prompt_tokens,
+            output_tokens=callback.completion_tokens,
+            total_tokens=callback.total_tokens,
+            total_cost=callback.total_cost,
+            model_name="gpt-5.4",
+        )
+
+    return result, usage
 
 
-OUTPUT_DIR = Path("../outputs")
-OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+def v_plan_agent_call(reqs: str) -> dict:
+    with open(reqs, "r", encoding="utf-8") as file:
+        requirements_file = json.load(file)
 
-if __name__ == "__main__":
-
-    parser = argparse.ArgumentParser(description="File path of requirements")
-
-    parser.add_argument(
-        "--file",
-        action="store",
-        dest="requirements_file",
-        default=REQUIREMENTS_FILE,
-    )
-
-    args = parser.parse_args()
-
-    print(f"Using requirements file: {args.requirements_file}")
+    print(f"Using requirements file: {reqs}")
 
     now = datetime.now()
     timestamp = now.strftime("%Y-%m-%d_%H-%M-%S")
     run_id = uuid.uuid4()
 
-    result = invoke_agent(args.requirements_file, run_id=run_id)
+    result, usage = invoke_agent(reqs, run_id=run_id)
 
     vplan = result["structured_response"]
 
-    now = datetime.now()
-
-    with open(args.requirements_file, "r", encoding="utf-8") as file:
-        input_requirements = json.load(file)
-
     metadata = {
-        "requirements_file": Path(args.requirements_file).name,
+        "requirements_file": Path(reqs).name,
         "date_created": now.strftime("%B %d %Y"),
         "time_created": now.strftime("%I:%M%p").lower(),
-        "number_of_requirements": len(input_requirements),
+        "number_of_requirements": len(requirements_file),
         "number_of_tests": len(vplan.feature_list),
         "langsmith_trace_id": str(run_id),
     }
 
     output_json = {
         "metadata": metadata,
-        **vplan.model_dump()
+        **vplan.model_dump(),
     }
 
     output_json = add_requirement_text(
         vplan_data=output_json,
-        requirements=input_requirements,
+        requirements=requirements_file,
     )
 
-    timestamp = now.strftime("%Y-%m-%d_%H-%M-%S")
     generated_vplan_file = OUTPUT_DIR / f"generated_vplan_{timestamp}.json"
 
     with open(generated_vplan_file, "w", encoding="utf-8") as f:
         json.dump(output_json, f, indent=2)
 
-    LANGSMITH_LOGS_DIR = OUTPUT_DIR / "langsmith_logs"
-
-    save_langsmith_trace_log(
-        run_id=run_id,
-        output_file=generated_vplan_file,
-        logs_dir=LANGSMITH_LOGS_DIR,
-    )
-
     print(f"Generated vPlan saved to {generated_vplan_file}")
 
     check_traceability(
-        requirements_file=args.requirements_file,
+        requirements_file=reqs,
         generated_vplan_file=generated_vplan_file,
     )
+
+    return {
+        "vplan_output_file": str(generated_vplan_file),
+        "vplan": output_json,
+        "vplan_trace_id": str(run_id),
+        "vplan_usage": usage,
+    }

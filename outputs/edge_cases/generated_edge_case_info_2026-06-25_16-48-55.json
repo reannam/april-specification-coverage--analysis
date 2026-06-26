@@ -1,0 +1,63 @@
+{
+  "metadata": {
+    "requirements_file": "/home/eng-7038/Documents/Specification-Analyser/april-specification-coverage--analysis/uploads/7c14aa0c396143019927791c6d401225_example-requirements.json",
+    "weak_language_file": "../outputs/weak_language/weak_words_2026-06-25_16-48-55.json",
+    "date_created": "June 25 2026",
+    "time_created": "04:48pm",
+    "total_requirements": 72,
+    "number_of_weak_language_instances": 10,
+    "number_of_flagged_requirements": 8,
+    "number_of_edge_case_candidates": 8,
+    "langsmith_trace_id": "20b1122c-d659-47ba-a79d-ce0a2e08a720"
+  },
+  "edge_cases": [
+    {
+      "edge_case_id": "EDGE_REQ_I2C_005_001",
+      "requirement_id": "REQ_I2C_005",
+      "edge_case_type": "implementation_dependent",
+      "edge_case_description": "The phrase 'can be set to either active high or active low' leaves verification-dependent ambiguity about whether both reset polarities must be supported in all implementations or whether polarity is a build-time/configuration choice. Verification must account for the unselected polarity behaviour being potentially unspecified."
+    },
+    {
+      "edge_case_id": "EDGE_REQ_I2C_052_001",
+      "requirement_id": "REQ_I2C_052",
+      "edge_case_type": "optional_behaviour",
+      "edge_case_description": "The qualifier 'Normally' implies the 4-part sequence START, address, data, STOP is not universal. Verification cannot assume all legal transactions terminate with STOP or include only this sequence; repeated START or aborted/incomplete sequences remain possible edge scenarios."
+    },
+    {
+      "edge_case_id": "EDGE_REQ_I2C_061_001",
+      "requirement_id": "REQ_I2C_061",
+      "edge_case_type": "unclear_mandatory_status",
+      "edge_case_description": "The wording 'data transfer can proceed' after successful addressing does not make it mandatory whether transfer must continue immediately, may pause, or may terminate instead. Verification must treat post-address success behaviour as not fully constrained."
+    },
+    {
+      "edge_case_id": "EDGE_REQ_I2C_062_001",
+      "requirement_id": "REQ_I2C_062",
+      "edge_case_type": "optional_behaviour",
+      "edge_case_description": "After a No Acknowledge, the wording allows either STOP or Repeated START, but does not require one specific response. Verification must cover both recovery paths after NACK rather than assuming a single deterministic outcome."
+    },
+    {
+      "edge_case_id": "EDGE_REQ_I2C_062_002",
+      "requirement_id": "REQ_I2C_062",
+      "edge_case_type": "unclear_mandatory_status",
+      "edge_case_description": "Because the requirement uses only optional language ('may'/'can') and lacks strong mandatory wording, it is unclear whether generating STOP or Repeated START after NACK is required, merely permitted, or whether other behaviours are allowed. This leaves NACK handling incompletely constrained for verification."
+    },
+    {
+      "edge_case_id": "EDGE_REQ_I2C_068_001",
+      "requirement_id": "REQ_I2C_068",
+      "edge_case_type": "unclear_mandatory_status",
+      "edge_case_description": "The phrase 'may issue a new write or read command when the TIP flag is reset' does not define whether issuing a new command immediately at TIP deassertion is required to work in the same cycle, only in later cycles, or merely allowed at software discretion. Verification must consider timing/acceptance around the TIP-to-command boundary as underconstrained."
+    },
+    {
+      "edge_case_id": "EDGE_REQ_I2C_071_001",
+      "requirement_id": "REQ_I2C_071",
+      "edge_case_type": "optional_behaviour",
+      "edge_case_description": "The wording 'Slave devices may slow the transfer bit rate' means clock stretching is optional from the slave side. Verification must cover both cases: no stretching and arbitrary use of stretching by the slave."
+    },
+    {
+      "edge_case_id": "EDGE_REQ_I2C_071_002",
+      "requirement_id": "REQ_I2C_071",
+      "edge_case_type": "boundary_condition",
+      "edge_case_description": "The phrase 'for the required period' does not bound the duration of slave-held SCL low. Verification must consider the edge case that clock stretching length is unspecified, including very short versus very long low extensions, because no acceptance limit is stated."
+    }
+  ]
+}

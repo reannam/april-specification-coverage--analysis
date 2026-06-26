@@ -1,0 +1,51 @@
+{
+  "metadata": {
+    "requirements_file": "/home/eng-7038/Documents/Specification-Analyser/april-specification-coverage--analysis/uploads/5150f24f4e5944cbb03dcdb249e633a3_ambiguous-requirements.json",
+    "weak_language_file": "../outputs/weak_language/weak_words_2026-06-25_11-08-54.json",
+    "date_created": "June 25 2026",
+    "time_created": "11:08am",
+    "total_requirements": 6,
+    "number_of_weak_language_instances": 6,
+    "number_of_flagged_requirements": 3,
+    "number_of_edge_case_candidates": 6,
+    "langsmith_trace_id": "a5ab6a74-2be3-418d-bc9c-ae7726058e22"
+  },
+  "edge_cases": [
+    {
+      "edge_case_id": "EDGE_REQ_I2C_001",
+      "requirement_id": "REQ_I2C_001",
+      "edge_case_type": "unclear_mandatory_status",
+      "edge_case_description": "The wording 'can' and 'where implemented' makes 100 Kbps normal-mode support optional rather than mandatory, creating a verification edge case where some implementations may omit direct 100 Kbps support entirely."
+    },
+    {
+      "edge_case_id": "EDGE_REQ_I2C_002",
+      "requirement_id": "REQ_I2C_002",
+      "edge_case_type": "conditional_behaviour",
+      "edge_case_description": "The phrase 'where implemented' implies 100 Kbps support may exist only in some implementations, so verification must account for the case where the feature is absent and expected behaviour is therefore undefined by this requirement."
+    },
+    {
+      "edge_case_id": "EDGE_REQ_I2C_003",
+      "requirement_id": "REQ_I2C_002",
+      "edge_case_type": "unclear_mandatory_status",
+      "edge_case_description": "The wording 'can' and 'where correct hardware is included' makes direct 400 Kbps fast-mode support non-mandatory, creating a verification edge case where an implementation may legally omit direct 400 Kbps support."
+    },
+    {
+      "edge_case_id": "EDGE_REQ_I2C_004",
+      "requirement_id": "REQ_I2C_002",
+      "edge_case_type": "conditional_behaviour",
+      "edge_case_description": "The phrase 'where correct hardware is included' makes 400 Kbps support dependent on unspecified hardware conditions, leaving an edge case for verification when that hardware is absent or only partially present."
+    },
+    {
+      "edge_case_id": "EDGE_REQ_I2C_005",
+      "requirement_id": "REQ_I2C_005",
+      "edge_case_type": "implementation_dependent",
+      "edge_case_description": "The statement that reset level 'can be set to either active high or active low' creates an implementation/configuration edge case because verification must determine which polarity is selected in a given build before reset behavior can be checked."
+    },
+    {
+      "edge_case_id": "EDGE_REQ_I2C_006",
+      "requirement_id": "REQ_I2C_005",
+      "edge_case_type": "ambiguous_expected_result",
+      "edge_case_description": "The requirement allows two reset polarities but does not state the expected default or required behavior if ARST_LVL is misconfigured relative to arst_i, leaving reset assertion/deassertion behavior ambiguous for verification."
+    }
+  ]
+}

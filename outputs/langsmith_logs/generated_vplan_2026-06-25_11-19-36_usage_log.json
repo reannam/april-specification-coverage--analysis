@@ -1,0 +1,32 @@
+{
+  "timestamp": "2026-06-25T11:19:48",
+  "output_file": "generated_vplan_2026-06-25_11-19-36.json",
+  "trace_ids": {
+    "vplan_trace_id": "294343b5-3fbe-447a-8c1b-d9b0de9f8606",
+    "edge_case_trace_id": "4b81615a-c4f6-4591-8e6a-63659432e1a1"
+  },
+  "summary": {
+    "prompt_tokens": 3290,
+    "completion_tokens": 1536,
+    "total_tokens": 4826,
+    "total_cost": "0.03126500",
+    "agents": [
+      {
+        "agent_name": "vplan_generator",
+        "model_name": "gpt-5.4",
+        "prompt_tokens": 1495,
+        "completion_tokens": 1077,
+        "total_tokens": 2572,
+        "total_cost": "0.01989250"
+      },
+      {
+        "agent_name": "edge_case_extractor",
+        "model_name": "gpt-5.4",
+        "prompt_tokens": 1795,
+        "completion_tokens": 459,
+        "total_tokens": 2254,
+        "total_cost": "0.01137250"
+      }
+    ]
+  }
+}

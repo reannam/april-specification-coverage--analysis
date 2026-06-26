@@ -1,0 +1,82 @@
+[
+   {
+      "id":"REQ_I2C_001",
+      "description":"The core can directly support 100 Kbps normal-mode I2C operation, where implemented.",
+      "text":"The interface defines 3 transmission speeds:\n- Normal: 100Kbps\nOnly 100Kbps and 400Kbps modes are supported directly.",
+      "source_section":"1 Introduction",
+      "signals":[
+         "SCL",
+         "SDA"
+      ],
+      "type":"timing_requirement"
+   },
+   {
+      "id":"REQ_I2C_002",
+      "description":"The core can support 400 Kbps fast-mode I2C operation, where correct hardware is included.",
+      "text":"The interface defines 3 transmission speeds:\n- Fast: 400Kbps\nOnly 100Kbps and 400Kbps modes are supported directly.",
+      "source_section":"1 Introduction",
+      "signals":[
+         "SCL",
+         "SDA"
+      ],
+      "type":"timing_requirement"
+   },
+   {
+      "id":"REQ_I2C_003",
+      "description":"The core shall implement a WISHBONE RevB.3 compliant WISHBONE Classic interface.",
+      "text":"The core features a WISHBONE RevB.3 compliant WISHBONE Classic interface.",
+      "source_section":"2.2 WISHBONE interface signals",
+      "signals":[
+         "wb_clk_i",
+         "wb_rst_i",
+         "wb_adr_i",
+         "wb_dat_i",
+         "wb_dat_o",
+         "wb_we_i",
+         "wb_stb_i",
+         "wb_cyc_i",
+         "wb_ack_o",
+         "wb_inta_o"
+      ],
+      "type":"interface_requirement"
+   },
+   {
+      "id":"REQ_I2C_004",
+      "description":"Each WISHBONE access must take two clock cycles.",
+      "text":"Each access takes 2 clock cycles.",
+      "source_section":"2.2 WISHBONE interface signals",
+      "signals":[
+         "wb_clk_i",
+         "wb_ack_o",
+         "wb_cyc_i",
+         "wb_stb_i"
+      ],
+      "type":"interface_timing_requirement"
+   },
+   {
+      "id":"REQ_I2C_005",
+      "description":"The asynchronous reset level is configurable as active high or active low.",
+      "text":"The asynchronous reset level can be set to either active high (1’b1) or active low (1’b0)",
+      "source_section":"2.1.1 ARST_LVL",
+      "signals":[
+         "ARST_LVL",
+         "arst_i"
+      ],
+      "type":"reset_requirement"
+   },
+   {
+      "id":"REQ_I2C_006",
+      "description":"The core must expose SCL and SDA pad input, output, and output-enable signals for external open-drain bus connection.",
+      "text":"scl_pad_i | 1 | Input | Serial Clock line input\nscl_pad_o | 1 | Output | Serial Clock line output\nscl_pad_oe | 1 | Output | Serial Clock line output enable\nsda_pad_i | 1 | Input | Serial Data line input\nsda_pad_o | 1 | Output | Serial Data line output\nsda_pad_oe | 1 | Output | Serial Data line output enable",
+      "source_section":"2.3 External Connections",
+      "signals":[
+         "scl_pad_i",
+         "scl_pad_o",
+         "scl_pad_oe",
+         "sda_pad_i",
+         "sda_pad_o",
+         "sda_pad_oe"
+      ],
+      "type":"interface_requirement"
+   }
+  ]

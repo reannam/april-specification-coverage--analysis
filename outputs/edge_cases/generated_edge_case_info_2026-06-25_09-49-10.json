@@ -1,0 +1,39 @@
+{
+  "metadata": {
+    "requirements_file": "/home/eng-7038/Documents/Specification-Analyser/april-specification-coverage--analysis/uploads/5644864c060a4b17b81566cb5a53305a_ambiguous-requirements.json",
+    "weak_language_file": "../outputs/weak_language/weak_words_2026-06-25_09-49-10.json",
+    "date_created": "June 25 2026",
+    "time_created": "09:49am",
+    "total_requirements": 6,
+    "number_of_weak_language_instances": 6,
+    "number_of_flagged_requirements": 3,
+    "number_of_edge_case_candidates": 4,
+    "langsmith_trace_id": "d5e8b620-9df5-4a1d-96c6-bb99602606f4"
+  },
+  "edge_cases": [
+    {
+      "edge_case_id": "EDGE_REQ_I2C_001",
+      "requirement_id": "REQ_I2C_001",
+      "edge_case_type": "unclear_mandatory_status",
+      "edge_case_description": "The wording 'can' and 'where implemented' makes 100 Kbps normal-mode support optional or variant-dependent, so verification cannot determine whether lack of 100 Kbps support is a failure for a given implementation."
+    },
+    {
+      "edge_case_id": "EDGE_REQ_I2C_002",
+      "requirement_id": "REQ_I2C_002",
+      "edge_case_type": "conditional_behaviour",
+      "edge_case_description": "The phrase 'where implemented'/'where correct hardware is included' implies 400 Kbps fast-mode support depends on implementation context, creating a verification edge case for configurations that omit the required supporting hardware."
+    },
+    {
+      "edge_case_id": "EDGE_REQ_I2C_003",
+      "requirement_id": "REQ_I2C_002",
+      "edge_case_type": "unclear_mandatory_status",
+      "edge_case_description": "The use of 'can support' without strong mandatory language leaves it unclear whether 400 Kbps fast-mode must be verified in every implementation or only in selected variants."
+    },
+    {
+      "edge_case_id": "EDGE_REQ_I2C_004",
+      "requirement_id": "REQ_I2C_005",
+      "edge_case_type": "implementation_dependent",
+      "edge_case_description": "The statement that reset level 'can be set' to active high or active low does not specify whether both polarities must be supported in all builds, or whether polarity may be fixed per implementation, affecting which reset configurations require verification."
+    }
+  ]
+}

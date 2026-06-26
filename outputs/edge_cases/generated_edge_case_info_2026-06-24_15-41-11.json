@@ -1,0 +1,38 @@
+{
+  "metadata": {
+    "requirements_file": "/home/eng-7038/Documents/Specification-Analyser/april-specification-coverage--analysis/uploads/520edd6a841a49a88b2c25d521a95167_ambiguous-requirements.json",
+    "weak_language_file": "../outputs/weak_language/weak_words_2026-06-24_15-41-11.json",
+    "date_created": "June 24 2026",
+    "time_created": "03:41pm",
+    "total_requirements": 6,
+    "number_of_weak_language_instances": 6,
+    "number_of_flagged_requirements": 3,
+    "number_of_edge_case_candidates": 4
+  },
+  "edge_cases": [
+    {
+      "edge_case_id": "EDGE_REQ_I2C_001",
+      "requirement_id": "REQ_I2C_001",
+      "edge_case_type": "unclear_mandatory_status",
+      "edge_case_description": "The wording 'can directly support' and 'where implemented' makes 100 Kbps normal-mode support appear optional or configuration-dependent, creating a verification edge case over whether this mode must be present in all delivered implementations."
+    },
+    {
+      "edge_case_id": "EDGE_REQ_I2C_002",
+      "requirement_id": "REQ_I2C_002",
+      "edge_case_type": "conditional_behaviour",
+      "edge_case_description": "The phrase 'where correct hardware is included' makes 400 Kbps fast-mode support conditional on unspecified external or implementation-specific hardware, leaving verification unclear on when fast-mode behaviour is required to be tested."
+    },
+    {
+      "edge_case_id": "EDGE_REQ_I2C_003",
+      "requirement_id": "REQ_I2C_002",
+      "edge_case_type": "unclear_mandatory_status",
+      "edge_case_description": "The wording 'can support' means 400 Kbps fast-mode operation is not clearly mandatory for every implementation, creating an edge case over whether absence of fast-mode support is compliant."
+    },
+    {
+      "edge_case_id": "EDGE_REQ_I2C_004",
+      "requirement_id": "REQ_I2C_005",
+      "edge_case_type": "implementation_dependent",
+      "edge_case_description": "The statement that reset level 'can be set to either active high or active low' implies a configurable reset polarity, but does not define whether both polarities must be supported in every implementation instance or how the selected polarity is fixed for verification."
+    }
+  ]
+}

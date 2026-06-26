@@ -1,0 +1,57 @@
+{
+  "vplan_file": "generated_vplan_2026-06-24_15-27-10.json",
+  "trace_id": "a2c6534e-fc8b-417d-b35c-95aeb4aeeb01",
+  "number_of_runs": 1,
+  "summary": {
+    "number_of_llm_runs": 0,
+    "total_tokens": 0,
+    "prompt_tokens": 0,
+    "completion_tokens": 0,
+    "total_cost": "0",
+    "prompt_cost": "0",
+    "completion_cost": "0"
+  },
+  "runs": [
+    {
+      "id": "a2c6534e-fc8b-417d-b35c-95aeb4aeeb01",
+      "trace_id": "019efa07-1bcf-7e61-9225-161faaa73f30",
+      "parent_run_id": "019efa07-1be5-7d10-957c-e3f00b309859",
+      "name": "vplan_generation",
+      "run_type": "chain",
+      "start_time": "2026-06-24T14:27:10.440156+00:00",
+      "end_time": null,
+      "status": "pending",
+      "error": null,
+      "total_tokens": 0,
+      "prompt_tokens": 0,
+      "completion_tokens": 0,
+      "total_cost": "0",
+      "prompt_cost": "0",
+      "completion_cost": "0",
+      "metadata": {
+        "LANGSMITH_ENDPOINT": "https://eu.api.smith.langchain.com",
+        "LANGSMITH_PROJECT": "VPLAN-GENERATOR",
+        "LANGSMITH_TRACING": "true",
+        "checkpoint_ns": "vplan_output:1126542f-db91-f4a1-2a3a-b1f1f5292c02",
+        "langgraph_checkpoint_ns": "vplan_output:1126542f-db91-f4a1-2a3a-b1f1f5292c02",
+        "langgraph_node": "vplan_output",
+        "langgraph_path": [
+          "__pregel_pull",
+          "vplan_output"
+        ],
+        "langgraph_step": 1,
+        "langgraph_triggers": [
+          "branch:to:vplan_output"
+        ],
+        "ls_integration": "langchain_create_agent",
+        "ls_run_depth": 2,
+        "requirements_file": "0e810935111b4d84b3e59d2723325c79_ambiguous-requirements.json",
+        "revision_id": "e9f55c8-dirty"
+      },
+      "tags": [
+        "seq:step:1",
+        "vplan-generator"
+      ]
+    }
+  ]
+}

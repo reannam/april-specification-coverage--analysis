@@ -1,0 +1,164 @@
+{
+  "metadata": {
+    "requirements_file": "055c6f3017cb43418922bdd88d76553b_ambiguous-requirements.json",
+    "date_created": "June 24 2026",
+    "time_created": "03:33pm",
+    "number_of_requirements": 6,
+    "number_of_tests": 8,
+    "langsmith_trace_id": "80f8a678-a6fa-4d1e-a502-3d5b1be1d470"
+  },
+  "feature_list": [
+    {
+      "test_id": "TEST_REQ_I2C_001_001",
+      "requirement_id": "REQ_I2C_001",
+      "test_type": "positive",
+      "test_description": "Verify direct support for 100 Kbps normal-mode I2C operation.",
+      "test_constraints": "Only the provided timing support information is used.",
+      "test_steps": [
+        "Configure the core for 100 Kbps normal-mode operation.",
+        "Apply I2C activity on SCL and SDA at the normal-mode rate."
+      ],
+      "expected_results": [
+        "The core operates correctly at 100 Kbps normal-mode.",
+        "100 Kbps is directly supported."
+      ],
+      "priority": 1,
+      "coverage": "covered",
+      "requirement_description": "The core can directly support 100 Kbps normal-mode I2C operation, where implemented.",
+      "requirement_text": "The interface defines 3 transmission speeds:\n- Normal: 100Kbps\nOnly 100Kbps and 400Kbps modes are supported directly."
+    },
+    {
+      "test_id": "TEST_REQ_I2C_002_001",
+      "requirement_id": "REQ_I2C_002",
+      "test_type": "positive",
+      "test_description": "Verify direct support for 400 Kbps fast-mode I2C operation.",
+      "test_constraints": "Only the provided timing support information is used.",
+      "test_steps": [
+        "Configure the core for 400 Kbps fast-mode operation.",
+        "Apply I2C activity on SCL and SDA at the fast-mode rate."
+      ],
+      "expected_results": [
+        "The core operates correctly at 400 Kbps fast-mode.",
+        "400 Kbps is directly supported."
+      ],
+      "priority": 1,
+      "coverage": "covered",
+      "requirement_description": "The core can support 400 Kbps fast-mode I2C operation, where correct hardware is included.",
+      "requirement_text": "The interface defines 3 transmission speeds:\n- Fast: 400Kbps\nOnly 100Kbps and 400Kbps modes are supported directly."
+    },
+    {
+      "test_id": "TEST_REQ_I2C_003_001",
+      "requirement_id": "REQ_I2C_003",
+      "test_type": "positive",
+      "test_description": "Verify that the core exposes a WISHBONE RevB.3 compliant WISHBONE Classic interface.",
+      "test_constraints": "Compliance is asserted from the interface definition provided in the specification.",
+      "test_steps": [
+        "Connect the core to a WISHBONE Classic environment using the listed WISHBONE signals.",
+        "Perform a standard WISHBONE access sequence."
+      ],
+      "expected_results": [
+        "The interface operates as a WISHBONE RevB.3 compliant WISHBONE Classic interface.",
+        "The listed WISHBONE signals are used for bus access and interrupt signaling."
+      ],
+      "priority": 1,
+      "coverage": "partially_covered",
+      "requirement_description": "The core shall implement a WISHBONE RevB.3 compliant WISHBONE Classic interface.",
+      "requirement_text": "The core features a WISHBONE RevB.3 compliant WISHBONE Classic interface."
+    },
+    {
+      "test_id": "TEST_REQ_I2C_004_001",
+      "requirement_id": "REQ_I2C_004",
+      "test_type": "positive",
+      "test_description": "Verify that each WISHBONE access takes two clock cycles.",
+      "test_constraints": "Access timing is evaluated using the WISHBONE clock and bus handshake signals.",
+      "test_steps": [
+        "Initiate a WISHBONE access with wb_cyc_i and wb_stb_i asserted.",
+        "Measure the number of wb_clk_i cycles until wb_ack_o is asserted."
+      ],
+      "expected_results": [
+        "wb_ack_o is asserted after two clock cycles.",
+        "Each access completes in two clock cycles."
+      ],
+      "priority": 1,
+      "coverage": "covered",
+      "requirement_description": "Each WISHBONE access must take two clock cycles.",
+      "requirement_text": "Each access takes 2 clock cycles."
+    },
+    {
+      "test_id": "TEST_REQ_I2C_005_001",
+      "requirement_id": "REQ_I2C_005",
+      "test_type": "positive",
+      "test_description": "Verify asynchronous reset behavior when ARST_LVL is configured active high.",
+      "test_constraints": "The reset polarity configuration is limited to the value described in the requirement.",
+      "test_steps": [
+        "Configure ARST_LVL to active high (1'b1).",
+        "Assert arst_i high and observe core reset behavior."
+      ],
+      "expected_results": [
+        "The core recognizes arst_i high as the active reset level.",
+        "Asynchronous reset is applied with active-high polarity."
+      ],
+      "priority": 1,
+      "coverage": "covered",
+      "requirement_description": "The asynchronous reset level is configurable as active high or active low.",
+      "requirement_text": "The asynchronous reset level can be set to either active high (1\u2019b1) or active low (1\u2019b0)"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_005_002",
+      "requirement_id": "REQ_I2C_005",
+      "test_type": "positive",
+      "test_description": "Verify asynchronous reset behavior when ARST_LVL is configured active low.",
+      "test_constraints": "The reset polarity configuration is limited to the value described in the requirement.",
+      "test_steps": [
+        "Configure ARST_LVL to active low (1'b0).",
+        "Assert arst_i low and observe core reset behavior."
+      ],
+      "expected_results": [
+        "The core recognizes arst_i low as the active reset level.",
+        "Asynchronous reset is applied with active-low polarity."
+      ],
+      "priority": 1,
+      "coverage": "covered",
+      "requirement_description": "The asynchronous reset level is configurable as active high or active low.",
+      "requirement_text": "The asynchronous reset level can be set to either active high (1\u2019b1) or active low (1\u2019b0)"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_006_001",
+      "requirement_id": "REQ_I2C_006",
+      "test_type": "positive",
+      "test_description": "Verify that the core exposes SCL pad input, output, and output-enable signals.",
+      "test_constraints": "Only the pad signal presence and direction information is used.",
+      "test_steps": [
+        "Check the external connection list for SCL pad signals.",
+        "Observe the listed SCL pad input, output, and output-enable interfaces."
+      ],
+      "expected_results": [
+        "scl_pad_i, scl_pad_o, and scl_pad_oe are present.",
+        "The SCL external bus connection supports input, output, and output-enable signals."
+      ],
+      "priority": 2,
+      "coverage": "covered",
+      "requirement_description": "The core must expose SCL and SDA pad input, output, and output-enable signals for external open-drain bus connection.",
+      "requirement_text": "scl_pad_i | 1 | Input | Serial Clock line input\nscl_pad_o | 1 | Output | Serial Clock line output\nscl_pad_oe | 1 | Output | Serial Clock line output enable\nsda_pad_i | 1 | Input | Serial Data line input\nsda_pad_o | 1 | Output | Serial Data line output\nsda_pad_oe | 1 | Output | Serial Data line output enable"
+    },
+    {
+      "test_id": "TEST_REQ_I2C_006_002",
+      "requirement_id": "REQ_I2C_006",
+      "test_type": "positive",
+      "test_description": "Verify that the core exposes SDA pad input, output, and output-enable signals.",
+      "test_constraints": "Only the pad signal presence and direction information is used.",
+      "test_steps": [
+        "Check the external connection list for SDA pad signals.",
+        "Observe the listed SDA pad input, output, and output-enable interfaces."
+      ],
+      "expected_results": [
+        "sda_pad_i, sda_pad_o, and sda_pad_oe are present.",
+        "The SDA external bus connection supports input, output, and output-enable signals."
+      ],
+      "priority": 2,
+      "coverage": "covered",
+      "requirement_description": "The core must expose SCL and SDA pad input, output, and output-enable signals for external open-drain bus connection.",
+      "requirement_text": "scl_pad_i | 1 | Input | Serial Clock line input\nscl_pad_o | 1 | Output | Serial Clock line output\nscl_pad_oe | 1 | Output | Serial Clock line output enable\nsda_pad_i | 1 | Input | Serial Data line input\nsda_pad_o | 1 | Output | Serial Data line output\nsda_pad_oe | 1 | Output | Serial Data line output enable"
+    }
+  ]
+}

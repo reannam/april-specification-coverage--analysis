@@ -1,0 +1,81 @@
+{
+  "number_of_language_issues": 10,
+  "issues": [
+    {
+      "requirement_id": "REQ_I2C_005",
+      "issue_type": "weak_or_optional_language",
+      "matched_words": [
+        "can"
+      ],
+      "message": "Requirement contains weak or optional wording. Do not infer mandatory behaviour unless it is explicitly stated."
+    },
+    {
+      "requirement_id": "REQ_I2C_049",
+      "issue_type": "weak_or_optional_language",
+      "matched_words": [
+        "can"
+      ],
+      "message": "Requirement contains weak or optional wording. Do not infer mandatory behaviour unless it is explicitly stated."
+    },
+    {
+      "requirement_id": "REQ_I2C_051",
+      "issue_type": "weak_or_optional_language",
+      "matched_words": [
+        "may"
+      ],
+      "message": "Requirement contains weak or optional wording. Do not infer mandatory behaviour unless it is explicitly stated."
+    },
+    {
+      "requirement_id": "REQ_I2C_052",
+      "issue_type": "weak_or_optional_language",
+      "matched_words": [
+        "normally"
+      ],
+      "message": "Requirement contains weak or optional wording. Do not infer mandatory behaviour unless it is explicitly stated."
+    },
+    {
+      "requirement_id": "REQ_I2C_061",
+      "issue_type": "weak_or_optional_language",
+      "matched_words": [
+        "can"
+      ],
+      "message": "Requirement contains weak or optional wording. Do not infer mandatory behaviour unless it is explicitly stated."
+    },
+    {
+      "requirement_id": "REQ_I2C_062",
+      "issue_type": "weak_or_optional_language",
+      "matched_words": [
+        "may",
+        "can"
+      ],
+      "message": "Requirement contains weak or optional wording. Do not infer mandatory behaviour unless it is explicitly stated."
+    },
+    {
+      "requirement_id": "REQ_I2C_062",
+      "issue_type": "missing_strong_requirement_language",
+      "message": "Requirement does not contain strong requirement wording such as must, shall, should, required, or requires."
+    },
+    {
+      "requirement_id": "REQ_I2C_068",
+      "issue_type": "weak_or_optional_language",
+      "matched_words": [
+        "may"
+      ],
+      "message": "Requirement contains weak or optional wording. Do not infer mandatory behaviour unless it is explicitly stated."
+    },
+    {
+      "requirement_id": "REQ_I2C_068",
+      "issue_type": "missing_strong_requirement_language",
+      "message": "Requirement does not contain strong requirement wording such as must, shall, should, required, or requires."
+    },
+    {
+      "requirement_id": "REQ_I2C_071",
+      "issue_type": "weak_or_optional_language",
+      "matched_words": [
+        "may",
+        "can"
+      ],
+      "message": "Requirement contains weak or optional wording. Do not infer mandatory behaviour unless it is explicitly stated."
+    }
+  ]
+}
