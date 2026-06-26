@@ -1,6 +1,13 @@
 .env
-Backend/__pycache__/
+.venv/
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
 Backend/agent_env/
- ../.idea/
- .idea/
- .idea/
+.idea/
+.vscode/
+.DS_Store
+outputs/
+uploads/
