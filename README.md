@@ -17,35 +17,35 @@ It takes a JSON requirements file as input and produces:
 .
 ├── .gitignore
 ├── Backend/
-│   ├── __init__.py
-│   ├── agent_env/
 │   ├── agents/
 │   │   ├── __init__.py
 │   │   ├── coverage_analysis_agent.py
 │   │   ├── edge_case_agent.py
 │   │   └── vplan_generator_agent.py
-│   ├── agent_scheduler.py
-│   ├── analyse_usage_logs.py
 │   ├── api.py
-│   ├── blocked_test_report_generator.py
-│   ├── coverage_workflow.py
-│   ├── data_class.py
+│   ├── coverage/
+│   │   ├── __init__.py
+│   │   ├── coverage_workflow.py
+│   │   └── run_coverage_analysis.py
 │   ├── main.py
-│   ├── preprocess_requirements.py
-│   ├── requirements.txt
-│   ├── run_coverage_analysis.py
-│   ├── traceability_record_generator.py
-│   ├── usage_logger.py
-│   ├── vplan_traceability_check.py
-│   └── weak_language_check.py
+│   ├── post_processing/
+│   │   ├── __init__.py
+│   │   ├── analyse_usage_logs.py
+│   │   └── usage_logger.py
+│   ├── pre_processing/
+│   │   ├── __init__.py
+│   │   ├── agent_scheduler.py
+│   │   ├── data_class.py
+│   │   └── preprocess_requirements.py
+│   ├── report_generation/
+│   │   ├── blocked_test_report_generator.py
+│   │   ├── traceability_record_generator.py
+│   │   ├── vplan_traceability_check.py
+│   │   └── weak_language_check.py
+│   └── requirements.txt
 ├── Frontend/
 │   ├── .gitignore
-│   ├── README.md
-│   ├── eslint.config.js
 │   ├── index.html
-│   ├── node_modules/
-│   ├── package-lock.json
-│   ├── package.json
 │   ├── public/
 │   ├── src/
 │   │   ├── App.css
@@ -53,10 +53,6 @@ It takes a JSON requirements file as input and produces:
 │   │   ├── assets/
 │   │   ├── index.css
 │   │   └── main.tsx
-│   ├── tsconfig.app.json
-│   ├── tsconfig.json
-│   ├── tsconfig.node.json
-│   └── vite.config.ts
 ├── ambiguous-requirements.json
 ├── document_tiny_subset.json
 ├── example-requirements.json
