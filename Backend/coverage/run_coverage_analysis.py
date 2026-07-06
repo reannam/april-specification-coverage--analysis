@@ -1,7 +1,7 @@
 import argparse
 import json
 
-from Backend.coverage_workflow import build_coverage_workflow
+from Backend.coverage.coverage_workflow import build_coverage_workflow
 
 
 def main():

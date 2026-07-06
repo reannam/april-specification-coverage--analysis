@@ -7,16 +7,8 @@ from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 
-from Backend.agent_scheduler import build_workflow
-
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-UPLOAD_DIR = BASE_DIR / "uploads"
-UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
-
-OUTPUT_DIR = BASE_DIR / "outputs"
-OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+from Backend.config import UPLOAD_DIR, OUTPUT_DIR
+from Backend.pre_processing.agent_scheduler import build_workflow
 
 
 app = FastAPI(
@@ -183,7 +175,7 @@ def download_file(filename: str):
         OUTPUT_DIR / safe_filename,
         OUTPUT_DIR / "edge_cases" / safe_filename,
         OUTPUT_DIR / "langsmith_logs" / safe_filename,
-        OUTPUT_DIR / "traceability_records" / safe_filename,
+        OUTPUT_DIR / "traceability" / safe_filename,
         OUTPUT_DIR / "requirement_test_links" / safe_filename,
         OUTPUT_DIR / "blocked_tests" / safe_filename,
     ]

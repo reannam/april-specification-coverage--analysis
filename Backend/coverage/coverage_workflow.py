@@ -3,16 +3,11 @@ from pathlib import Path
 from dotenv import load_dotenv
 from langgraph.graph import StateGraph, START, END
 
-from Backend.data_class import CoverageGraphState
+from Backend.config import WORKFLOW_IMAGE_DIR
+from Backend.pre_processing.data_class import CoverageGraphState
 from Backend.agents.coverage_analysis_agent import coverage_analysis_agent_call
 
 load_dotenv()
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-OUTPUT_DIR = BASE_DIR / "outputs"
-
-WORKFLOW_IMAGE_DIR = OUTPUT_DIR / "node_architecture_graph"
-WORKFLOW_IMAGE_DIR.mkdir(parents=True, exist_ok=True)
 
 WORKFLOW_IMAGE_PATH = WORKFLOW_IMAGE_DIR / "coverage_architecture.png"
 

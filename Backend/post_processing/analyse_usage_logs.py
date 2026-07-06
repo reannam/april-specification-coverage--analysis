@@ -4,11 +4,7 @@ from pathlib import Path
 import pandas as pd
 import matplotlib.pyplot as plt
 
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-LOGS_DIR = BASE_DIR / "outputs" / "langsmith_logs"
-CHARTS_DIR = BASE_DIR / "outputs" / "usage_charts"
-CHARTS_DIR.mkdir(parents=True, exist_ok=True)
+from Backend.config import LANGSMITH_LOGS_DIR as LOGS_DIR, USAGE_CHARTS_DIR as CHARTS_DIR
 
 MASTER_USAGE_FILE = LOGS_DIR / "all_usage_runs.json"
 

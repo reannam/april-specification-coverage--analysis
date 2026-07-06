@@ -1,7 +1,7 @@
 import json
 from collections import Counter
 
-from Backend.weak_language_check import unwrap_requirements
+from Backend.report_generation.weak_language_check import unwrap_requirements
 
 def check_traceability(requirements_file: str, generated_vplan_file: str) -> None:
     """Check that generated vPlan rows trace back to input requirement IDs."""

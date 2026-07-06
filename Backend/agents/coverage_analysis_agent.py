@@ -7,18 +7,13 @@ from typing import Any
 from dotenv import load_dotenv
 from langchain.agents import create_agent
 
-from Backend.data_class import CoverageReport
+from Backend.config import COVERAGE_OUTPUT_DIR
+from Backend.pre_processing.data_class import CoverageReport
 
 load_dotenv()
 
 if not os.getenv("OPENAI_API_KEY"):
     raise ValueError("OPENAI_API_KEY not found. Check your .env file.")
-
-
-BASE_DIR = Path(__file__).resolve().parents[2]
-OUTPUT_DIR = BASE_DIR / "outputs"
-COVERAGE_OUTPUT_DIR = OUTPUT_DIR / "coverage_reports"
-COVERAGE_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 
 COVERAGE_ANALYSIS_PROMPT = """You are a verification coverage analysis agent.

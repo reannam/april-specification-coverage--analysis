@@ -1,10 +1,9 @@
 from pathlib import Path
 import argparse
 
-from Backend.agent_scheduler import build_workflow
+from Backend.config import BASE_DIR
+from Backend.pre_processing.agent_scheduler import build_workflow
 
-
-BASE_DIR = Path(__file__).resolve().parent.parent
 DEFAULT_REQUIREMENTS_FILE = BASE_DIR / "example-requirements.json"
 
 

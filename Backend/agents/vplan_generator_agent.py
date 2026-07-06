@@ -8,20 +8,13 @@ from dotenv import load_dotenv
 from langchain.agents import create_agent
 from langchain_community.callbacks.manager import get_openai_callback
 
-from Backend.data_class import Table
-from Backend.vplan_traceability_check import check_traceability, add_requirement_text
-from Backend.usage_logger import normalise_usage
-from Backend.weak_language_check import unwrap_requirements
+from Backend.config import OUTPUT_DIR, LANGSMITH_LOGS_DIR
+from Backend.pre_processing.data_class import Table
+from Backend.report_generation.vplan_traceability_check import check_traceability, add_requirement_text
+from Backend.post_processing.usage_logger import normalise_usage
+from Backend.report_generation.weak_language_check import unwrap_requirements
 
 load_dotenv()
-
-BASE_DIR = Path(__file__).resolve().parents[2]
-
-OUTPUT_DIR = BASE_DIR / "outputs"
-OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-
-LANGSMITH_LOGS_DIR = OUTPUT_DIR / "langsmith_logs"
-LANGSMITH_LOGS_DIR.mkdir(parents=True, exist_ok=True)
 
 if not os.getenv("OPENAI_API_KEY"):
     raise ValueError("OPENAI_API_KEY not found. Check your .env file.")

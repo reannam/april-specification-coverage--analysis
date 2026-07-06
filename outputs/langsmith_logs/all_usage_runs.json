@@ -414,5 +414,133 @@
         }
       ]
     }
+  },
+  {
+    "timestamp": "2026-07-06T10:54:38",
+    "output_file": "generated_vplan_2026-07-06_10-54-11.json",
+    "trace_ids": {
+      "vplan_trace_id": "696038bc-9836-43a7-b1a3-dbc5b0c839da",
+      "edge_case_trace_id": "0b291269-e3e9-4dc3-875b-d24af06209c1"
+    },
+    "summary": {
+      "prompt_tokens": 4066,
+      "completion_tokens": 2481,
+      "total_tokens": 6547,
+      "total_cost": "0.04738000",
+      "agents": [
+        {
+          "agent_name": "vplan_generator",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 1990,
+          "completion_tokens": 2028,
+          "total_tokens": 4018,
+          "total_cost": "0.03539500"
+        },
+        {
+          "agent_name": "edge_case_extractor",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 2076,
+          "completion_tokens": 453,
+          "total_tokens": 2529,
+          "total_cost": "0.01198500"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-07-06T11:14:26",
+    "output_file": "generated_vplan_2026-07-06_11-14-02.json",
+    "trace_ids": {
+      "vplan_trace_id": "04cb7251-1d02-4c9b-bc52-23b471b50497",
+      "edge_case_trace_id": "b5cf1c9a-a62b-410c-8b16-fd5ba97d9488"
+    },
+    "summary": {
+      "prompt_tokens": 4096,
+      "completion_tokens": 2265,
+      "total_tokens": 6361,
+      "total_cost": "0.04421500",
+      "agents": [
+        {
+          "agent_name": "vplan_generator",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 2020,
+          "completion_tokens": 1782,
+          "total_tokens": 3802,
+          "total_cost": "0.03178000"
+        },
+        {
+          "agent_name": "edge_case_extractor",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 2076,
+          "completion_tokens": 483,
+          "total_tokens": 2559,
+          "total_cost": "0.01243500"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-07-06T11:20:24",
+    "output_file": "generated_vplan_2026-07-06_11-19-58.json",
+    "trace_ids": {
+      "vplan_trace_id": "7e05a83b-83ae-45e7-af62-5d2753c0d788",
+      "edge_case_trace_id": "29055c1e-4cbf-474d-9f80-3ee6bbef3623"
+    },
+    "summary": {
+      "prompt_tokens": 4054,
+      "completion_tokens": 2450,
+      "total_tokens": 6504,
+      "total_cost": "0.04688500",
+      "agents": [
+        {
+          "agent_name": "vplan_generator",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 1978,
+          "completion_tokens": 2009,
+          "total_tokens": 3987,
+          "total_cost": "0.03508000"
+        },
+        {
+          "agent_name": "edge_case_extractor",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 2076,
+          "completion_tokens": 441,
+          "total_tokens": 2517,
+          "total_cost": "0.01180500"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-07-06T11:27:33",
+    "output_file": "generated_vplan_2026-07-06_11-27-09.json",
+    "trace_ids": {
+      "vplan_trace_id": "c3263847-724b-452f-9a41-9ac50c09c477",
+      "edge_case_trace_id": "330f1365-e1b2-453c-83ad-8a227a658c52"
+    },
+    "summary": {
+      "prompt_tokens": 4081,
+      "completion_tokens": 2362,
+      "total_tokens": 6443,
+      "total_cost": "0.04563250",
+      "agents": [
+        {
+          "agent_name": "vplan_generator",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 2005,
+          "completion_tokens": 1894,
+          "total_tokens": 3899,
+          "total_cost": "0.03342250"
+        },
+        {
+          "agent_name": "edge_case_extractor",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 2076,
+          "completion_tokens": 468,
+          "total_tokens": 2544,
+          "total_cost": "0.01221000"
+        }
+      ]
+    }
   }
 ]

@@ -4,11 +4,7 @@ import csv
 import argparse
 from collections import defaultdict
 
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-OUTPUT_DIR = BASE_DIR / "outputs"
-TRACEABILITY_DIR = OUTPUT_DIR / "traceability"
-TRACEABILITY_DIR.mkdir(parents=True, exist_ok=True)
+from Backend.config import TRACEABILITY_DIR
 
 
 def load_vplan(vplan_file: Path) -> dict:

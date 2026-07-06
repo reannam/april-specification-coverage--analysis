@@ -3,9 +3,7 @@ import json
 from pathlib import Path
 import argparse
 
-OUTPUT_DIR = Path("../outputs")
-WEAK_LANGUAGE_DIR = OUTPUT_DIR / "weak_language"
-WEAK_LANGUAGE_DIR.mkdir(parents=True, exist_ok=True)
+from Backend.config import WEAK_LANGUAGE_DIR
 
 STRONG_REQUIREMENT_WORDS = [
     "must",

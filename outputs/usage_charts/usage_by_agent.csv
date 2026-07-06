@@ -25,3 +25,11 @@ run_id,timestamp,output_file,agent_name,model_name,prompt_tokens,completion_toke
 12,2026-07-06T09:02:19,generated_vplan_2026-07-06_09-01-47.json,edge_case_extractor,gpt-5.4,2076,468,2544,0.01221
 13,2026-07-06T09:27:42,generated_vplan_2026-07-06_09-27-14.json,vplan_generator,gpt-5.4,2115,2162,4277,0.0377175
 13,2026-07-06T09:27:42,generated_vplan_2026-07-06_09-27-14.json,edge_case_extractor,gpt-5.4,2076,578,2654,0.01386
+14,2026-07-06T10:54:38,generated_vplan_2026-07-06_10-54-11.json,vplan_generator,gpt-5.4,1990,2028,4018,0.035395
+14,2026-07-06T10:54:38,generated_vplan_2026-07-06_10-54-11.json,edge_case_extractor,gpt-5.4,2076,453,2529,0.011985
+15,2026-07-06T11:14:26,generated_vplan_2026-07-06_11-14-02.json,vplan_generator,gpt-5.4,2020,1782,3802,0.03178
+15,2026-07-06T11:14:26,generated_vplan_2026-07-06_11-14-02.json,edge_case_extractor,gpt-5.4,2076,483,2559,0.012435
+16,2026-07-06T11:20:24,generated_vplan_2026-07-06_11-19-58.json,vplan_generator,gpt-5.4,1978,2009,3987,0.03508
+16,2026-07-06T11:20:24,generated_vplan_2026-07-06_11-19-58.json,edge_case_extractor,gpt-5.4,2076,441,2517,0.011805
+17,2026-07-06T11:27:33,generated_vplan_2026-07-06_11-27-09.json,vplan_generator,gpt-5.4,2005,1894,3899,0.0334225
+17,2026-07-06T11:27:33,generated_vplan_2026-07-06_11-27-09.json,edge_case_extractor,gpt-5.4,2076,468,2544,0.01221

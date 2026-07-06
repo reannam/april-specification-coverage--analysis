@@ -6,23 +6,18 @@ from dotenv import load_dotenv
 
 from langchain.agents import create_agent
 
-from Backend.weak_language_check import (
+from Backend.config import EDGE_CASE_DIR
+from Backend.report_generation.weak_language_check import (
     run_weak_language_checker,
     check_requirement_language,
     get_flagged_requirements,
     unwrap_requirements,
 )
-from Backend.data_class import EdgeCaseCandidateList
+from Backend.pre_processing.data_class import EdgeCaseCandidateList
 
 import uuid
 from langchain_community.callbacks.manager import get_openai_callback
-from Backend.usage_logger import normalise_usage
-
-BASE_DIR = Path(__file__).resolve().parents[2]
-
-OUTPUT_DIR = BASE_DIR / "outputs"
-EDGE_CASE_DIR = OUTPUT_DIR / "edge_cases"
-EDGE_CASE_DIR.mkdir(parents=True, exist_ok=True)
+from Backend.post_processing.usage_logger import normalise_usage
 
 load_dotenv()
 

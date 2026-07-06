@@ -2,10 +2,7 @@ from pathlib import Path
 from datetime import datetime
 import json
 
-
-OUTPUT_DIR = Path(__file__).resolve().parent.parent / "outputs"
-BLOCKED_TEST_DIR = OUTPUT_DIR / "blocked_tests"
-BLOCKED_TEST_DIR.mkdir(parents=True, exist_ok=True)
+from Backend.config import BLOCKED_TESTS_DIR as BLOCKED_TEST_DIR
 
 
 def load_json(path: str | Path) -> dict:
