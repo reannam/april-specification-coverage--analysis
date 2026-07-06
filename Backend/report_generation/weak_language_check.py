@@ -10,28 +10,169 @@ WEAK_LANGUAGE_DIR.mkdir(parents=True, exist_ok=True)
 STRONG_REQUIREMENT_WORDS = [
     "must",
     "shall",
-    "should",
     "required",
     "requires",
     "require",
 ]
 
 WEAK_REQUIREMENT_WORDS = [
+    # Permission / possibility
     "may",
+    "might",
+    "can",
     "could",
+    "is permitted to",
+    "are permitted to",
+    "permitted",
+    "allowed",
+    "allowable",
+    "may be",
+    "can be",
+    "could be",
+    "might be",
+
+    # Optional / conditional support
     "optional",
-    "where applicable",
+    "optionally",
     "if supported",
+    "when supported",
+    "where supported",
+    "if implemented",
+    "when implemented",
+    "where implemented",
+    "implementation defined",
+    "implementation-defined",
+    "implementation specific",
+    "implementation-specific",
+    "platform dependent",
+    "platform-dependent",
+    "device dependent",
+    "device-dependent",
+    "configuration dependent",
+    "configuration-dependent",
+    "configurable",
+    "programmable",
+
+    # Conditional / contextual
+    "where applicable",
+    "if applicable",
+    "when applicable",
+    "as applicable",
     "as appropriate",
+    "where appropriate",
+    "if appropriate",
+    "when appropriate",
     "as needed",
+    "if needed",
+    "when needed",
+    "where needed",
+    "as required",
+    "where required",
+    "if required",
+    "when required",
+
+    # Recommendations / non-mandatory guidance
+    "should",
+    "recommended",
+    "recommend",
+    "recommendation",
+    "preferably",
+    "preferred",
+    "it is recommended",
+    "it is preferable",
+    "best effort",
+    "best-effort",
+
+    # Frequency / vague normality
     "typically",
     "normally",
-    "recommended",
+    "generally",
+    "usually",
+    "commonly",
+    "often",
+    "in general",
+    "by default",
+    "default",
+
+    # Ambiguous timing
+    "timely",
+    "timely manner",
+    "reasonable time",
+    "as soon as possible",
+    "eventually",
+    "soon",
+    "later",
+    "early",
+    "earliest",
+    "latest",
+    "where possible",
+    "if possible",
+    "when possible",
+    "as possible",
+
+    # Ambiguous quantity / degree
+    "approximately",
+    "about",
+    "around",
+    "roughly",
+    "near",
+    "minimum necessary",
+    "sufficient",
+    "sufficiently",
+    "adequate",
+    "adequately",
+    "appropriate",
+    "reasonable",
+    "minimal",
+    "maximum possible",
+    "up to",
+    "at least where possible",
+
+    # Ambiguous completeness / examples
+    "including but not limited to",
+    "for example",
+    "such as",
+    "etc",
+    "and so on",
+    "among others",
+
+    # Vague behaviour
+    "support",
+    "supports",
+    "is supported",
     "is included",
-    "where implemented",
-    "can",
+    "provided",
+    "available",
+    "capable of",
+    "intended to",
+    "designed to",
+    "aims to",
+    "allows",
+    "enables",
+
+    # Exceptions / unclear scope
+    "unless otherwise specified",
+    "where not otherwise specified",
+    "except where",
+    "except when",
+    "subject to",
+    "depending on",
+    "depends on",
+    "based on",
 ]
 
+def unwrap_requirements(data) -> list[dict]:
+    """Accept either a raw requirements list or a dict with a requirements key."""
+
+    if isinstance(data, dict):
+        data = data.get("requirements", [])
+
+    if not isinstance(data, list):
+        raise ValueError(
+            "Expected requirements to be a list, or a dict containing a 'requirements' list."
+        )
+
+    return data
 
 def get_requirement_text(requirement: dict) -> str:
     """Combine requirement fields into one searchable text string."""
@@ -50,12 +191,17 @@ def contains_word_or_phrase(text: str, words_or_phrases: list[str]) -> bool:
     return any(word_or_phrase in text for word_or_phrase in words_or_phrases)
 
 
-def check_requirement_language(requirements: list[dict]) -> list[dict]:
+def check_requirement_language(requirements) -> list[dict]:
     """Check requirements for weak or unclear requirement language."""
+
+    requirements = unwrap_requirements(requirements)
 
     issues = []
 
     for requirement in requirements:
+        if not isinstance(requirement, dict):
+            continue
+
         requirement_id = requirement.get("id", "UNKNOWN")
         text = get_requirement_text(requirement)
 
@@ -144,10 +290,12 @@ def print_requirement_language_summary(issues: list[dict]) -> None:
             print(f"- {requirement_id}: missing strong requirement language")
 
 def get_flagged_requirements(
-    requirements: list[dict],
+    requirements,
     language_issues: list[dict],
 ) -> list[dict]:
     """Return only requirements that have language issues."""
+
+    requirements = unwrap_requirements(requirements)
 
     flagged_ids = {
         issue["requirement_id"]
@@ -161,11 +309,12 @@ def get_flagged_requirements(
     ]
 
 def run_weak_language_checker(requirements_file: str) -> Path:
-
     print(f"Using requirements file: {requirements_file}")
 
     with open(requirements_file, "r", encoding="utf-8") as file:
-        input_requirements = json.load(file)
+        input_data = json.load(file)
+
+    input_requirements = unwrap_requirements(input_data)
 
     now = datetime.now()
     timestamp = now.strftime("%Y-%m-%d_%H-%M-%S")

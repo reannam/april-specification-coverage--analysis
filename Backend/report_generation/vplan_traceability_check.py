@@ -1,11 +1,15 @@
 import json
 from collections import Counter
 
+from Backend.weak_language_check import unwrap_requirements
+
 def check_traceability(requirements_file: str, generated_vplan_file: str) -> None:
     """Check that generated vPlan rows trace back to input requirement IDs."""
 
     with open(requirements_file, "r", encoding="utf-8") as file:
-        requirements = json.load(file)
+        requirements_data = json.load(file)
+
+    requirements = unwrap_requirements(requirements_data)
 
     with open(generated_vplan_file, "r", encoding="utf-8") as file:
         generated_vplan = json.load(file)
@@ -87,12 +91,13 @@ def check_traceability(requirements_file: str, generated_vplan_file: str) -> Non
         print("\nTraceability check failed.")
 
 
-def add_requirement_text(vplan_data: dict, requirements: list[dict]) -> dict:
+def add_requirement_text(vplan_data: dict, requirements) -> dict:
     """Add requirement description and original text to each vPlan row."""
+
+    requirements = unwrap_requirements(requirements)
 
     requirement_lookup = {
         requirement["id"]: {
-            "requirement_description": requirement.get("description", ""),
             "requirement_text": requirement.get("text", ""),
         }
         for requirement in requirements
@@ -102,7 +107,6 @@ def add_requirement_text(vplan_data: dict, requirements: list[dict]) -> dict:
         requirement_id = row["requirement_id"]
         requirement_data = requirement_lookup.get(requirement_id, {})
 
-        row["requirement_description"] = requirement_data.get("requirement_description", "")
         row["requirement_text"] = requirement_data.get("requirement_text", "")
 
     return vplan_data

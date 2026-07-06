@@ -10,6 +10,7 @@ from Backend.weak_language_check import (
     run_weak_language_checker,
     check_requirement_language,
     get_flagged_requirements,
+    unwrap_requirements,
 )
 from Backend.data_class import EdgeCaseCandidateList
 
@@ -28,10 +29,10 @@ load_dotenv()
 EDGE_CASE_EXTRACTOR_PROMPT = """You are an edge-case extractor for hardware/software requirements.
 
 You are given:
-    - A total JSON file of requirements for a given piece of hardware
     - A list of requirements that have been categorised as weak by a deterministic weak language checker
+    - The language issues found for those requirements
 
-Your task is to use the list of weak requirements to identify a list of edge-cases, implied by weak, ambiguous or conditional wording.
+Your task is to identify edge-cases implied by weak, ambiguous or conditional wording.
 
 Focus on edge-cases created due to language like:
     - May
@@ -62,7 +63,6 @@ edge_case_extractor_agent = create_agent(
 
 
 def extract_edge_cases(
-    all_requirements: list[dict],
     flagged_requirements: list[dict],
     language_issues: list[dict],
     requirements_file_name: str,
@@ -72,7 +72,6 @@ def extract_edge_cases(
     run_id = uuid.uuid4()
 
     edge_case_input = {
-        "requirements": all_requirements,
         "flagged_requirements": flagged_requirements,
         "language_issues": language_issues,
     }
@@ -118,7 +117,9 @@ def edge_case_agent_call(requirements: str) -> dict:
     print(f"Using requirements file: {requirements}")
 
     with open(requirements, "r", encoding="utf-8") as file:
-        input_requirements = json.load(file)
+        input_data = json.load(file)
+
+    input_requirements = unwrap_requirements(input_data)
 
     weak_language_file = run_weak_language_checker(requirements)
     issues = check_requirement_language(input_requirements)
@@ -132,7 +133,6 @@ def edge_case_agent_call(requirements: str) -> dict:
     timestamp = now.strftime("%Y-%m-%d_%H-%M-%S")
 
     edge_cases, usage, edge_case_trace_id = extract_edge_cases(
-        all_requirements=input_requirements,
         flagged_requirements=flagged_requirements,
         language_issues=issues,
         requirements_file_name=Path(requirements).name,

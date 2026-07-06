@@ -34,6 +34,12 @@ type AgentResponse = {
 
     usage_chart_urls?: Record<string, string>;
     usage_csv_urls?: Record<string, string>;
+
+    blocked_test_report_download_url?: string | null;
+    blocked_test_report_filename?: string | null;
+
+    requirement_test_links_download_url?: string | null;
+    requirement_test_links_filename?: string | null;
 };
 
 const API_BASE_URL = "http://localhost:8000";
@@ -298,39 +304,69 @@ function App() {
                             )}
 
                             {status === "success" && result && (
-                                <div className="resultPanel">
-                                    <div className="alert success">
-                                        <strong>Generation complete</strong>
-                                        <p>Your output files are ready.</p>
-                                    </div>
+    <div className="resultPanel">
+        <div className="alert success">
+            <strong>Generation complete</strong>
+            <p>Your output files are ready.</p>
+        </div>
 
-                                    <div className="resultGrid">
-                                        <a
-                                            className="resultCard"
-                                            href={getDownloadUrl(result.vplan_download_url)}
-                                            download={result.vplan_filename ?? "generated_vplan.json"}
-                                        >
-                                            <span className="resultIcon">JSON</span>
-                                            <span>
-                        <strong>vPlan file</strong>
-                        <small>{result.vplan_filename ?? "generated_vplan.json"}</small>
-                      </span>
-                                        </a>
+        <div className="resultGrid">
+            <a
+                className="resultCard"
+                href={getDownloadUrl(result.vplan_download_url)}
+                download={result.vplan_filename ?? "generated_vplan.json"}
+            >
+                <span className="resultIcon">JSON</span>
+                <span>
+                    <strong>vPlan file</strong>
+                    <small>{result.vplan_filename ?? "generated_vplan.json"}</small>
+                </span>
+            </a>
 
-                                        <a
-                                            className="resultCard"
-                                            href={getDownloadUrl(result.edge_cases_download_url)}
-                                            download={result.edge_cases_filename ?? "generated_edge_cases.json"}
-                                        >
-                                            <span className="resultIcon">JSON</span>
-                                            <span>
-                        <strong>Edge-case file</strong>
-                        <small>{result.edge_cases_filename ?? "generated_edge_cases.json"}</small>
-                      </span>
-                                        </a>
-                                    </div>
-                                </div>
-                            )}
+            <a
+                className="resultCard"
+                href={getDownloadUrl(result.edge_cases_download_url)}
+                download={result.edge_cases_filename ?? "generated_edge_cases.json"}
+            >
+                <span className="resultIcon">JSON</span>
+                <span>
+                    <strong>Edge-case file</strong>
+                    <small>{result.edge_cases_filename ?? "generated_edge_cases.json"}</small>
+                </span>
+            </a>
+
+            {result.requirement_test_links_download_url && (
+                <a
+                    className="resultCard"
+                    href={getDownloadUrl(result.requirement_test_links_download_url)}
+                    download={result.requirement_test_links_filename ?? "requirement_test_links.csv"}
+                >
+                    <span className="resultIcon">CSV</span>
+                    <span>
+                        <strong>Requirement-test links</strong>
+                        <small>{result.requirement_test_links_filename ?? "requirement_test_links.csv"}</small>
+                    </span>
+                </a>
+            )}
+
+            {result.blocked_test_report_download_url && (
+                <a
+                    className="resultCard"
+                    href={getDownloadUrl(result.blocked_test_report_download_url)}
+                    download={result.blocked_test_report_filename ?? "blocked_test_report.json"}
+                >
+                    <span className="resultIcon">JSON</span>
+                    <span>
+                        <strong>Blocked / partial report</strong>
+                        <small>{result.blocked_test_report_filename ?? "blocked_test_report.json"}</small>
+                    </span>
+                </a>
+            )}
+
+
+        </div>
+    </div>
+)}
 
                             <div className="actions">
                                 <button

@@ -1,6 +1,7 @@
 from pathlib import Path
 import shutil
 import uuid
+import json
 
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -20,7 +21,7 @@ OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 app = FastAPI(
     title="Specification Coverage Analysis API",
-    description="Runs the vPlan and edge-case agents against an uploaded requirements JSON file.",
+    description="Runs the vPlan and edge-case agents against an uploaded specification JSON file.",
     version="0.1.0",
 )
 
@@ -48,7 +49,7 @@ async def run_agents(requirements_file: UploadFile = File(...)):
         raise HTTPException(status_code=400, detail="No file uploaded.")
 
     if not requirements_file.filename.lower().endswith(".json"):
-        raise HTTPException(status_code=400, detail="Only .json requirements files are supported.")
+        raise HTTPException(status_code=400, detail="Only .json specification files are supported.")
 
     upload_id = uuid.uuid4().hex
     safe_filename = Path(requirements_file.filename).name
@@ -57,6 +58,16 @@ async def run_agents(requirements_file: UploadFile = File(...)):
     try:
         with uploaded_file_path.open("wb") as buffer:
             shutil.copyfileobj(requirements_file.file, buffer)
+
+        try:
+            with uploaded_file_path.open("r", encoding="utf-8") as f:
+                json.load(f)
+        except json.JSONDecodeError as error:
+            uploaded_file_path.unlink(missing_ok=True)
+            raise HTTPException(
+                status_code=400,
+                detail=f"Uploaded file is not valid JSON: {error}",
+            ) from error
 
         workflow = build_workflow()
 
@@ -67,6 +78,9 @@ async def run_agents(requirements_file: UploadFile = File(...)):
         vplan_output_file = result.get("vplan_output_file")
         edge_case_output_file = result.get("edge_case_output_file")
         langsmith_log_file = result.get("langsmith_log_file")
+        requirement_test_links_file = result.get("requirement_test_links_file")
+        preprocessed_requirements_file = result.get("preprocessed_requirements_file")
+        blocked_test_report_file = result.get("blocked_test_report_file")
 
         token_summary = result.get("langsmith_summary", {})
         usage_reports = result.get("usage_reports", {})
@@ -125,6 +139,27 @@ async def run_agents(requirements_file: UploadFile = File(...)):
                 for key, filename in usage_reports.items()
                 if filename.endswith(".csv")
             },
+
+            "requirement_test_links_download_url": (
+                f"/api/download/{Path(requirement_test_links_file).name}"
+                if requirement_test_links_file else None
+            ),
+            "requirement_test_links_filename": (
+                Path(requirement_test_links_file).name
+                if requirement_test_links_file else None
+            ),
+            "preprocessed_requirements_filename": (
+                Path(preprocessed_requirements_file).name
+                if preprocessed_requirements_file else None
+            ),
+            "blocked_test_report_download_url": (
+                f"/api/download/{Path(blocked_test_report_file).name}"
+                if blocked_test_report_file else None
+            ),
+            "blocked_test_report_filename": (
+                Path(blocked_test_report_file).name
+                if blocked_test_report_file else None
+            ),
         }
 
     except HTTPException:
@@ -148,6 +183,9 @@ def download_file(filename: str):
         OUTPUT_DIR / safe_filename,
         OUTPUT_DIR / "edge_cases" / safe_filename,
         OUTPUT_DIR / "langsmith_logs" / safe_filename,
+        OUTPUT_DIR / "traceability_records" / safe_filename,
+        OUTPUT_DIR / "requirement_test_links" / safe_filename,
+        OUTPUT_DIR / "blocked_tests" / safe_filename,
     ]
 
     file_path = next((path for path in possible_paths if path.exists()), None)
@@ -155,10 +193,12 @@ def download_file(filename: str):
     if file_path is None:
         raise HTTPException(status_code=404, detail="File not found.")
 
+    media_type = "text/csv" if file_path.suffix == ".csv" else "application/json"
+
     return FileResponse(
         path=file_path,
         filename=file_path.name,
-        media_type="application/json",
+        media_type=media_type,
     )
 
 @app.get("/api/usage-chart/{filename}")

@@ -15,24 +15,52 @@ It takes a JSON requirements file as input and produces:
 
 ```text
 .
+├── .gitignore
 ├── Backend/
+│   ├── __init__.py
+│   ├── agent_env/
 │   ├── agents/
-│   │   ├── vplan_generator_agent.py
-│   │   └── edge_case_agent.py
+│   │   ├── __init__.py
+│   │   ├── coverage_analysis_agent.py
+│   │   ├── edge_case_agent.py
+│   │   └── vplan_generator_agent.py
 │   ├── agent_scheduler.py
 │   ├── analyse_usage_logs.py
 │   ├── api.py
+│   ├── blocked_test_report_generator.py
+│   ├── coverage_workflow.py
 │   ├── data_class.py
 │   ├── main.py
+│   ├── preprocess_requirements.py
+│   ├── requirements.txt
+│   ├── run_coverage_analysis.py
+│   ├── traceability_record_generator.py
 │   ├── usage_logger.py
 │   ├── vplan_traceability_check.py
 │   └── weak_language_check.py
 ├── Frontend/
+│   ├── .gitignore
+│   ├── README.md
+│   ├── eslint.config.js
+│   ├── index.html
+│   ├── node_modules/
+│   ├── package-lock.json
 │   ├── package.json
+│   ├── public/
 │   ├── src/
+│   │   ├── App.css
+│   │   ├── App.tsx
+│   │   ├── assets/
+│   │   ├── index.css
+│   │   └── main.tsx
+│   ├── tsconfig.app.json
+│   ├── tsconfig.json
+│   ├── tsconfig.node.json
 │   └── vite.config.ts
 ├── ambiguous-requirements.json
+├── document_tiny_subset.json
 ├── example-requirements.json
+├── example-vplan.json
 ├── outputs/
 ├── uploads/
 └── README.md
@@ -54,7 +82,7 @@ The edge-case agent identifies cases implied by weak or ambiguous requirement wo
 
 ### Traceability and Usage Logging
 
-Generated tests are checked for traceability and the workflow can also collect usage data, token summaries, and output plots/logs.
+Generated tests are checked for traceability. The workflow also produces requirement-test link exports, blocked test reports, usage summaries, token counts, and output plots.
 
 ---
 
@@ -167,17 +195,21 @@ Generated files are written under the repository's outputs directory. Typical ou
 
 ```text
 outputs/
+outputs/blocked_tests/
+outputs/coverage_reports/
 outputs/edge_cases/
 outputs/langsmith_logs/
-outputs/usage_charts/
 outputs/node_architecture_graph/
+outputs/traceability/
+outputs/usage_charts/
+outputs/weak_language/
 ```
 
 ---
 
 ## Input Requirements Format
 
-The backend expects a JSON array of requirements. The repository includes example files at example-requirements.json and ambiguous-requirements.json.
+The backend expects a JSON array of requirements. The repository includes example files at example-requirements.json and ambiguous-requirements.json. The workflow preprocesses the uploaded JSON before analysis.
 
 Example structure:
 

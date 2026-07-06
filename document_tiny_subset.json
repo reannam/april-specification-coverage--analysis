@@ -1,0 +1,130 @@
+{
+  "document_name": "IHI0022L_amba_axi_protocol_spec.pdf",
+  "metadata": {
+    "title": "AMBA® AXI Protocol Specification",
+    "author": "",
+    "subject": "",
+    "keywords": "",
+    "creator": "LaTeX via pandoc via doctool",
+    "producer": "pdfTeX-1.40.24",
+    "creation_date": "D:20250820145348Z",
+    "modification_date": "D:20250826144207+01'00'"
+  },
+  "total_pages": 320,
+  "sections": [
+    {
+      "id": "A1.1",
+      "title": "About the AXI protocol",
+      "parent": "A1"
+    },
+    {
+      "id": "A1.2",
+      "title": "AXI Architecture",
+      "parent": "A1"
+    },
+    {
+      "id": "A1.3",
+      "title": "Terminology",
+      "parent": "A1"
+    }
+  ],
+  "requirements": [
+    {
+      "id": "REQ_A1_1_001",
+      "text": "The AXI protocol supports high-performance, high-frequency system designs for communication between Manager and Subordinate components.",
+      "source_section": "A1.1",
+      "signals": [
+        "AXI"
+      ],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A1_1_002",
+      "text": "Uses burst-based transactions with only the start address issued.",
+      "source_section": "A1.1",
+      "signals": [],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A1_1_003",
+      "text": "Permits easy addition of register stages to provide timing closure.",
+      "source_section": "A1.1",
+      "signals": [],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A1_2_001",
+      "text": "A write data channel to transfer data from the Manager to the Subordinate.",
+      "source_section": "A1.2",
+      "signals": [],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A1_2_002",
+      "text": "In a write transaction, the Subordinate uses the write response channel to signal the completion of the transfer to the Manager.",
+      "source_section": "A1.2",
+      "signals": [],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A1_2_003",
+      "text": "A read data channel to transfer data from the Subordinate to the Manager.",
+      "source_section": "A1.2",
+      "signals": [],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A1_2_001",
+      "text": "Write data can be up to 1024 bits wide and there is a byte lane strobe signal for every eight data bits, indicating the bytes of the data that are valid.",
+      "source_section": "A1.2",
+      "signals": [],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A1_2_003",
+      "text": "Read data can be up to 1024 bits wide.",
+      "source_section": "A1.2",
+      "signals": [],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_1_003",
+      "text": "The reset signal can be asserted asynchronously, but deassertion can only be synchronous with a rising edge of ACLK.",
+      "source_section": "A2.1",
+      "signals": [
+        "ACLK"
+      ],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_1_005",
+      "text": "The earliest point these signals can be asserted is at a rising ACLK edge after ARESETn is HIGH.",
+      "source_section": "A2.1",
+      "signals": [
+        "ACLK",
+        "HIGH"
+      ],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_3_003",
+      "text": "transmitter is not permitted to wait until READY is asserted before asserting VALID.",
+      "source_section": "A2.3",
+      "signals": [
+        "READY",
+        "VALID"
+      ],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_3_005",
+      "text": "receiver is permitted to wait for VALID to be asserted before asserting the corresponding READY.",
+      "source_section": "A2.3",
+      "signals": [
+        "READY",
+        "VALID"
+      ],
+      "type": "protocol_rule"
+    }
+  ]
+}

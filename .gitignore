@@ -11,3 +11,4 @@ Backend/agent_env/
 .DS_Store
 outputs/
 uploads/
+Backend/agents/__pycache__/

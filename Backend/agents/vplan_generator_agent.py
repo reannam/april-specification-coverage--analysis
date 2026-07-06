@@ -1,14 +1,17 @@
-from langchain.agents import create_agent
-from Backend.data_class import Table
-import json
-from dotenv import load_dotenv
-import os
-from datetime import datetime
 from pathlib import Path
-from Backend.vplan_traceability_check import check_traceability, add_requirement_text
+from datetime import datetime
+import json
+import os
 import uuid
+
+from dotenv import load_dotenv
+from langchain.agents import create_agent
 from langchain_community.callbacks.manager import get_openai_callback
+
+from Backend.data_class import Table
+from Backend.vplan_traceability_check import check_traceability, add_requirement_text
 from Backend.usage_logger import normalise_usage
+from Backend.weak_language_check import unwrap_requirements
 
 load_dotenv()
 
@@ -31,7 +34,7 @@ Create a vPlan table from the provided JSON requirements.
 Rules:
 - Use only the information in the input JSON.
 - Do not invent missing technical details.
-- Do not include requirement_text or requirement_description. These will be added later from the input requirements file.
+- Do not include requirement_text. This will be added later from the input requirements file.
 - Every requirement must have at least one test.
 - A requirement may have multiple tests if it contains multiple independent behaviours, modes, bit fields, causes, outcomes, reset cases, or software-visible conditions.
 - If a requirement contains multiple status bits, command bits, encoded values, or transfer directions, split by each bit, value, or direction.
@@ -50,17 +53,21 @@ Test types:
 - Do not mark an opposite valid encoded value as negative unless it represents an error, disabled state, invalid access, or forbidden behaviour.
 
 Required columns:
-test_id, requirement_id, test_type, test_description, test_constraints, test_steps, expected_results, priority, coverage.
+test_id, requirement_id, test_type, test_description, test_constraints, test_steps, expected_results, coverage.
+
+Edge-case usage:
+- You may be given edge-case candidates linked to requirement_id values.
+- Use edge cases to decide whether a requirement is fully testable, partially testable, or blocked.
+- If an edge case shows that behaviour is optional, implementation-dependent, ambiguous, underspecified, or not directly observable, reflect that in test_constraints and coverage.
+- If the requirement cannot be meaningfully tested from the provided information, still create one traceability row, but mark coverage as blocked.
+- For blocked rows, test_steps should state what information, implementation detail, configuration value, or clarification is required before verification can proceed.
+- Do not invent tests to resolve an edge case. Note the limitation instead.
+- If a requirement is only partially testable because of an edge case, mark coverage as partially_covered.
 
 Coverage:
 - covered = directly testable from the provided information
 - partially_covered = only partly testable from the provided information
 - blocked = not usefully testable from the provided information
-
-Priority:
-- 1 = high priority functional/protocol/register/reset/interrupt behaviour
-- 2 = medium priority integration or externally dependent behaviour
-- 3 = lower priority software guidance or unclear hardware enforcement
 """
 
 
@@ -70,11 +77,22 @@ agent = create_agent(
     system_prompt=SYSTEM_PROMPT,
 )
 
-def invoke_agent(requirements, run_id: uuid.UUID) -> tuple[dict, dict]:
+def invoke_agent(
+        requirements: str,
+        run_id: uuid.UUID,
+        edge_cases: dict | None = None,
+    ) -> tuple[dict, dict]:
     """Invoke the agent using the requirements JSON file and capture token usage."""
 
     with open(requirements, "r", encoding="utf-8") as file:
-        specification = json.load(file)
+        specification_data = json.load(file)
+
+    specification = unwrap_requirements(specification_data)
+
+    vplan_input = {
+        "requirements": specification,
+        "edge_cases": edge_cases or {"edge_cases": []},
+    }
 
     with get_openai_callback() as callback:
         result = agent.invoke(
@@ -83,8 +101,10 @@ def invoke_agent(requirements, run_id: uuid.UUID) -> tuple[dict, dict]:
                     {
                         "role": "user",
                         "content": (
-                            "Create a vPlan table from this JSON specification:\n"
-                            f"{json.dumps(specification, separators=(',', ':'))}"
+                            "Create a vPlan table from this JSON input. "
+                            "Use the edge-case information when deciding whether each requirement is "
+                            "covered, partially_covered, or blocked:\n"
+                            f"{json.dumps(vplan_input, separators=(',', ':'))}"
                         ),
                     }
                 ]
@@ -112,10 +132,11 @@ def invoke_agent(requirements, run_id: uuid.UUID) -> tuple[dict, dict]:
 
     return result, usage
 
-
-def v_plan_agent_call(reqs: str) -> dict:
+def v_plan_agent_call(reqs: str, edge_cases: dict | None = None) -> dict:
     with open(reqs, "r", encoding="utf-8") as file:
-        requirements_file = json.load(file)
+        requirements_data = json.load(file)
+
+    requirements_file = unwrap_requirements(requirements_data)
 
     print(f"Using requirements file: {reqs}")
 
@@ -123,7 +144,11 @@ def v_plan_agent_call(reqs: str) -> dict:
     timestamp = now.strftime("%Y-%m-%d_%H-%M-%S")
     run_id = uuid.uuid4()
 
-    result, usage = invoke_agent(reqs, run_id=run_id)
+    result, usage = invoke_agent(
+        requirements=reqs,
+        run_id=run_id,
+        edge_cases=edge_cases,
+    )
 
     vplan = result["structured_response"]
 
