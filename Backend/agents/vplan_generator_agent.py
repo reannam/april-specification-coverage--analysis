@@ -26,9 +26,6 @@ OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 LANGSMITH_LOGS_DIR = OUTPUT_DIR / "langsmith_logs"
 LANGSMITH_LOGS_DIR.mkdir(parents=True, exist_ok=True)
 
-if not os.getenv("OPENAI_API_KEY"):
-    raise ValueError("OPENAI_API_KEY not found. Check your .env file.")
-
 
 SYSTEM_PROMPT = """You are a vPlan generator.
 
@@ -202,7 +199,14 @@ def invoke_agent(
     edge_cases: dict | None = None,
     batch_number: int | None = None,
 ) -> tuple[dict, dict]:
-    """Invoke the agent for one batch of requirements and capture token usage."""
+    if not os.getenv("OPENAI_API_KEY"):
+        raise ValueError("OPENAI_API_KEY not found. Check your .env file.")
+
+    agent = create_agent(
+        model="openai:gpt-5.4",
+        response_format=Table,
+        system_prompt=SYSTEM_PROMPT,
+    )
 
     vplan_input = {
         "requirements": requirements_batch,
