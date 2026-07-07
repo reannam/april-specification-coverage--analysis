@@ -80,13 +80,6 @@ Coverage:
 """
 
 
-agent = create_agent(
-    model="openai:gpt-5.4",
-    response_format=Table,
-    system_prompt=SYSTEM_PROMPT,
-)
-
-
 def chunk_requirements(
     requirements: list[dict],
     batch_size: int = 30,
