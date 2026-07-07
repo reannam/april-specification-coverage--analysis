@@ -31,9 +31,7 @@ def preprocess_requirements_file(requirements_file: str | Path) -> Path:
 
     output_path = output_dir / f"{input_path.stem}_requirements_only.json"
 
-    cleaned_data = {
-        "requirements": data["requirements"]
-    }
+    cleaned_data = {"requirements": data["requirements"]}
 
     with output_path.open("w", encoding="utf-8") as f:
         json.dump(cleaned_data, f, indent=2, ensure_ascii=False)

@@ -10,7 +10,6 @@ from fastapi.responses import FileResponse
 from Backend.config import UPLOAD_DIR, OUTPUT_DIR
 from Backend.pre_processing.agent_scheduler import build_workflow
 
-
 app = FastAPI(
     title="Specification Coverage Analysis API",
     description="Runs the vPlan and edge-case agents against an uploaded specification JSON file.",
@@ -41,7 +40,9 @@ async def run_agents(requirements_file: UploadFile = File(...)):
         raise HTTPException(status_code=400, detail="No file uploaded.")
 
     if not requirements_file.filename.lower().endswith(".json"):
-        raise HTTPException(status_code=400, detail="Only .json specification files are supported.")
+        raise HTTPException(
+            status_code=400, detail="Only .json specification files are supported."
+        )
 
     upload_id = uuid.uuid4().hex
     safe_filename = Path(requirements_file.filename).name
@@ -63,9 +64,7 @@ async def run_agents(requirements_file: UploadFile = File(...)):
 
         workflow = build_workflow()
 
-        result = workflow.invoke({
-            "requirements_file": str(uploaded_file_path)
-        })
+        result = workflow.invoke({"requirements_file": str(uploaded_file_path)})
 
         vplan_output_file = result.get("vplan_output_file")
         edge_case_output_file = result.get("edge_case_output_file")
@@ -93,34 +92,34 @@ async def run_agents(requirements_file: UploadFile = File(...)):
         edge_case_path = Path(edge_case_output_file).resolve()
 
         if not vplan_path.exists():
-            raise HTTPException(status_code=500, detail="Generated vPlan file was not found.")
+            raise HTTPException(
+                status_code=500, detail="Generated vPlan file was not found."
+            )
 
         if not edge_case_path.exists():
-            raise HTTPException(status_code=500, detail="Generated edge-case file was not found.")
+            raise HTTPException(
+                status_code=500, detail="Generated edge-case file was not found."
+            )
 
         return {
             "message": "Workflow completed successfully.",
-
             "vplan_download_url": f"/api/download/{vplan_path.name}",
             "edge_cases_download_url": f"/api/download/{edge_case_path.name}",
-
             "vplan_filename": vplan_path.name,
             "edge_cases_filename": edge_case_path.name,
-
             "langsmith_log_download_url": (
-                f"/api/download/{Path(langsmith_log_file).name}" if langsmith_log_file else None
+                f"/api/download/{Path(langsmith_log_file).name}"
+                if langsmith_log_file
+                else None
             ),
             "langsmith_log_filename": (
                 Path(langsmith_log_file).name if langsmith_log_file else None
             ),
-
             "input_tokens": token_summary.get("prompt_tokens"),
             "output_tokens": token_summary.get("completion_tokens"),
             "total_tokens": token_summary.get("total_tokens"),
             "estimated_cost_usd": token_summary.get("total_cost"),
-
             "agent_usage": token_summary.get("agents", []),
-
             "usage_chart_urls": {
                 key: f"/api/usage-chart/{filename}"
                 for key, filename in usage_reports.items()
@@ -131,26 +130,30 @@ async def run_agents(requirements_file: UploadFile = File(...)):
                 for key, filename in usage_reports.items()
                 if filename.endswith(".csv")
             },
-
             "requirement_test_links_download_url": (
                 f"/api/download/{Path(requirement_test_links_file).name}"
-                if requirement_test_links_file else None
+                if requirement_test_links_file
+                else None
             ),
             "requirement_test_links_filename": (
                 Path(requirement_test_links_file).name
-                if requirement_test_links_file else None
+                if requirement_test_links_file
+                else None
             ),
             "preprocessed_requirements_filename": (
                 Path(preprocessed_requirements_file).name
-                if preprocessed_requirements_file else None
+                if preprocessed_requirements_file
+                else None
             ),
             "blocked_test_report_download_url": (
                 f"/api/download/{Path(blocked_test_report_file).name}"
-                if blocked_test_report_file else None
+                if blocked_test_report_file
+                else None
             ),
             "blocked_test_report_filename": (
                 Path(blocked_test_report_file).name
-                if blocked_test_report_file else None
+                if blocked_test_report_file
+                else None
             ),
         }
 
@@ -192,6 +195,7 @@ def download_file(filename: str):
         filename=file_path.name,
         media_type=media_type,
     )
+
 
 @app.get("/api/usage-chart/{filename}")
 def get_usage_chart(filename: str):

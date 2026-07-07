@@ -27,14 +27,19 @@ def build_edge_case_lookup(edge_case_data: dict) -> dict[str, list[dict]]:
 def infer_required_clarification(row: dict, related_edge_cases: list[dict]) -> str:
     constraints = row.get("test_constraints", "").lower()
 
-    if "implementation-dependent" in constraints or "implementation dependent" in constraints:
+    if (
+        "implementation-dependent" in constraints
+        or "implementation dependent" in constraints
+    ):
         return "Confirm implementation-specific configuration before verification."
 
     if "not define observable" in constraints or "pass/fail" in constraints:
         return "Define observable pass/fail criteria for this requirement."
 
     if "not specified" in constraints or "unspecified" in constraints:
-        return "Provide the missing signal, timing, configuration, or behavioural detail."
+        return (
+            "Provide the missing signal, timing, configuration, or behavioural detail."
+        )
 
     if related_edge_cases:
         return "Clarify the edge-case behaviour before treating this requirement as fully testable."
@@ -69,7 +74,9 @@ def export_blocked_test_report(
             "coverage": coverage,
             "test_description": row.get("test_description"),
             "reason": row.get("test_constraints"),
-            "required_clarification": infer_required_clarification(row, related_edge_cases),
+            "required_clarification": infer_required_clarification(
+                row, related_edge_cases
+            ),
             "related_edge_cases": [
                 {
                     "edge_case_id": edge_case.get("edge_case_id"),

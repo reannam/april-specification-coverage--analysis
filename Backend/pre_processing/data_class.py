@@ -4,10 +4,16 @@ from typing import Literal, TypedDict, NotRequired, Any
 
 class VPlanColumns(BaseModel):
     test_id: str = Field(..., description="Unique test ID, e.g. TEST_REQ_I2C_001")
-    requirement_id: str = Field(..., description="The exact requirement ID from the input JSON")
-    test_type: Literal["positive", "negative"] = Field(..., description="The type of test")
+    requirement_id: str = Field(
+        ..., description="The exact requirement ID from the input JSON"
+    )
+    test_type: Literal["positive", "negative"] = Field(
+        ..., description="The type of test"
+    )
     test_description: str = Field(..., description="What is being tested")
-    test_constraints: str = Field(..., description="Constraints, preconditions, or 'None specified'")
+    test_constraints: str = Field(
+        ..., description="Constraints, preconditions, or 'None specified'"
+    )
     test_steps: list[str] = Field(..., description="Concrete verification steps")
     expected_results: list[str] = Field(..., description="Expected observable results")
     coverage: Literal["covered", "partially_covered", "blocked"] = Field(
@@ -21,8 +27,12 @@ class Table(BaseModel):
 
 
 class EdgeCaseCandidate(BaseModel):
-    edge_case_id: str = Field(..., description="Unique edge-case ID, e.g. EDGE_REQ_I2C_001")
-    requirement_id: str = Field(..., description="The exact requirement ID from the input JSON")
+    edge_case_id: str = Field(
+        ..., description="Unique edge-case ID, e.g. EDGE_REQ_I2C_001"
+    )
+    requirement_id: str = Field(
+        ..., description="The exact requirement ID from the input JSON"
+    )
     edge_case_type: Literal[
         "optional_behaviour",
         "conditional_behaviour",
@@ -89,11 +99,19 @@ class CoverageFinding(BaseModel):
 
 
 class CoverageSummary(BaseModel):
-    total_requirements: int = Field(..., description="Total number of source requirements assessed.")
+    total_requirements: int = Field(
+        ..., description="Total number of source requirements assessed."
+    )
     covered_count: int = Field(..., description="Number of requirements fully covered.")
-    partially_covered_count: int = Field(..., description="Number of requirements partially covered.")
-    not_covered_count: int = Field(..., description="Number of requirements not covered.")
-    blocked_count: int = Field(..., description="Number of requirements where coverage could not be assessed.")
+    partially_covered_count: int = Field(
+        ..., description="Number of requirements partially covered."
+    )
+    not_covered_count: int = Field(
+        ..., description="Number of requirements not covered."
+    )
+    blocked_count: int = Field(
+        ..., description="Number of requirements where coverage could not be assessed."
+    )
     coverage_percentage: float = Field(
         ...,
         description="Percentage of requirements fully covered.",
@@ -131,7 +149,7 @@ class GraphState(TypedDict):
     langsmith_log_file: NotRequired[str]
     usage_reports: NotRequired[dict]
     blocked_test_report_file: NotRequired[str]
-    
+
 
 class CoverageGraphState(TypedDict):
     requirements_file: str

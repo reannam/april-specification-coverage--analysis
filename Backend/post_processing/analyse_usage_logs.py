@@ -4,7 +4,10 @@ from pathlib import Path
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from Backend.config import LANGSMITH_LOGS_DIR as LOGS_DIR, USAGE_CHARTS_DIR as CHARTS_DIR
+from Backend.config import (
+    LANGSMITH_LOGS_DIR as LOGS_DIR,
+    USAGE_CHARTS_DIR as CHARTS_DIR,
+)
 
 MASTER_USAGE_FILE = LOGS_DIR / "all_usage_runs.json"
 
@@ -24,37 +27,39 @@ def load_usage_data() -> tuple[pd.DataFrame, pd.DataFrame]:
 
         agents = summary.get("agents", [])
 
-        models_used = sorted({
-            agent.get("model_name")
-            for agent in agents
-            if agent.get("model_name")
-        })
+        models_used = sorted(
+            {agent.get("model_name") for agent in agents if agent.get("model_name")}
+        )
 
         models_used_text = ", ".join(models_used) if models_used else "Unknown model"
 
-        run_rows.append({
-            "run_id": index,
-            "timestamp": run.get("timestamp"),
-            "output_file": run.get("output_file"),
-            "models_used": models_used_text,
-            "prompt_tokens": int(summary.get("prompt_tokens", 0) or 0),
-            "completion_tokens": int(summary.get("completion_tokens", 0) or 0),
-            "total_tokens": int(summary.get("total_tokens", 0) or 0),
-            "total_cost": float(summary.get("total_cost", 0) or 0),
-        })
-
-        for agent in summary.get("agents", []):
-            agent_rows.append({
+        run_rows.append(
+            {
                 "run_id": index,
                 "timestamp": run.get("timestamp"),
                 "output_file": run.get("output_file"),
-                "agent_name": agent.get("agent_name"),
-                "model_name": agent.get("model_name"),
-                "prompt_tokens": int(agent.get("prompt_tokens", 0) or 0),
-                "completion_tokens": int(agent.get("completion_tokens", 0) or 0),
-                "total_tokens": int(agent.get("total_tokens", 0) or 0),
-                "total_cost": float(agent.get("total_cost", 0) or 0),
-            })
+                "models_used": models_used_text,
+                "prompt_tokens": int(summary.get("prompt_tokens", 0) or 0),
+                "completion_tokens": int(summary.get("completion_tokens", 0) or 0),
+                "total_tokens": int(summary.get("total_tokens", 0) or 0),
+                "total_cost": float(summary.get("total_cost", 0) or 0),
+            }
+        )
+
+        for agent in summary.get("agents", []):
+            agent_rows.append(
+                {
+                    "run_id": index,
+                    "timestamp": run.get("timestamp"),
+                    "output_file": run.get("output_file"),
+                    "agent_name": agent.get("agent_name"),
+                    "model_name": agent.get("model_name"),
+                    "prompt_tokens": int(agent.get("prompt_tokens", 0) or 0),
+                    "completion_tokens": int(agent.get("completion_tokens", 0) or 0),
+                    "total_tokens": int(agent.get("total_tokens", 0) or 0),
+                    "total_cost": float(agent.get("total_cost", 0) or 0),
+                }
+            )
 
     return pd.DataFrame(run_rows), pd.DataFrame(agent_rows)
 
@@ -141,6 +146,7 @@ def plot_tokens_by_agent(agent_df: pd.DataFrame) -> None:
     plt.savefig(CHARTS_DIR / "tokens_by_agent.png")
     plt.close()
 
+
 def generate_usage_reports() -> dict[str, str]:
     run_df, agent_df = load_usage_data()
 
@@ -168,6 +174,7 @@ def generate_usage_reports() -> dict[str, str]:
         reports["tokens_by_agent"] = "tokens_by_agent.png"
 
     return reports
+
 
 def main() -> None:
     generated = generate_usage_reports()

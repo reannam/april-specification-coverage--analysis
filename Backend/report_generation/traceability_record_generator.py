@@ -57,14 +57,14 @@ def export_requirement_test_links(vplan_file: Path) -> Path:
         writer.writeheader()
 
         for requirement_id, test_ids in requirement_test_map.items():
-            related_tests = {
-                "test_ids": test_ids
-            }
+            related_tests = {"test_ids": test_ids}
 
-            writer.writerow({
-                "requirement_id": requirement_id,
-                "related_tests": json.dumps(related_tests),
-            })
+            writer.writerow(
+                {
+                    "requirement_id": requirement_id,
+                    "related_tests": json.dumps(related_tests),
+                }
+            )
 
     return csv_file
 

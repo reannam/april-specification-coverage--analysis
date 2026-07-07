@@ -50,19 +50,18 @@ Rules:
 """
 
 
-edge_case_extractor_agent = create_agent(
-    model="openai:gpt-5.4",
-    response_format=EdgeCaseCandidateList,
-    system_prompt=EDGE_CASE_EXTRACTOR_PROMPT,
-)
-
-
 def extract_edge_cases(
     flagged_requirements: list[dict],
     language_issues: list[dict],
     requirements_file_name: str,
 ) -> tuple[EdgeCaseCandidateList, dict, str]:
     """Extract edge-case candidates from weak or ambiguous requirement language."""
+
+    edge_case_extractor_agent = create_agent(
+        model="openai:gpt-5.4",
+        response_format=EdgeCaseCandidateList,
+        system_prompt=EDGE_CASE_EXTRACTOR_PROMPT,
+    )
 
     run_id = uuid.uuid4()
 
@@ -108,6 +107,7 @@ def extract_edge_cases(
 
     return result["structured_response"], usage, str(run_id)
 
+
 def edge_case_agent_call(requirements: str) -> dict:
     print(f"Using requirements file: {requirements}")
 
@@ -150,7 +150,9 @@ def edge_case_agent_call(requirements: str) -> dict:
         **edge_cases.model_dump(),
     }
 
-    generated_edge_case_info = EDGE_CASE_DIR / f"generated_edge_case_info_{timestamp}.json"
+    generated_edge_case_info = (
+        EDGE_CASE_DIR / f"generated_edge_case_info_{timestamp}.json"
+    )
 
     with open(generated_edge_case_info, "w", encoding="utf-8") as f:
         json.dump(output_json, f, indent=2)

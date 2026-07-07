@@ -157,9 +157,7 @@ def validate_inputs(
         requirement_id = get_requirement_id(requirement)
 
         if not requirement_id:
-            validation_errors.append(
-                f"Requirement missing ID: {requirement}"
-            )
+            validation_errors.append(f"Requirement missing ID: {requirement}")
             continue
 
         requirement_ids.append(requirement_id)
@@ -183,14 +181,10 @@ def validate_inputs(
         if get_test_requirement_id(test)
     }
 
-    missing_requirement_ids = sorted(
-        set(requirement_ids) - vplan_requirement_ids
-    )
+    missing_requirement_ids = sorted(set(requirement_ids) - vplan_requirement_ids)
 
     tests_missing_ids = [
-        index
-        for index, test in enumerate(vplan_rows)
-        if not get_test_id(test)
+        index for index, test in enumerate(vplan_rows) if not get_test_id(test)
     ]
 
     tests_missing_requirement_ids = [
@@ -230,9 +224,7 @@ def build_agent_payload(
             "missing_requirement_ids_in_vplan": validation_result[
                 "missing_requirement_ids"
             ],
-            "validation_errors": validation_result[
-                "validation_errors"
-            ],
+            "validation_errors": validation_result["validation_errors"],
         },
         "instruction": (
             "Assess whether the vPlan fully covers each requirement. "
@@ -294,8 +286,7 @@ def enforce_missing_requirement_findings(
     findings = report.get("findings", [])
 
     finding_by_requirement_id = {
-        finding.get("requirement_id"): finding
-        for finding in findings
+        finding.get("requirement_id"): finding for finding in findings
     }
 
     for requirement in requirements:
@@ -330,7 +321,8 @@ def enforce_missing_requirement_findings(
                     "matched_test_ids": [],
                     "covered_behaviours": [],
                     "missing_behaviours": [
-                        requirement_text or "The full requirement is missing from the vPlan."
+                        requirement_text
+                        or "The full requirement is missing from the vPlan."
                     ],
                     "reasoning": (
                         "No vPlan row references this requirement ID, so the requirement "
@@ -420,5 +412,7 @@ def coverage_analysis_agent_call(
         "coverage_report": coverage_report,
         "coverage_output_file": str(output_file),
         "coverage_validation_errors": validation_result["validation_errors"],
-        "coverage_missing_requirement_ids": validation_result["missing_requirement_ids"],
+        "coverage_missing_requirement_ids": validation_result[
+            "missing_requirement_ids"
+        ],
     }

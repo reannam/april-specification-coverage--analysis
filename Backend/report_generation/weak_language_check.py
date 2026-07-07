@@ -28,7 +28,6 @@ WEAK_REQUIREMENT_WORDS = [
     "can be",
     "could be",
     "might be",
-
     # Optional / conditional support
     "optional",
     "optionally",
@@ -50,7 +49,6 @@ WEAK_REQUIREMENT_WORDS = [
     "configuration-dependent",
     "configurable",
     "programmable",
-
     # Conditional / contextual
     "where applicable",
     "if applicable",
@@ -68,7 +66,6 @@ WEAK_REQUIREMENT_WORDS = [
     "where required",
     "if required",
     "when required",
-
     # Recommendations / non-mandatory guidance
     "should",
     "recommended",
@@ -80,7 +77,6 @@ WEAK_REQUIREMENT_WORDS = [
     "it is preferable",
     "best effort",
     "best-effort",
-
     # Frequency / vague normality
     "typically",
     "normally",
@@ -91,7 +87,6 @@ WEAK_REQUIREMENT_WORDS = [
     "in general",
     "by default",
     "default",
-
     # Ambiguous timing
     "timely",
     "timely manner",
@@ -107,7 +102,6 @@ WEAK_REQUIREMENT_WORDS = [
     "if possible",
     "when possible",
     "as possible",
-
     # Ambiguous quantity / degree
     "approximately",
     "about",
@@ -125,7 +119,6 @@ WEAK_REQUIREMENT_WORDS = [
     "maximum possible",
     "up to",
     "at least where possible",
-
     # Ambiguous completeness / examples
     "including but not limited to",
     "for example",
@@ -133,7 +126,6 @@ WEAK_REQUIREMENT_WORDS = [
     "etc",
     "and so on",
     "among others",
-
     # Vague behaviour
     "support",
     "supports",
@@ -147,7 +139,6 @@ WEAK_REQUIREMENT_WORDS = [
     "aims to",
     "allows",
     "enables",
-
     # Exceptions / unclear scope
     "unless otherwise specified",
     "where not otherwise specified",
@@ -158,6 +149,7 @@ WEAK_REQUIREMENT_WORDS = [
     "depends on",
     "based on",
 ]
+
 
 def unwrap_requirements(data) -> list[dict]:
     """Accept either a raw requirements list or a dict with a requirements key."""
@@ -171,6 +163,7 @@ def unwrap_requirements(data) -> list[dict]:
         )
 
     return data
+
 
 def get_requirement_text(requirement: dict) -> str:
     """Combine requirement fields into one searchable text string."""
@@ -214,11 +207,7 @@ def check_requirement_language(requirements) -> list[dict]:
         )
 
         if has_weak_language:
-            matched_words = [
-                word
-                for word in WEAK_REQUIREMENT_WORDS
-                if word in text
-            ]
+            matched_words = [word for word in WEAK_REQUIREMENT_WORDS if word in text]
 
             issues.append(
                 {
@@ -287,6 +276,7 @@ def print_requirement_language_summary(issues: list[dict]) -> None:
         else:
             print(f"- {requirement_id}: missing strong requirement language")
 
+
 def get_flagged_requirements(
     requirements,
     language_issues: list[dict],
@@ -295,16 +285,14 @@ def get_flagged_requirements(
 
     requirements = unwrap_requirements(requirements)
 
-    flagged_ids = {
-        issue["requirement_id"]
-        for issue in language_issues
-    }
+    flagged_ids = {issue["requirement_id"] for issue in language_issues}
 
     return [
         requirement
         for requirement in requirements
         if requirement.get("id") in flagged_ids
     ]
+
 
 def run_weak_language_checker(requirements_file: str) -> Path:
     print(f"Using requirements file: {requirements_file}")

@@ -4,7 +4,6 @@ from decimal import Decimal
 from pathlib import Path
 from typing import Any
 
-
 # Fill these in with the prices you want to use.
 # These are USD per 1 million tokens.
 MODEL_PRICES_PER_1M = {

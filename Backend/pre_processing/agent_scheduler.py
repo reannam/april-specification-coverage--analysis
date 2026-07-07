@@ -9,13 +9,18 @@ from Backend.agents.edge_case_agent import edge_case_agent_call
 from Backend.agents.vplan_generator_agent import v_plan_agent_call
 from Backend.post_processing.usage_logger import aggregate_usage, save_usage_log
 from Backend.post_processing.analyse_usage_logs import generate_usage_reports
-from Backend.report_generation.traceability_record_generator import export_requirement_test_links
+from Backend.report_generation.traceability_record_generator import (
+    export_requirement_test_links,
+)
 from Backend.pre_processing.preprocess_requirements import preprocess_requirements_file
-from Backend.report_generation.blocked_test_report_generator import export_blocked_test_report
+from Backend.report_generation.blocked_test_report_generator import (
+    export_blocked_test_report,
+)
 
 load_dotenv()
 
 WORKFLOW_IMAGE_PATH = WORKFLOW_IMAGE_DIR / "architecture.png"
+
 
 def preprocess_node(state: GraphState) -> dict:
     original_file = state["requirements_file"]
@@ -81,6 +86,7 @@ def save_workflow_image(chain) -> None:
     except Exception as error:
         print(f"Could not save workflow image: {error}")
 
+
 def requirement_test_links_node(state: GraphState) -> dict:
     vplan_output_file = state.get("vplan_output_file")
 
@@ -94,6 +100,7 @@ def requirement_test_links_node(state: GraphState) -> dict:
     return {
         "requirement_test_links_file": str(csv_file),
     }
+
 
 def blocked_test_report_node(state: GraphState) -> dict:
     vplan_output_file = state.get("vplan_output_file")
@@ -112,6 +119,7 @@ def blocked_test_report_node(state: GraphState) -> dict:
     return {
         "blocked_test_report_file": str(report_file),
     }
+
 
 def build_workflow():
     workflow = StateGraph(GraphState)

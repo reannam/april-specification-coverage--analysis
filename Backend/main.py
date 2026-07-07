@@ -10,15 +10,15 @@ DEFAULT_REQUIREMENTS_FILE = BASE_DIR / "example-requirements.json"
 def run_agents(requirements_file: str | Path = DEFAULT_REQUIREMENTS_FILE):
     workflow = build_workflow()
 
-    result = workflow.invoke({
-        "requirements_file": str(requirements_file)
-    })
+    result = workflow.invoke({"requirements_file": str(requirements_file)})
 
     return result
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Run the specification analysis workflow.")
+    parser = argparse.ArgumentParser(
+        description="Run the specification analysis workflow."
+    )
     parser.add_argument(
         "requirements_file",
         nargs="?",
