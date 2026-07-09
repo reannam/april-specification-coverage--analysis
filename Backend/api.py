@@ -67,6 +67,7 @@ def save_and_validate_uploaded_json(uploaded_file: UploadFile) -> Path:
 
     return uploaded_file_path
 
+
 def normalise_existing_output_path(path_value: str) -> Path:
     cleaned = path_value.strip().replace("\\", "/")
     cleaned = cleaned.removeprefix("./")
@@ -180,7 +181,9 @@ async def run_agents(requirements_file: UploadFile = File(...)):
         requirement_test_links_file = result.get("requirement_test_links_file")
         preprocessed_requirements_file = result.get("preprocessed_requirements_file")
         blocked_test_report_file = result.get("blocked_test_report_file")
-        weak_words_file = result.get("weak_words_file") or result.get("weak_words_output_file")
+        weak_words_file = result.get("weak_words_file") or result.get(
+            "weak_words_output_file"
+        )
 
         token_summary = result.get("langsmith_summary", {})
         usage_reports = result.get("usage_reports", {})
@@ -254,7 +257,11 @@ async def run_agents(requirements_file: UploadFile = File(...)):
             "requirements_file": str(uploaded_file_path),
             "vplan_file": str(vplan_path),
             "edge_case_file": str(edge_case_path),
-            "weak_words_file": str(result.get("weak_words_file")) if result.get("weak_words_file") else None,
+            "weak_words_file": (
+                str(result.get("weak_words_file"))
+                if result.get("weak_words_file")
+                else None
+            ),
         }
 
     except HTTPException:
@@ -273,11 +280,9 @@ async def run_agents(requirements_file: UploadFile = File(...)):
 @app.post("/api/run-coverage")
 async def run_coverage(
     requirements_file: UploadFile = File(...),
-
     vplan_file: str | None = Form(None),
     edge_case_file: str | None = Form(None),
     weak_words_file: str | None = Form(None),
-
     vplan_upload: UploadFile | None = File(None),
     edge_case_upload: UploadFile | None = File(None),
     weak_words_upload: UploadFile | None = File(None),
@@ -390,6 +395,7 @@ async def run_coverage(
             if file:
                 file.file.close()
 
+
 @app.get("/api/download/{filename}")
 def download_file(filename: str):
     file_path = resolve_downloadable_file(filename)
@@ -406,6 +412,7 @@ def download_file(filename: str):
         filename=file_path.name,
         media_type=media_type,
     )
+
 
 @app.get("/api/usage-chart/{filename}")
 def get_usage_chart(filename: str):
