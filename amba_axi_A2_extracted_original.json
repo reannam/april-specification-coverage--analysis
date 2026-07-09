@@ -1,0 +1,1587 @@
+{
+  "document_name": "IHI0022L_amba_axi_protocol_spec.pdf",
+  "metadata": {
+    "title": "AMBA® AXI Protocol Specification",
+    "author": "",
+    "subject": "",
+    "keywords": "",
+    "creator": "LaTeX via pandoc via doctool",
+    "producer": "pdfTeX-1.40.24",
+    "creation_date": "D:20250820145348Z",
+    "modification_date": "D:20250826144207+01'00'"
+  },
+  "total_pages": 320,
+  "sections": [
+    {
+      "id": "A2.1",
+      "title": "Clock and reset",
+      "parent": "A2"
+    },
+    {
+      "id": "A2.2",
+      "title": "AXI transport options",
+      "parent": "A2"
+    },
+    {
+      "id": "A2.3",
+      "title": "Valid-Ready transport",
+      "parent": "A2"
+    },
+    {
+      "id": "A2.4",
+      "title": "Credited transport",
+      "parent": "A2"
+    },
+    {
+      "id": "A2.5",
+      "title": "Pipelining and register stages",
+      "parent": "A2"
+    },
+    {
+      "id": "A2.6",
+      "title": "AXI transactions and transfers",
+      "parent": "A2"
+    }
+  ],
+  "requirements": [
+    {
+      "id": "REQ_A2_1_001",
+      "text": "There must be no combinatorial paths between input and output signals on an interface.",
+      "source_section": "A2.1",
+      "signals": [],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_1_002",
+      "text": "A2.1.2 Reset The AXI protocol uses a single active-LOW reset signal, ARESETn.",
+      "source_section": "A2.1",
+      "signals": [
+        "AXI",
+        "LOW"
+      ],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_1_003",
+      "text": "The reset signal can be asserted asynchronously, but deassertion can only be synchronous with a rising edge of ACLK.",
+      "source_section": "A2.1",
+      "signals": [
+        "ACLK"
+      ],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_1_004",
+      "text": "Signals that are required to be deasserted during reset must remain deasserted at least until the rising ACLK edge after ARESETn is HIGH.",
+      "source_section": "A2.1",
+      "signals": [
+        "ACLK",
+        "HIGH"
+      ],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_1_005",
+      "text": "The earliest point these signals can be asserted is at a rising ACLK edge after ARESETn is HIGH.",
+      "source_section": "A2.1",
+      "signals": [
+        "ACLK",
+        "HIGH"
+      ],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_2_001",
+      "text": "Connected Manager and Subordinate interfaces must have the same value for the AXI_Transport property.",
+      "source_section": "A2.2",
+      "signals": [],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_3_001",
+      "text": "VALID signals must be LOW during reset.",
+      "source_section": "A2.3",
+      "signals": [
+        "LOW",
+        "VALID"
+      ],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_3_002",
+      "text": "The transmitter must keep its information stable until the transfer occurs at edge 3, when this assertion is recognized.",
+      "source_section": "A2.3",
+      "signals": [],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_3_003",
+      "text": "transmitter is not permitted to wait until READY is asserted before asserting VALID.",
+      "source_section": "A2.3",
+      "signals": [
+        "READY",
+        "VALID"
+      ],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_3_004",
+      "text": "When VALID is asserted, it must remain asserted until the handshake occurs, at a rising clock edge when VALID and READY are both asserted.",
+      "source_section": "A2.3",
+      "signals": [
+        "READY",
+        "VALID"
+      ],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_3_005",
+      "text": "receiver is permitted to wait for VALID to be asserted before asserting the corresponding READY.",
+      "source_section": "A2.3",
+      "signals": [
+        "READY",
+        "VALID"
+      ],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_3_006",
+      "text": "If READY is asserted, it is permitted to deassert READY before VALID is asserted.",
+      "source_section": "A2.3",
+      "signals": [
+        "READY",
+        "VALID"
+      ],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_3_001",
+      "text": "In that case, the Subordinate must be able to accept any valid request that is presented to it.",
+      "source_section": "A2.3",
+      "signals": [],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_3_001",
+      "text": "Double-headed arrows point to signals that must be asserted only after assertion of the signal at the start of the arrow.",
+      "source_section": "A2.3",
+      "signals": [],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_3_002",
+      "text": "The Manager must not wait for the Subordinate to assert AWREADY or WREADY before asserting AWVALID or WVALID.",
+      "source_section": "A2.3",
+      "signals": [
+        "AWREADY",
+        "AWVALID",
+        "WREADY",
+        "WVALID"
+      ],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_3_003",
+      "text": "The Subordinate must wait for AWVALID, AWREADY, WVALID, and WREADY to be asserted before asserting BVALID.",
+      "source_section": "A2.3",
+      "signals": [
+        "AWREADY",
+        "AWVALID",
+        "BVALID",
+        "WREADY",
+        "WVALID"
+      ],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_3_004",
+      "text": "The Subordinate must wait for the last write data transfer before asserting BVALID.",
+      "source_section": "A2.3",
+      "signals": [
+        "BVALID"
+      ],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_3_005",
+      "text": "The Subordinate must not wait for the Manager to assert BREADY before asserting BVALID.",
+      "source_section": "A2.3",
+      "signals": [
+        "BREADY",
+        "BVALID"
+      ],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_3_001",
+      "text": "The Manager must not wait for the Subordinate to assert ARREADY before asserting ARVALID.",
+      "source_section": "A2.3",
+      "signals": [
+        "ARREADY",
+        "ARVALID"
+      ],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_3_002",
+      "text": "The Subordinate must wait for both ARVALID and ARREADY to be asserted before it asserts RVALID to indicate that valid data is available.",
+      "source_section": "A2.3",
+      "signals": [
+        "ARREADY",
+        "ARVALID",
+        "RVALID"
+      ],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_3_003",
+      "text": "The Subordinate must not wait for the Manager to assert RREADY before asserting RVALID.",
+      "source_section": "A2.3",
+      "signals": [
+        "RREADY",
+        "RVALID"
+      ],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_4_001",
+      "text": "All CRDT and CRDTSH signals must be LOW.",
+      "source_section": "A2.4",
+      "signals": [
+        "CRDT",
+        "CRDTSH",
+        "LOW"
+      ],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_4_002",
+      "text": "The channel transmitter uses a credit each cycle that VALID is asserted.",
+      "source_section": "A2.4",
+      "signals": [
+        "VALID"
+      ],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_4_003",
+      "text": "VALID must not be asserted when the channel transmitter has zero credits.",
+      "source_section": "A2.4",
+      "signals": [
+        "VALID"
+      ],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_4_004",
+      "text": "There must not be combinatorial paths between credit signals and other signals on a channel in either direction.",
+      "source_section": "A2.4",
+      "signals": [],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_4_005",
+      "text": "A credit cannot be used for a transfer in the same cycle that it is given.",
+      "source_section": "A2.4",
+      "signals": [],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_4_006",
+      "text": "A credit cannot be given in the same cycle that it is used by a transfer.",
+      "source_section": "A2.4",
+      "signals": [],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_4_007",
+      "text": "Cycle 4 The Tx uses the credit for a transfer.",
+      "source_section": "A2.4",
+      "signals": [],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_4_008",
+      "text": "Cycle 5 The Tx uses the second credit for a transfer.",
+      "source_section": "A2.4",
+      "signals": [],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_4_009",
+      "text": "Cycle 8 The Tx uses the credit for a transfer.",
+      "source_section": "A2.4",
+      "signals": [],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_5_001",
+      "text": "VALID signals must be pipelined by the same number of cycles as the payload signals of that channel including RP and SHAREDCRD signals, if present.",
+      "source_section": "A2.5",
+      "signals": [
+        "SHAREDCRD",
+        "VALID"
+      ],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_5_002",
+      "text": "PENDING signals must retain the relationship that they are HIGH in the cycle before VALID is HIGH.",
+      "source_section": "A2.5",
+      "signals": [
+        "HIGH",
+        "PENDING",
+        "VALID"
+      ],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_6_001",
+      "text": "A write response must always follow the last write transfer in a write transaction.",
+      "source_section": "A2.6",
+      "signals": [],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_6_002",
+      "text": "Read data and responses must always follow the read request.",
+      "source_section": "A2.6",
+      "signals": [],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_6_003",
+      "text": "When a Manager issues a write request, it must be able to provide all write data for that transaction, without dependency on other transactions from that Manager.",
+      "source_section": "A2.6",
+      "signals": [],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_6_004",
+      "text": "When a Manager has issued a write request and all write data, it must be able to accept all responses for that transaction, without dependency on other transactions from that Manager.",
+      "source_section": "A2.6",
+      "signals": [],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_6_005",
+      "text": "When a Manager has issued a read request, it must be able to accept all read data for that transaction, without dependency on other transactions from that Manager.",
+      "source_section": "A2.6",
+      "signals": [],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_6_006",
+      "text": "A Manager is permitted to wait for one transaction to complete before issuing another transaction request.",
+      "source_section": "A2.6",
+      "signals": [],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_6_007",
+      "text": "A Subordinate is permitted to wait for one transaction to complete before accepting another request, giving credits or sending transfers for another transaction.",
+      "source_section": "A2.6",
+      "signals": [],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_6_008",
+      "text": "A Subordinate must not block acceptance of data-less write requests due to transactions with leading write data.",
+      "source_section": "A2.6",
+      "signals": [],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_6_009",
+      "text": "This can occur if the write request channel contains more register stages than the write data channel.",
+      "source_section": "A2.6",
+      "signals": [],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_6_010",
+      "text": "When the interconnect is required to determine the destination address space or Subordinate space, it must realign the request and write data.",
+      "source_section": "A2.6",
+      "signals": [],
+      "type": "protocol_rule"
+    },
+    {
+      "id": "REQ_A2_6_011",
+      "text": "This realignment is required to assure that the write data is signaled as being valid only to the Subordinate for which it is destined.",
+      "source_section": "A2.6",
+      "signals": [],
+      "type": "protocol_rule"
+    }
+  ],
+  "figures": [
+    {
+      "caption": "Figure A2.1: Exit from reset",
+      "file": "AXI_SPEC_OUTPUT/figures/figure_p27_1_Figure_A2_1__Exit_from_reset.png",
+      "section": "A2.1",
+      "page": 27,
+      "ocr_text": "Other signals can take any value during reset.\n\nFor example, for VALID, this is point b in Figure A2.1.\n\nACLK |\n\n——_\n\nARESETn ae\n—\nVALID b",
+      "visual_requirement_hints": [
+        "ACLK",
+        "ARESETN",
+        "RESET",
+        "VALID"
+      ]
+    },
+    {
+      "caption": "Figure A2.2: VALID before READY handshake",
+      "file": "AXI_SPEC_OUTPUT/figures/figure_p29_1_Figure_A2_2__VALID_before_READY_handshak.png",
+      "section": "A2.3",
+      "page": 29,
+      "ocr_text": "ack TLL ELA\nINFORMATION Zfff ss VWF\n\nVALID f — \\_\n\nREADY [\\",
+      "visual_requirement_hints": [
+        "HANDSHAKE",
+        "READ",
+        "READY",
+        "VALID"
+      ]
+    },
+    {
+      "caption": "Figure A2.3: READY before VALID handshake",
+      "file": "AXI_SPEC_OUTPUT/figures/figure_p29_2_Figure_A2_3__READY_before_VALID_handshak.png",
+      "section": "A2.3",
+      "page": 29,
+      "ocr_text": "ack LPL ELL\nINFORMATION ZLYVYYX_ YZ\n\nVALID [\\\n\nREADY [| \\__",
+      "visual_requirement_hints": [
+        "HANDSHAKE",
+        "READ",
+        "READY",
+        "VALID"
+      ]
+    },
+    {
+      "caption": "Figure A2.4: VALID with READY handshake",
+      "file": "AXI_SPEC_OUTPUT/figures/figure_p30_1_Figure_A2_4__VALID_with_READY_handshake.png",
+      "section": "A2.3",
+      "page": 30,
+      "ocr_text": "INFORMATION ZX YW\nVALID [ \\\nREADY [ \\",
+      "visual_requirement_hints": [
+        "HANDSHAKE",
+        "READ",
+        "READY",
+        "VALID"
+      ]
+    },
+    {
+      "caption": "Figure A2.5: Write transaction handshake dependencies",
+      "file": "AXI_SPEC_OUTPUT/figures/figure_p31_1_Figure_A2_5__Write_transaction_handshake.png",
+      "section": "A2.3",
+      "page": 31,
+      "ocr_text": "AWVALID WVALID BVALID\n\n. / \\\n\nAWREADY WREADY BREADY",
+      "visual_requirement_hints": [
+        "HANDSHAKE",
+        "READ",
+        "READY",
+        "VALID",
+        "WRITE"
+      ]
+    },
+    {
+      "caption": "Figure A2.6: Read transaction handshake dependencies",
+      "file": "AXI_SPEC_OUTPUT/figures/figure_p32_1_Figure_A2_6__Read_transaction_handshake_.png",
+      "section": "A2.3",
+      "page": 32,
+      "ocr_text": "¢ The Manager can assert RREADY before RVALID is asserted.\n\nARVALID ————>> RVALID\n\n\\ / \\\n\nARREADY RREADY",
+      "visual_requirement_hints": [
+        "ASSERTED",
+        "HANDSHAKE",
+        "READ",
+        "READY",
+        "VALID"
+      ]
+    },
+    {
+      "caption": "Figure A2.7: Example Transfers",
+      "file": "AXI_SPEC_OUTPUT/figures/figure_p34_1_Figure_A2_7__Example_Transfers.png",
+      "section": "A2.4",
+      "page": 34,
+      "ocr_text": "ARESETn\n\nCRDT NL d \\\nVALID pe ee a VO",
+      "visual_requirement_hints": [
+        "ARESETN",
+        "RESET",
+        "TRANSFER",
+        "VALID"
+      ]
+    }
+  ],
+  "tables": [
+    {
+      "page": 27,
+      "csv_file": "AXI_SPEC_OUTPUT/tables/table_p27_1.csv"
+    },
+    {
+      "page": 34,
+      "csv_file": "AXI_SPEC_OUTPUT/tables/table_p34_1.csv"
+    },
+    {
+      "page": 37,
+      "csv_file": "AXI_SPEC_OUTPUT/tables/table_p37_1.csv"
+    }
+  ],
+  "notes": [],
+  "acronyms": [
+    "ACLK",
+    "AR",
+    "ARCRDT",
+    "ARCRDTSH",
+    "ARM",
+    "ARPENDING",
+    "ARREADY",
+    "ARRP",
+    "ARVALID",
+    "AW",
+    "AWCRDT",
+    "AWCRDTSH",
+    "AWPENDING",
+    "AWREADY",
+    "AWRP",
+    "AWVALID",
+    "AXI",
+    "BCRDT",
+    "BPENDING",
+    "BREADY",
+    "BVALID",
+    "CRDT",
+    "CRDTSH",
+    "HIGH",
+    "ID",
+    "IHI",
+    "LOW",
+    "PENDING",
+    "RCRDT",
+    "READY",
+    "RP",
+    "RPENDING",
+    "RREADY",
+    "RVALID",
+    "SHAREDCRD",
+    "VALID",
+    "WCRDT",
+    "WCRDTSH",
+    "WLAST",
+    "WPENDING",
+    "WREADY",
+    "WRP",
+    "WSHAREDCRD",
+    "WVALID"
+  ],
+  "cross_references": [
+    "Figure A2.1",
+    "Figure A2.1",
+    "Table A2.1",
+    "Table A2.1",
+    "Figure A2.2",
+    "Figure A2.3",
+    "Figure A2.4",
+    "Figure A2.2",
+    "Figure A2.2",
+    "Figure A2.3",
+    "Figure A2.3",
+    "Figure A2.4",
+    "Figure A2.4",
+    "Table A2.2",
+    "Table A2.2",
+    "Figure A2.5",
+    "Figure A2.5",
+    "Figure A2.6",
+    "Figure A2.6",
+    "Table A2.3",
+    "Table A2.3",
+    "Figure A2.7",
+    "Figure A2.7",
+    "Table A2.5",
+    "Table A2.5",
+    "Table A2.6",
+    "Table A2.6",
+    "Table A2.7",
+    "Table A2.7",
+    "Figure A2.8",
+    "Figure A2.8",
+    "Figure A2.9",
+    "Figure A2.9",
+    "Table A2.9",
+    "Table A2.2",
+    "Table A2.9"
+  ],
+  "semantic_chunks": [
+    {
+      "section": "A2.1",
+      "text": "Chapter A2. AXI transport\nA2.1. Clock and reset\nA2.1 Clock and reset\nThis section describes the requirements for implementing the AXI global clock and reset signals ACLK and\nARESETn.\nA2.1.1\nClock\nEach AXI interface has a single clock signal, ACLK. All input signals are sampled on the rising edge of ACLK.\nAll output signal changes can only occur after the rising edge of ACLK.\nThere must be no combinatorial paths between input and output signals on an interface.\nA2.1.2\nReset\nThe AXI protocol uses a single active-LOW reset signal, ARESETn. The reset signal can be asserted\nasynchronously, but deassertion can only be synchronous with a rising edge of ACLK.\nSignals that are required to be deasserted during reset must remain deasserted at least until the rising ACLK edge\nafter ARESETn is HIGH. The earliest point these signals can be asserted is at a rising ACLK edge after\nARESETn is HIGH.\nOther signals can take any value during reset.\nFor example, for VALID, this is point b in Figure A2.1.\nACLK\nARESETn\nVALID\na\nb\nFigure A2.1: Exit from reset\nARM IHI 0022\nIssue L\nCopyright © 2003-2025 Arm Limited or its affiliates. All rights reserved.\nNon-confidential\n27"
+    },
+    {
+      "section": "A2.2",
+      "text": "Chapter A2. AXI transport\nA2.2. AXI transport options\nA2.2 AXI transport options\nTwo options are available for AXI transport:\n• Ready, where every channel includes VALID and READY signals. The transmitter asserts VALID when it\nhas a transfer to send. A transfer occurs when VALID and READY are both HIGH.\n• Credited, where every channel includes VALID and CRDT signals. The receiver uses CRDT signals to give\ncredits to the transmitter. The transmitter can assert VALID to send a transfer if it has an appropriate credit.\nThis transport is good for high frequency operation and enables the use of Resource Planes on a link.\nAll AXI channels on an interface use the same type of transport, Table A2.1 shows how this is configured using the\nAXI_Transport property.\nTable A2.1: AXI_Transport property\nAXI_Transport\nDefault\nDescription\nCredited\nAXI channels use CRDT flow control signals.\nReady\nY\nAXI channels use READY flow control signals.\nThe following rules apply to transport configuration:\n• Connected Manager and Subordinate interfaces must have the same value for the AXI_Transport property.\n• Credited transport can be used with AXI5 interfaces only.\nARM IHI 0022\nIssue L\nCopyright © 2003-2025 Arm Limited or its affiliates. All rights reserved.\nNon-confidential\n28"
+    },
+    {
+      "section": "A2.3",
+      "text": "Chapter A2. AXI transport\nA2.3. Valid-Ready transport\nA2.3 Valid-Ready transport\nWhen using a Valid-Ready transport, all AXI channels use the same VALID-READY handshake process to\ntransfer address, data, and control information. This two-way flow control mechanism means both the Manager\nand Subordinate can control the rate that the information moves between Manager and Subordinate. The\ntransmitter generates the VALID signal to indicate when the address, data, or control information is available. The\nreceiver generates the READY signal to indicate that it can accept the information. Transfer occurs only when\nboth the VALID and READY signals are HIGH.\nVALID signals must be LOW during reset.\nFigure A2.2, Figure A2.3 and Figure A2.4 show examples of the handshake process.\nThe transmitter presents information after edge 1 and asserts the VALID signal as shown in Figure A2.2. The\nreceiver asserts the READY signal after edge 2. The transmitter must keep its information stable until the transfer\noccurs at edge 3, when this assertion is recognized.\n0\n1\n2\n3\n4\nACLK\nINFORMATION\nVALID\nREADY\nFigure A2.2: VALID before READY handshake\nA transmitter is not permitted to wait until READY is asserted before asserting VALID.\nWhen VALID is asserted, it must remain asserted until the handshake occurs, at a rising clock edge when VALID\nand READY are both asserted.\nIn Figure A2.3, the receiver asserts READY after edge 1, before the address, data, or control information is valid.\nThis assertion indicates that it can accept the information. The transmitter presents the information and asserts\nVALID after edge 2, then the transfer occurs at edge 3, when this assertion is recognized. In this case, transfer\noccurs in a single cycle.\n0\n1\n2\n3\n4\nACLK\nINFORMATION\nVALID\nREADY\nFigure A2.3: READY before VALID handshake\nA receiver is permitted to wait for VALID to be asserted before asserting the corresponding READY.\nIf READY is asserted, it is permitted to deassert READY before VALID is asserted.\nARM IHI 0022\nIssue L\nCopyright © 2003-2025 Arm Limited or its affiliates. All rights reserved.\nNon-confidential\n29\n\nChapter A2. AXI transport\nA2.3. Valid-Ready transport\nIn Figure A2.4, both the transmitter and receiver happen to indicate that they can transfer the address, data, or\ncontrol information after edge 1. In this case, the transfer occurs at the rising clock edge when the assertion of\nboth VALID and READY can be recognized. These assertions mean that the transfer occurs at edge 2.\n0\n1\n2\n3\n4\nACLK\nINFORMATION\nVALID\nREADY\nFigure A2.4: VALID with READY handshake\nThe default state of READY signals can be either HIGH or LOW.\nFor request channels, it is recommended to use HIGH as the default state to minimize latency. In that case, the\nSubordinate must be able to accept any valid request that is presented to it.\nA2.3.1\nValid-Ready signals\nTable A2.2 shows the VALID and READY signals. VALID signals are present whether using Valid-Ready\ntransport or credited transport.\nTable A2.2: Valid and Ready signals\nName\nWidth\nDefault\nDescription\nAWVALID\n1\n-\nAsserted high to indicate that the signals on the AW channel are valid.\nAWREADY\n1\n-\nAsserted high to indicate that a transfer on the AW channel can be accepted.\nWVALID\n1\n-\nAsserted high to indicate that the signals on the W channel are valid.\nWREADY\n1\n-\nAsserted high to indicate that a transfer on the W channel can be accepted.\nBVALID\n1\n-\nAsserted high to indicate that the signals on the B channel are valid.\nBREADY\n1\n-\nAsserted high to indicate that a transfer on the B channel can be accepted.\nARVALID\n1\n-\nAsserted high to indicate that the signals on the AR channel are valid.\nARREADY\n1\n-\nAsserted high to indicate that a transfer on the AR channel can be accepted.\nRVALID\n1\n-\nAsserted high to indicate that the signals on the R channel are valid.\nRREADY\n1\n-\nAsserted high to indicate that a transfer on the R channel can be accepted.\nARM IHI 0022\nIssue L\nCopyright © 2003-2025 Arm Limited or its affiliates. All rights reserved.\nNon-confidential\n30\n\nChapter A2. AXI transport\nA2.3. Valid-Ready transport\nA2.3.2\nDependencies between channel handshake signals\nThere are dependencies between channels for write, read, and snoop transactions. These are described in the\nsections below and include dependency diagrams, where:\n• Single-headed arrows point to signals that can be asserted before or after the signal at the start of the arrow.\n• Double-headed arrows point to signals that must be asserted only after assertion of the signal at the start of\nthe arrow.\nA2.3.2.1\nWrite transaction dependencies\nFor transactions on the write channels, Figure A2.5 shows the handshake signal dependencies. The rules are:\n• The Manager must not wait for the Subordinate to assert AWREADY or WREADY before asserting\nAWVALID or WVALID. This applies to every write data transfer in a transaction.\n• The Subordinate can wait for AWVALID or WVALID, or both, before asserting AWREADY.\n• The Subordinate can assert AWREADY before AWVALID or WVALID, or both, are asserted.\n• The Subordinate can wait for AWVALID or WVALID, or both, before asserting WREADY.\n• The Subordinate can assert WREADY before AWVALID or WVALID, or both, are asserted.\n• The Subordinate must wait for AWVALID, AWREADY, WVALID, and WREADY to be asserted before\nasserting BVALID.\n• The Subordinate must wait for the last write data transfer before asserting BVALID. The last write data\ntransfer has WLAST asserted, see A3.2.1 Write data channel (W).\n• The Subordinate must not wait for the Manager to assert BREADY before asserting BVALID.\n• The Manager can wait for BVALID before asserting BREADY.\n• The Manager can assert BREADY before BVALID is asserted.\nWREADY\nAWVALID\nAWREADY\nWVALID\nBVALID\nBREADY\nFigure A2.5: Write transaction handshake dependencies\nFor transactions on the write channels that do not include data, WVALID and WREADY are not included in the\ndependencies.\nARM IHI 0022\nIssue L\nCopyright © 2003-2025 Arm Limited or its affiliates. All rights reserved.\nNon-confidential\n31\n\nChapter A2. AXI transport\nA2.3. Valid-Ready transport\nA2.3.2.2\nRead transaction dependencies\nFor transactions on the read channels, Figure A2.6 shows the handshake signal dependencies. The rules are:\n• The Manager must not wait for the Subordinate to assert ARREADY before asserting ARVALID.\n• The Subordinate can wait for ARVALID to be asserted before it asserts ARREADY.\n• The Subordinate can assert ARREADY before ARVALID is asserted.\n• The Subordinate must wait for both ARVALID and ARREADY to be asserted before it asserts RVALID to\nindicate that valid data is available.\n• The Subordinate must not wait for the Manager to assert RREADY before asserting RVALID.\n• The Manager can wait for RVALID to be asserted before it asserts RREADY.\n• The Manager can assert RREADY before RVALID is asserted.\nARREADY\nRREADY\nARVALID\nRVALID\nFigure A2.6: Read transaction handshake dependencies\nARM IHI 0022\nIssue L\nCopyright © 2003-2025 Arm Limited or its affiliates. All rights reserved.\nNon-confidential\n32"
+    },
+    {
+      "section": "A2.4",
+      "text": "Chapter A2. AXI transport\nA2.4. Credited transport\nA2.4 Credited transport\nWhen the AXI_Transport property is Credited, AXI channels use a credited transport.\nTable A2.3 shows a list of all signals that can be added to a channel when credited transport is used. Signal names\nare the base name, when instantiated each includes a prefix to indicate which channel they belong.\nA channel has a transmitter (Tx) and a receiver (Rx).\nTable A2.3: Credited channel signals\nName\nWidth\nSource\nPresence\nDescription\nVALID\n1\nTx\n-\nWhen asserted HIGH, there is one\ntransfer from Tx to Rx.\nPENDING\n1\nTx\nAXI_Transport == Credited\nAsserted HIGH to indicate that a\ntransfer might occur in the following\ncycle. See A2.4.4 Transfer-level\nclock gating.\nRP\nclog2(Num_RP)\nTx\nNum_RP > 1\nEncoded indicator of the Resource\nPlane number for a transfer. See\nA2.4.2 Resource Planes.\nSHAREDCRD\n1\nTx\nShared_Credits == True\nAsserted HIGH to indicate that the\ntransfer is using a shared credit.\nSee A2.4.3 Shared credits.\nCRDT\nNum_RP\nRx\nAXI_Transport == Credited\nAsserted HIGH to give one credit on\nthe respective resource plane.\nCRDTSH\n1\nRx\nShared_Credits == True\nAsserted HIGH to give one shared\ncredit. See A2.4.3 Shared credits.\nARM IHI 0022\nIssue L\nCopyright © 2003-2025 Arm Limited or its affiliates. All rights reserved.\nNon-confidential\n33\n\nChapter A2. AXI transport\nA2.4. Credited transport\nA2.4.1\nCredited flow control\nThe following rules apply to a credited channel:\n• During reset the channel transmitter has no credits, the receiver has all available credits. All CRDT and\nCRDTSH signals must be LOW.\n• Each cycle that CRDT or CRDTSH is asserted gives one credit per bit asserted, to the channel transmitter.\n• The channel transmitter uses a credit each cycle that VALID is asserted.\n• VALID must not be asserted when the channel transmitter has zero credits.\n• The minimum number of credits that the receiver can give is 1 per resource plane.\n• The maximum number of credits that the receiver can give is 15 per resource plane and 15 shared credits.\nThere must not be combinatorial paths between credit signals and other signals on a channel in either direction.\nThis restriction has the following consequences:\n• A credit cannot be used for a transfer in the same cycle that it is given.\n• A credit cannot be given in the same cycle that it is used by a transfer.\nAn example of transfers on a channel is shown in Figure A2.7. In this example, the receiver has two credits\navailable.\n0\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\nACLK\nARESETn\nCRDT\nVALID\na\nb\nd\nc\ne\nFigure A2.7: Example Transfers\nCycle 0\nAt reset the Tx has no credits.\nCycle 3\nOne credit is given by the Rx.\nCycle 4\nThe Tx uses the credit for a transfer. Another credit is given by the Rx.\nCycle 5\nThe Tx uses the second credit for a transfer.\nCycle 7\nThe credit used in cycle 4 is given back to the Tx.\nCycle 8\nThe Tx uses the credit for a transfer.\nARM IHI 0022\nIssue L\nCopyright © 2003-2025 Arm Limited or its affiliates. All rights reserved.\nNon-confidential\n34"
+    },
+    {
+      "section": "A2.5",
+      "text": "Chapter A2. AXI transport\nA2.5. Pipelining and register stages\nA2.5 Pipelining and register stages\nEach AXI channel transfers information in only one direction, and the architecture does not require any fixed\nrelationship between the channels. This means that a register stage can be inserted at any point in any channel at\nthe cost of an additional cycle of latency.\nThese qualities make the following possible:\n• Trade-off between cycles of latency and maximum frequency of operation.\n• Direct, fast connection between a processor and high-performance memory, while using simple register\nslices to isolate longer paths to less performance critical peripherals.\nThe following rules apply to the registering of channels:\n• There can be any number of register stages on VALID, READY, and CRDT paths between components.\n• Different channels can have a different number of register stages, depending on their timing requirements.\n• VALID signals must be pipelined by the same number of cycles as the payload signals of that channel\nincluding RP and SHAREDCRD signals, if present.\n• PENDING signals must retain the relationship that they are HIGH in the cycle before VALID is HIGH.\nARM IHI 0022\nIssue L\nCopyright © 2003-2025 Arm Limited or its affiliates. All rights reserved.\nNon-confidential\n40"
+    },
+    {
+      "section": "A2.6",
+      "text": "Chapter A2. AXI transport\nA2.6. AXI transactions and transfers\nA2.6 AXI transactions and transfers\nThe AXI protocol requires the following relationships to be maintained:\n• A write response must always follow the last write transfer in a write transaction.\n• Read data and responses must always follow the read request.\n• When a Manager issues a write request, it must be able to provide all write data for that transaction, without\ndependency on other transactions from that Manager.\n• When a Manager has issued a write request and all write data, it must be able to accept all responses for that\ntransaction, without dependency on other transactions from that Manager.\n• When a Manager has issued a read request, it must be able to accept all read data for that transaction, without\ndependency on other transactions from that Manager.\n– Note that a Manager can rely on read data returning in order from transactions that use the same ID, so\nthe Manager only needs enough storage for read data from transactions with different IDs.\n• A Manager is permitted to wait for one transaction to complete before issuing another transaction request.\n• A Subordinate is permitted to wait for one transaction to complete before accepting another request, giving\ncredits or sending transfers for another transaction.\n• A Subordinate must not block acceptance of data-less write requests due to transactions with leading write\ndata.\nThe protocol does not define any other relationship between the channels.\nThe lack of relationship means, for example, that the write data can appear at an interface before the write request\nfor the transaction. This can occur if the write request channel contains more register stages than the write data\nchannel. Similarly, the write data might appear in the same cycle as the request.\nWhen the interconnect is required to determine the destination address space or Subordinate space, it must realign\nthe request and write data. This realignment is required to assure that the write data is signaled as being valid only\nto the Subordinate for which it is destined.\nARM IHI 0022\nIssue L\nCopyright © 2003-2025 Arm Limited or its affiliates. All rights reserved.\nNon-confidential\n41\n\nChapter A3\nAXI transactions\nThe AXI protocol uses transactions for communication between Managers and Subordinates. All transactions\ninclude a request and a response. Write and read transactions also include one or more data transfers.\nThis chapter describes the transaction requests, responses, and data transfers.\nIt contains the following sections:\n• A3.1 Transaction request\n• A3.2 Write and read data\n• A3.3 Transaction response\nARM IHI 0022\nIssue L\nCopyright © 2003-2025 Arm Limited or its affiliates. All rights reserved.\nNon-confidential\n42"
+    }
+  ],
+  "pages": [
+    {
+      "page_number": 26,
+      "text": "Chapter A2\nAXI transport\nAXI uses channels to transport request, data and response transfers between components.\nThis chapter describes the AXI transport with options for either a VALID-READY handshake or credited channels.\nIt contains the following sections:\n• A2.1 Clock and reset\n• A2.2 AXI transport options\n• A2.3 Valid-Ready transport\n• A2.4 Credited transport\n• A2.5 Pipelining and register stages\n• A2.6 AXI transactions and transfers\nARM IHI 0022\nIssue L\nCopyright © 2003-2025 Arm Limited or its affiliates. All rights reserved.\nNon-confidential\n26\n",
+      "headings": [],
+      "requirements": [],
+      "figures": [],
+      "table_captions": [],
+      "tables": [],
+      "images": []
+    },
+    {
+      "page_number": 27,
+      "text": "Chapter A2. AXI transport\nA2.1. Clock and reset\nA2.1 Clock and reset\nThis section describes the requirements for implementing the AXI global clock and reset signals ACLK and\nARESETn.\nA2.1.1\nClock\nEach AXI interface has a single clock signal, ACLK. All input signals are sampled on the rising edge of ACLK.\nAll output signal changes can only occur after the rising edge of ACLK.\nThere must be no combinatorial paths between input and output signals on an interface.\nA2.1.2\nReset\nThe AXI protocol uses a single active-LOW reset signal, ARESETn. The reset signal can be asserted\nasynchronously, but deassertion can only be synchronous with a rising edge of ACLK.\nSignals that are required to be deasserted during reset must remain deasserted at least until the rising ACLK edge\nafter ARESETn is HIGH. The earliest point these signals can be asserted is at a rising ACLK edge after\nARESETn is HIGH.\nOther signals can take any value during reset.\nFor example, for VALID, this is point b in Figure A2.1.\nACLK\nARESETn\nVALID\na\nb\nFigure A2.1: Exit from reset\nARM IHI 0022\nIssue L\nCopyright © 2003-2025 Arm Limited or its affiliates. All rights reserved.\nNon-confidential\n27\n",
+      "headings": [
+        {
+          "section_id": "A2.1",
+          "title": "Clock and reset",
+          "font_size": null
+        }
+      ],
+      "requirements": [
+        {
+          "id": "REQ_A2_1_001",
+          "text": "There must be no combinatorial paths between input and output signals on an interface.",
+          "source_section": "A2.1",
+          "signals": [],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A2_1_002",
+          "text": "A2.1.2 Reset The AXI protocol uses a single active-LOW reset signal, ARESETn.",
+          "source_section": "A2.1",
+          "signals": [
+            "AXI",
+            "LOW"
+          ],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A2_1_003",
+          "text": "The reset signal can be asserted asynchronously, but deassertion can only be synchronous with a rising edge of ACLK.",
+          "source_section": "A2.1",
+          "signals": [
+            "ACLK"
+          ],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A2_1_004",
+          "text": "Signals that are required to be deasserted during reset must remain deasserted at least until the rising ACLK edge after ARESETn is HIGH.",
+          "source_section": "A2.1",
+          "signals": [
+            "ACLK",
+            "HIGH"
+          ],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A2_1_005",
+          "text": "The earliest point these signals can be asserted is at a rising ACLK edge after ARESETn is HIGH.",
+          "source_section": "A2.1",
+          "signals": [
+            "ACLK",
+            "HIGH"
+          ],
+          "type": "protocol_rule"
+        }
+      ],
+      "figures": [
+        {
+          "caption": "Figure A2.1: Exit from reset",
+          "file": "AXI_SPEC_OUTPUT/figures/figure_p27_1_Figure_A2_1__Exit_from_reset.png",
+          "section": "A2.1",
+          "page": 27,
+          "ocr_text": "Other signals can take any value during reset.\n\nFor example, for VALID, this is point b in Figure A2.1.\n\nACLK |\n\n——_\n\nARESETn ae\n—\nVALID b",
+          "visual_requirement_hints": [
+            "ACLK",
+            "ARESETN",
+            "RESET",
+            "VALID"
+          ]
+        }
+      ],
+      "table_captions": [],
+      "tables": [
+        {
+          "page": 27,
+          "csv_file": "AXI_SPEC_OUTPUT/tables/table_p27_1.csv"
+        }
+      ],
+      "images": []
+    },
+    {
+      "page_number": 28,
+      "text": "Chapter A2. AXI transport\nA2.2. AXI transport options\nA2.2 AXI transport options\nTwo options are available for AXI transport:\n• Ready, where every channel includes VALID and READY signals. The transmitter asserts VALID when it\nhas a transfer to send. A transfer occurs when VALID and READY are both HIGH.\n• Credited, where every channel includes VALID and CRDT signals. The receiver uses CRDT signals to give\ncredits to the transmitter. The transmitter can assert VALID to send a transfer if it has an appropriate credit.\nThis transport is good for high frequency operation and enables the use of Resource Planes on a link.\nAll AXI channels on an interface use the same type of transport, Table A2.1 shows how this is configured using the\nAXI_Transport property.\nTable A2.1: AXI_Transport property\nAXI_Transport\nDefault\nDescription\nCredited\nAXI channels use CRDT flow control signals.\nReady\nY\nAXI channels use READY flow control signals.\nThe following rules apply to transport configuration:\n• Connected Manager and Subordinate interfaces must have the same value for the AXI_Transport property.\n• Credited transport can be used with AXI5 interfaces only.\nARM IHI 0022\nIssue L\nCopyright © 2003-2025 Arm Limited or its affiliates. All rights reserved.\nNon-confidential\n28\n",
+      "headings": [
+        {
+          "section_id": "A2.2",
+          "title": "AXI transport options",
+          "font_size": null
+        }
+      ],
+      "requirements": [
+        {
+          "id": "REQ_A2_2_001",
+          "text": "Connected Manager and Subordinate interfaces must have the same value for the AXI_Transport property.",
+          "source_section": "A2.2",
+          "signals": [],
+          "type": "protocol_rule"
+        }
+      ],
+      "figures": [],
+      "table_captions": [
+        {
+          "caption": "Table A2.1: AXI_Transport property"
+        }
+      ],
+      "tables": [],
+      "images": []
+    },
+    {
+      "page_number": 29,
+      "text": "Chapter A2. AXI transport\nA2.3. Valid-Ready transport\nA2.3 Valid-Ready transport\nWhen using a Valid-Ready transport, all AXI channels use the same VALID-READY handshake process to\ntransfer address, data, and control information. This two-way flow control mechanism means both the Manager\nand Subordinate can control the rate that the information moves between Manager and Subordinate. The\ntransmitter generates the VALID signal to indicate when the address, data, or control information is available. The\nreceiver generates the READY signal to indicate that it can accept the information. Transfer occurs only when\nboth the VALID and READY signals are HIGH.\nVALID signals must be LOW during reset.\nFigure A2.2, Figure A2.3 and Figure A2.4 show examples of the handshake process.\nThe transmitter presents information after edge 1 and asserts the VALID signal as shown in Figure A2.2. The\nreceiver asserts the READY signal after edge 2. The transmitter must keep its information stable until the transfer\noccurs at edge 3, when this assertion is recognized.\n0\n1\n2\n3\n4\nACLK\nINFORMATION\nVALID\nREADY\nFigure A2.2: VALID before READY handshake\nA transmitter is not permitted to wait until READY is asserted before asserting VALID.\nWhen VALID is asserted, it must remain asserted until the handshake occurs, at a rising clock edge when VALID\nand READY are both asserted.\nIn Figure A2.3, the receiver asserts READY after edge 1, before the address, data, or control information is valid.\nThis assertion indicates that it can accept the information. The transmitter presents the information and asserts\nVALID after edge 2, then the transfer occurs at edge 3, when this assertion is recognized. In this case, transfer\noccurs in a single cycle.\n0\n1\n2\n3\n4\nACLK\nINFORMATION\nVALID\nREADY\nFigure A2.3: READY before VALID handshake\nA receiver is permitted to wait for VALID to be asserted before asserting the corresponding READY.\nIf READY is asserted, it is permitted to deassert READY before VALID is asserted.\nARM IHI 0022\nIssue L\nCopyright © 2003-2025 Arm Limited or its affiliates. All rights reserved.\nNon-confidential\n29\n",
+      "headings": [
+        {
+          "section_id": "A2.3",
+          "title": "Valid-Ready transport",
+          "font_size": null
+        }
+      ],
+      "requirements": [
+        {
+          "id": "REQ_A2_3_001",
+          "text": "VALID signals must be LOW during reset.",
+          "source_section": "A2.3",
+          "signals": [
+            "LOW",
+            "VALID"
+          ],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A2_3_002",
+          "text": "The transmitter must keep its information stable until the transfer occurs at edge 3, when this assertion is recognized.",
+          "source_section": "A2.3",
+          "signals": [],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A2_3_003",
+          "text": "transmitter is not permitted to wait until READY is asserted before asserting VALID.",
+          "source_section": "A2.3",
+          "signals": [
+            "READY",
+            "VALID"
+          ],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A2_3_004",
+          "text": "When VALID is asserted, it must remain asserted until the handshake occurs, at a rising clock edge when VALID and READY are both asserted.",
+          "source_section": "A2.3",
+          "signals": [
+            "READY",
+            "VALID"
+          ],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A2_3_005",
+          "text": "receiver is permitted to wait for VALID to be asserted before asserting the corresponding READY.",
+          "source_section": "A2.3",
+          "signals": [
+            "READY",
+            "VALID"
+          ],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A2_3_006",
+          "text": "If READY is asserted, it is permitted to deassert READY before VALID is asserted.",
+          "source_section": "A2.3",
+          "signals": [
+            "READY",
+            "VALID"
+          ],
+          "type": "protocol_rule"
+        }
+      ],
+      "figures": [
+        {
+          "caption": "Figure A2.2: VALID before READY handshake",
+          "file": "AXI_SPEC_OUTPUT/figures/figure_p29_1_Figure_A2_2__VALID_before_READY_handshak.png",
+          "section": "A2.3",
+          "page": 29,
+          "ocr_text": "ack TLL ELA\nINFORMATION Zfff ss VWF\n\nVALID f — \\_\n\nREADY [\\",
+          "visual_requirement_hints": [
+            "HANDSHAKE",
+            "READ",
+            "READY",
+            "VALID"
+          ]
+        },
+        {
+          "caption": "Figure A2.3: READY before VALID handshake",
+          "file": "AXI_SPEC_OUTPUT/figures/figure_p29_2_Figure_A2_3__READY_before_VALID_handshak.png",
+          "section": "A2.3",
+          "page": 29,
+          "ocr_text": "ack LPL ELL\nINFORMATION ZLYVYYX_ YZ\n\nVALID [\\\n\nREADY [| \\__",
+          "visual_requirement_hints": [
+            "HANDSHAKE",
+            "READ",
+            "READY",
+            "VALID"
+          ]
+        }
+      ],
+      "table_captions": [],
+      "tables": [],
+      "images": []
+    },
+    {
+      "page_number": 30,
+      "text": "Chapter A2. AXI transport\nA2.3. Valid-Ready transport\nIn Figure A2.4, both the transmitter and receiver happen to indicate that they can transfer the address, data, or\ncontrol information after edge 1. In this case, the transfer occurs at the rising clock edge when the assertion of\nboth VALID and READY can be recognized. These assertions mean that the transfer occurs at edge 2.\n0\n1\n2\n3\n4\nACLK\nINFORMATION\nVALID\nREADY\nFigure A2.4: VALID with READY handshake\nThe default state of READY signals can be either HIGH or LOW.\nFor request channels, it is recommended to use HIGH as the default state to minimize latency. In that case, the\nSubordinate must be able to accept any valid request that is presented to it.\nA2.3.1\nValid-Ready signals\nTable A2.2 shows the VALID and READY signals. VALID signals are present whether using Valid-Ready\ntransport or credited transport.\nTable A2.2: Valid and Ready signals\nName\nWidth\nDefault\nDescription\nAWVALID\n1\n-\nAsserted high to indicate that the signals on the AW channel are valid.\nAWREADY\n1\n-\nAsserted high to indicate that a transfer on the AW channel can be accepted.\nWVALID\n1\n-\nAsserted high to indicate that the signals on the W channel are valid.\nWREADY\n1\n-\nAsserted high to indicate that a transfer on the W channel can be accepted.\nBVALID\n1\n-\nAsserted high to indicate that the signals on the B channel are valid.\nBREADY\n1\n-\nAsserted high to indicate that a transfer on the B channel can be accepted.\nARVALID\n1\n-\nAsserted high to indicate that the signals on the AR channel are valid.\nARREADY\n1\n-\nAsserted high to indicate that a transfer on the AR channel can be accepted.\nRVALID\n1\n-\nAsserted high to indicate that the signals on the R channel are valid.\nRREADY\n1\n-\nAsserted high to indicate that a transfer on the R channel can be accepted.\nARM IHI 0022\nIssue L\nCopyright © 2003-2025 Arm Limited or its affiliates. All rights reserved.\nNon-confidential\n30\n",
+      "headings": [],
+      "requirements": [
+        {
+          "id": "REQ_A2_3_001",
+          "text": "In that case, the Subordinate must be able to accept any valid request that is presented to it.",
+          "source_section": "A2.3",
+          "signals": [],
+          "type": "protocol_rule"
+        }
+      ],
+      "figures": [
+        {
+          "caption": "Figure A2.4: VALID with READY handshake",
+          "file": "AXI_SPEC_OUTPUT/figures/figure_p30_1_Figure_A2_4__VALID_with_READY_handshake.png",
+          "section": "A2.3",
+          "page": 30,
+          "ocr_text": "INFORMATION ZX YW\nVALID [ \\\nREADY [ \\",
+          "visual_requirement_hints": [
+            "HANDSHAKE",
+            "READ",
+            "READY",
+            "VALID"
+          ]
+        }
+      ],
+      "table_captions": [
+        {
+          "caption": "Table A2.2 shows the VALID and READY signals. VALID signals are present whether using Valid-Ready"
+        },
+        {
+          "caption": "Table A2.2: Valid and Ready signals"
+        }
+      ],
+      "tables": [],
+      "images": []
+    },
+    {
+      "page_number": 31,
+      "text": "Chapter A2. AXI transport\nA2.3. Valid-Ready transport\nA2.3.2\nDependencies between channel handshake signals\nThere are dependencies between channels for write, read, and snoop transactions. These are described in the\nsections below and include dependency diagrams, where:\n• Single-headed arrows point to signals that can be asserted before or after the signal at the start of the arrow.\n• Double-headed arrows point to signals that must be asserted only after assertion of the signal at the start of\nthe arrow.\nA2.3.2.1\nWrite transaction dependencies\nFor transactions on the write channels, Figure A2.5 shows the handshake signal dependencies. The rules are:\n• The Manager must not wait for the Subordinate to assert AWREADY or WREADY before asserting\nAWVALID or WVALID. This applies to every write data transfer in a transaction.\n• The Subordinate can wait for AWVALID or WVALID, or both, before asserting AWREADY.\n• The Subordinate can assert AWREADY before AWVALID or WVALID, or both, are asserted.\n• The Subordinate can wait for AWVALID or WVALID, or both, before asserting WREADY.\n• The Subordinate can assert WREADY before AWVALID or WVALID, or both, are asserted.\n• The Subordinate must wait for AWVALID, AWREADY, WVALID, and WREADY to be asserted before\nasserting BVALID.\n• The Subordinate must wait for the last write data transfer before asserting BVALID. The last write data\ntransfer has WLAST asserted, see A3.2.1 Write data channel (W).\n• The Subordinate must not wait for the Manager to assert BREADY before asserting BVALID.\n• The Manager can wait for BVALID before asserting BREADY.\n• The Manager can assert BREADY before BVALID is asserted.\nWREADY\nAWVALID\nAWREADY\nWVALID\nBVALID\nBREADY\nFigure A2.5: Write transaction handshake dependencies\nFor transactions on the write channels that do not include data, WVALID and WREADY are not included in the\ndependencies.\nARM IHI 0022\nIssue L\nCopyright © 2003-2025 Arm Limited or its affiliates. All rights reserved.\nNon-confidential\n31\n",
+      "headings": [],
+      "requirements": [
+        {
+          "id": "REQ_A2_3_001",
+          "text": "Double-headed arrows point to signals that must be asserted only after assertion of the signal at the start of the arrow.",
+          "source_section": "A2.3",
+          "signals": [],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A2_3_002",
+          "text": "The Manager must not wait for the Subordinate to assert AWREADY or WREADY before asserting AWVALID or WVALID.",
+          "source_section": "A2.3",
+          "signals": [
+            "AWREADY",
+            "AWVALID",
+            "WREADY",
+            "WVALID"
+          ],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A2_3_003",
+          "text": "The Subordinate must wait for AWVALID, AWREADY, WVALID, and WREADY to be asserted before asserting BVALID.",
+          "source_section": "A2.3",
+          "signals": [
+            "AWREADY",
+            "AWVALID",
+            "BVALID",
+            "WREADY",
+            "WVALID"
+          ],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A2_3_004",
+          "text": "The Subordinate must wait for the last write data transfer before asserting BVALID.",
+          "source_section": "A2.3",
+          "signals": [
+            "BVALID"
+          ],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A2_3_005",
+          "text": "The Subordinate must not wait for the Manager to assert BREADY before asserting BVALID.",
+          "source_section": "A2.3",
+          "signals": [
+            "BREADY",
+            "BVALID"
+          ],
+          "type": "protocol_rule"
+        }
+      ],
+      "figures": [
+        {
+          "caption": "Figure A2.5: Write transaction handshake dependencies",
+          "file": "AXI_SPEC_OUTPUT/figures/figure_p31_1_Figure_A2_5__Write_transaction_handshake.png",
+          "section": "A2.3",
+          "page": 31,
+          "ocr_text": "AWVALID WVALID BVALID\n\n. / \\\n\nAWREADY WREADY BREADY",
+          "visual_requirement_hints": [
+            "HANDSHAKE",
+            "READ",
+            "READY",
+            "VALID",
+            "WRITE"
+          ]
+        }
+      ],
+      "table_captions": [],
+      "tables": [],
+      "images": []
+    },
+    {
+      "page_number": 32,
+      "text": "Chapter A2. AXI transport\nA2.3. Valid-Ready transport\nA2.3.2.2\nRead transaction dependencies\nFor transactions on the read channels, Figure A2.6 shows the handshake signal dependencies. The rules are:\n• The Manager must not wait for the Subordinate to assert ARREADY before asserting ARVALID.\n• The Subordinate can wait for ARVALID to be asserted before it asserts ARREADY.\n• The Subordinate can assert ARREADY before ARVALID is asserted.\n• The Subordinate must wait for both ARVALID and ARREADY to be asserted before it asserts RVALID to\nindicate that valid data is available.\n• The Subordinate must not wait for the Manager to assert RREADY before asserting RVALID.\n• The Manager can wait for RVALID to be asserted before it asserts RREADY.\n• The Manager can assert RREADY before RVALID is asserted.\nARREADY\nRREADY\nARVALID\nRVALID\nFigure A2.6: Read transaction handshake dependencies\nARM IHI 0022\nIssue L\nCopyright © 2003-2025 Arm Limited or its affiliates. All rights reserved.\nNon-confidential\n32\n",
+      "headings": [],
+      "requirements": [
+        {
+          "id": "REQ_A2_3_001",
+          "text": "The Manager must not wait for the Subordinate to assert ARREADY before asserting ARVALID.",
+          "source_section": "A2.3",
+          "signals": [
+            "ARREADY",
+            "ARVALID"
+          ],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A2_3_002",
+          "text": "The Subordinate must wait for both ARVALID and ARREADY to be asserted before it asserts RVALID to indicate that valid data is available.",
+          "source_section": "A2.3",
+          "signals": [
+            "ARREADY",
+            "ARVALID",
+            "RVALID"
+          ],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A2_3_003",
+          "text": "The Subordinate must not wait for the Manager to assert RREADY before asserting RVALID.",
+          "source_section": "A2.3",
+          "signals": [
+            "RREADY",
+            "RVALID"
+          ],
+          "type": "protocol_rule"
+        }
+      ],
+      "figures": [
+        {
+          "caption": "Figure A2.6: Read transaction handshake dependencies",
+          "file": "AXI_SPEC_OUTPUT/figures/figure_p32_1_Figure_A2_6__Read_transaction_handshake_.png",
+          "section": "A2.3",
+          "page": 32,
+          "ocr_text": "¢ The Manager can assert RREADY before RVALID is asserted.\n\nARVALID ————>> RVALID\n\n\\ / \\\n\nARREADY RREADY",
+          "visual_requirement_hints": [
+            "ASSERTED",
+            "HANDSHAKE",
+            "READ",
+            "READY",
+            "VALID"
+          ]
+        }
+      ],
+      "table_captions": [],
+      "tables": [],
+      "images": []
+    },
+    {
+      "page_number": 33,
+      "text": "Chapter A2. AXI transport\nA2.4. Credited transport\nA2.4 Credited transport\nWhen the AXI_Transport property is Credited, AXI channels use a credited transport.\nTable A2.3 shows a list of all signals that can be added to a channel when credited transport is used. Signal names\nare the base name, when instantiated each includes a prefix to indicate which channel they belong.\nA channel has a transmitter (Tx) and a receiver (Rx).\nTable A2.3: Credited channel signals\nName\nWidth\nSource\nPresence\nDescription\nVALID\n1\nTx\n-\nWhen asserted HIGH, there is one\ntransfer from Tx to Rx.\nPENDING\n1\nTx\nAXI_Transport == Credited\nAsserted HIGH to indicate that a\ntransfer might occur in the following\ncycle. See A2.4.4 Transfer-level\nclock gating.\nRP\nclog2(Num_RP)\nTx\nNum_RP > 1\nEncoded indicator of the Resource\nPlane number for a transfer. See\nA2.4.2 Resource Planes.\nSHAREDCRD\n1\nTx\nShared_Credits == True\nAsserted HIGH to indicate that the\ntransfer is using a shared credit.\nSee A2.4.3 Shared credits.\nCRDT\nNum_RP\nRx\nAXI_Transport == Credited\nAsserted HIGH to give one credit on\nthe respective resource plane.\nCRDTSH\n1\nRx\nShared_Credits == True\nAsserted HIGH to give one shared\ncredit. See A2.4.3 Shared credits.\nARM IHI 0022\nIssue L\nCopyright © 2003-2025 Arm Limited or its affiliates. All rights reserved.\nNon-confidential\n33\n",
+      "headings": [
+        {
+          "section_id": "A2.4",
+          "title": "Credited transport",
+          "font_size": null
+        }
+      ],
+      "requirements": [],
+      "figures": [],
+      "table_captions": [
+        {
+          "caption": "Table A2.3 shows a list of all signals that can be added to a channel when credited transport is used. Signal names"
+        },
+        {
+          "caption": "Table A2.3: Credited channel signals"
+        }
+      ],
+      "tables": [],
+      "images": []
+    },
+    {
+      "page_number": 34,
+      "text": "Chapter A2. AXI transport\nA2.4. Credited transport\nA2.4.1\nCredited flow control\nThe following rules apply to a credited channel:\n• During reset the channel transmitter has no credits, the receiver has all available credits. All CRDT and\nCRDTSH signals must be LOW.\n• Each cycle that CRDT or CRDTSH is asserted gives one credit per bit asserted, to the channel transmitter.\n• The channel transmitter uses a credit each cycle that VALID is asserted.\n• VALID must not be asserted when the channel transmitter has zero credits.\n• The minimum number of credits that the receiver can give is 1 per resource plane.\n• The maximum number of credits that the receiver can give is 15 per resource plane and 15 shared credits.\nThere must not be combinatorial paths between credit signals and other signals on a channel in either direction.\nThis restriction has the following consequences:\n• A credit cannot be used for a transfer in the same cycle that it is given.\n• A credit cannot be given in the same cycle that it is used by a transfer.\nAn example of transfers on a channel is shown in Figure A2.7. In this example, the receiver has two credits\navailable.\n0\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\nACLK\nARESETn\nCRDT\nVALID\na\nb\nd\nc\ne\nFigure A2.7: Example Transfers\nCycle 0\nAt reset the Tx has no credits.\nCycle 3\nOne credit is given by the Rx.\nCycle 4\nThe Tx uses the credit for a transfer. Another credit is given by the Rx.\nCycle 5\nThe Tx uses the second credit for a transfer.\nCycle 7\nThe credit used in cycle 4 is given back to the Tx.\nCycle 8\nThe Tx uses the credit for a transfer.\nARM IHI 0022\nIssue L\nCopyright © 2003-2025 Arm Limited or its affiliates. All rights reserved.\nNon-confidential\n34\n",
+      "headings": [],
+      "requirements": [
+        {
+          "id": "REQ_A2_4_001",
+          "text": "All CRDT and CRDTSH signals must be LOW.",
+          "source_section": "A2.4",
+          "signals": [
+            "CRDT",
+            "CRDTSH",
+            "LOW"
+          ],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A2_4_002",
+          "text": "The channel transmitter uses a credit each cycle that VALID is asserted.",
+          "source_section": "A2.4",
+          "signals": [
+            "VALID"
+          ],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A2_4_003",
+          "text": "VALID must not be asserted when the channel transmitter has zero credits.",
+          "source_section": "A2.4",
+          "signals": [
+            "VALID"
+          ],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A2_4_004",
+          "text": "There must not be combinatorial paths between credit signals and other signals on a channel in either direction.",
+          "source_section": "A2.4",
+          "signals": [],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A2_4_005",
+          "text": "A credit cannot be used for a transfer in the same cycle that it is given.",
+          "source_section": "A2.4",
+          "signals": [],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A2_4_006",
+          "text": "A credit cannot be given in the same cycle that it is used by a transfer.",
+          "source_section": "A2.4",
+          "signals": [],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A2_4_007",
+          "text": "Cycle 4 The Tx uses the credit for a transfer.",
+          "source_section": "A2.4",
+          "signals": [],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A2_4_008",
+          "text": "Cycle 5 The Tx uses the second credit for a transfer.",
+          "source_section": "A2.4",
+          "signals": [],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A2_4_009",
+          "text": "Cycle 8 The Tx uses the credit for a transfer.",
+          "source_section": "A2.4",
+          "signals": [],
+          "type": "protocol_rule"
+        }
+      ],
+      "figures": [
+        {
+          "caption": "Figure A2.7: Example Transfers",
+          "file": "AXI_SPEC_OUTPUT/figures/figure_p34_1_Figure_A2_7__Example_Transfers.png",
+          "section": "A2.4",
+          "page": 34,
+          "ocr_text": "ARESETn\n\nCRDT NL d \\\nVALID pe ee a VO",
+          "visual_requirement_hints": [
+            "ARESETN",
+            "RESET",
+            "TRANSFER",
+            "VALID"
+          ]
+        }
+      ],
+      "table_captions": [],
+      "tables": [
+        {
+          "page": 34,
+          "csv_file": "AXI_SPEC_OUTPUT/tables/table_p34_1.csv"
+        }
+      ],
+      "images": []
+    },
+    {
+      "page_number": 35,
+      "text": "Chapter A2. AXI transport\nA2.4. Credited transport\nA2.4.2\nResource Planes\nResource Planes (RP) are used to enable independence between traffic sharing a channel. This could be to avoid\ndeadlock scenarios or to improve quality-of-service. Each RP has dedicated credits so it is possible to give credits\nfor one RP, allowing it to make progress when another RP is blocked waiting for credit.\n• Transfers using different Resource Planes must not block one another between transmitter and receiver.\nIf transfers remain on separate Resource Planes across multiple links, then the non-blocking guarantee can be\nextended.\nThe parameter Num_RP specifies how many RPs are supported on a channel.\nThe RP signal indicates the Resource Plane number for each transfer, from 0 to Num_RP-1.\nThe width of RP is clog2(Num_RP). For example, if Num_RP is 5 the width of RP is 3. If Num_RP is 1, there is\nno RP signal.\nCredits are given per Resource Plane. The CRDT signal has one bit per Resource Plane, therefore the receiver can\ngive up to one credit per RP per cycle. The number of credits for each RP is permitted to be different.\n• The transmitter can issue a transfer on a specific RP only if it has at least one credit for that RP.\n• The receiver must be able to give at least one dedicated credit per RP supported.\n• The AR, AW and W channels can have multiple RPs.\n• The AW and W transfers in the same transaction must use the same RP number.\nThere are no ordering guarantees between transfers using different RPs. This means:\n• A Manager must not issue a request transfer that has the same ID as an outstanding transaction on the same\nchannel but a different RP.\n• A Manager can interleave write data transfers for different transactions if they are using different RPs. See\nA5.5 Write data and response ordering.\nThe B and R channels have one RP.\nTable A2.5 shows the properties that define the number of RPs.\nTable A2.5: Resource plane number properties\nName\nValues\nDefault\nDescription\nNum_RP_AWW\n1-8\n1\nNumber of resource planes on the AW and W channels.\nNum_RP_AR\n1-8\n1\nNumber of resource planes on the AR channel.\nConnected interfaces can be configured to have a different number of RPs, but a Manager must not require the use\nof more RPs than can be provided by the attached Subordinate.\nIf the AXI_Transport property is Ready: Num_RP_AWW and Num_RP_AR must be 1.\nARM IHI 0022\nIssue L\nCopyright © 2003-2025 Arm Limited or its affiliates. All rights reserved.\nNon-confidential\n35\n",
+      "headings": [
+        {
+          "section_id": "A5.5",
+          "title": "Write data and response ordering.",
+          "font_size": null
+        }
+      ],
+      "requirements": [
+        {
+          "id": "REQ_A5_5_001",
+          "text": "Transfers using different Resource Planes must not block one another between transmitter and receiver.",
+          "source_section": "A5.5",
+          "signals": [],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A5_5_002",
+          "text": "The parameter Num_RP specifies how many RPs are supported on a channel.",
+          "source_section": "A5.5",
+          "signals": [],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A5_5_003",
+          "text": "The number of credits for each RP is permitted to be different.",
+          "source_section": "A5.5",
+          "signals": [],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A5_5_004",
+          "text": "The receiver must be able to give at least one dedicated credit per RP supported.",
+          "source_section": "A5.5",
+          "signals": [],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A5_5_005",
+          "text": "The AW and W transfers in the same transaction must use the same RP number.",
+          "source_section": "A5.5",
+          "signals": [],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A5_5_006",
+          "text": "A Manager must not issue a request transfer that has the same ID as an outstanding transaction on the same channel but a different RP.",
+          "source_section": "A5.5",
+          "signals": [],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A5_5_007",
+          "text": "Connected interfaces can be configured to have a different number of RPs, but a Manager must not require the use of more RPs than can be provided by the attached Subordinate.",
+          "source_section": "A5.5",
+          "signals": [],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A5_5_008",
+          "text": "If the AXI_Transport property is Ready: Num_RP_AWW and Num_RP_AR must be 1.",
+          "source_section": "A5.5",
+          "signals": [],
+          "type": "protocol_rule"
+        }
+      ],
+      "figures": [],
+      "table_captions": [
+        {
+          "caption": "Table A2.5 shows the properties that define the number of RPs."
+        },
+        {
+          "caption": "Table A2.5: Resource plane number properties"
+        }
+      ],
+      "tables": [],
+      "images": []
+    },
+    {
+      "page_number": 36,
+      "text": "Chapter A2. AXI transport\nA2.4. Credited transport\nA2.4.3\nShared credits\nAny channel that includes multiple RPs can optionally include shared credits to improve buffer utilization when\nthroughput varies on different RPs. A receiver supporting shared credits can allocate its buffers between those\ndedicated to one RP and those for any RP.\nTable A2.6 shows the properties that define whether shared credits are supported.\nTable A2.6: Shared credit properties\nName\nValues\nDefault\nDescription\nShared_Credits_AW\nTrue,\nFalse\nFalse\nIf True, Shared credits are supported on the AW channel and\nthe AWCRDTSH and AWSHAREDCRD signals are included.\nShared_Credits_W\nTrue,\nFalse\nFalse\nIf True, Shared credits are supported on the W channel and the\nWCRDTSH and WSHAREDCRD signals are included.\nShared_Credits_AR\nTrue,\nFalse\nFalse\nIf True, Shared credits are supported on the AR channel and\nthe ARCRDTSH and ARSHAREDCRD signals are included.\nThe following rules apply:\n• If the AXI_Transport property is Ready: Shared_Credits_AW, Shared_Credits_W and Shared_Credits_AR\nmust be False.\n• If Num_RP_AWW is 1: Shared_Credits_AW and Shared_Credits_W must be False.\n• If Num_RP_AR is 1: Shared_Credits_AR must be False.\n• The CRDTSH signal is asserted by the receiver to give one shared credit to the transmitter. CRDTSH can be\nasserted without asserting CRDT.\n• A transmitter can use a shared credit to send a transfer on any RP.\n• A receiver must give independence guarantees between RPs, whether the transmitter is using a shared or\ndedicated credit.\n• The SHAREDCRD signal is asserted by the transmitter alongside VALID to indicate that the transfer is\nusing a shared credit.\nIt is recommended that a transmitter uses a dedicated rather than shared credit for a transfer if it has both. This is\nbecause shared credits are more flexible so could be retained for a transfer that does not have a dedicated credit.\nThe compatibility between Manager and Subordinate interfaces according to the values of the Shared_Credits\nproperties is shown in Table A2.7.\nTable A2.7: Shared credits compatibility\nShared_Credits\nSubordinate: False\nSubordinate: True\nManager: False\nCompatible.\nCompatible.\nSHAREDCRD inputs tied LOW, CRDTSH\noutputs unconnected.\nFunctional, but available shared credits are\nunused.\nARM IHI 0022\nIssue L\nCopyright © 2003-2025 Arm Limited or its affiliates. All rights reserved.\nNon-confidential\n36\n",
+      "headings": [],
+      "requirements": [
+        {
+          "id": "REQ_A5_5_001",
+          "text": "If the AXI_Transport property is Ready: Shared_Credits_AW, Shared_Credits_W and Shared_Credits_AR must be False.",
+          "source_section": "A5.5",
+          "signals": [],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A5_5_002",
+          "text": "If Num_RP_AWW is 1: Shared_Credits_AW and Shared_Credits_W must be False.",
+          "source_section": "A5.5",
+          "signals": [],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A5_5_003",
+          "text": "If Num_RP_AR is 1: Shared_Credits_AR must be False.",
+          "source_section": "A5.5",
+          "signals": [],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A5_5_004",
+          "text": "CRDTSH can be asserted without asserting CRDT.",
+          "source_section": "A5.5",
+          "signals": [
+            "CRDT",
+            "CRDTSH"
+          ],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A5_5_005",
+          "text": "A receiver must give independence guarantees between RPs, whether the transmitter is using a shared or dedicated credit.",
+          "source_section": "A5.5",
+          "signals": [],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A5_5_006",
+          "text": "It is recommended that a transmitter uses a dedicated rather than shared credit for a transfer if it has both.",
+          "source_section": "A5.5",
+          "signals": [],
+          "type": "protocol_rule"
+        }
+      ],
+      "figures": [],
+      "table_captions": [
+        {
+          "caption": "Table A2.6 shows the properties that define whether shared credits are supported."
+        },
+        {
+          "caption": "Table A2.6: Shared credit properties"
+        },
+        {
+          "caption": "Table A2.7: Shared credits compatibility"
+        }
+      ],
+      "tables": [],
+      "images": []
+    },
+    {
+      "page_number": 37,
+      "text": "Chapter A2. AXI transport\nA2.4. Credited transport\nManager: True\nCompatible.\nSHAREDCRD outputs unconnected,\nCRDTSH inputs tied LOW.\nManager does not receive any shared credits.\nCompatible.\nAn example of the use of a channel with 3 Resource Planes and shared credits is shown in Figure A2.8.\n0\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\nACLK\nCRDT[0]\nCRDT[1]\nCRDT[2]\nCRDTSH\nVALID\nSHAREDCRD\nRP[1:0]\nRP1\nRP2 RP2\nRP0\nDedicated RP0 credit count\n0\n0\n1\n1\n1\n1\n1\n1\n1\n0\n1\nDedicated RP1 credit count\n0\n0\n1\n0\n1\n1\n1\n1\n1\n1\n1\nDedicated RP2 credit count\n0\n0\n1\n1\n1\n1\n0\n0\n1\n1\n1\nShared credit count\n0\n0\n1\n1\n1\n1\n1\n0\n1\n1\n2\nFigure A2.8: Example of a channel with 3 Resource Planes\nCycle 0\nThe Transmitter has no credits.\nCycle 1\nThe Receiver gives one credit for each RP and one shared credit.\nCycle 2\nThe Transmitter sends a transfer on RP1 using a dedicated credit.\nCycle 3\nThe Receiver gives a dedicated credit back to the Transmitter for RP1.\nCycle 5\nThe Transmitter sends a transfer on RP2 using a dedicated credit.\nCycle 6\nThe Transmitter sends a transfer on RP2 using a shared credit, as no dedicated credits are available.\nCycle 7\nThe Receiver gives a shared credit, and a dedicated credit for RP2 back to the Transmitter.\nCycle 8\nThe Transmitter sends a transfer on RP0 using a dedicated credit\nCycle 9\nThe Receiver gives a dedicated credit back to the Transmitter for RP0, along with an additional\nshared credit.\nARM IHI 0022\nIssue L\nCopyright © 2003-2025 Arm Limited or its affiliates. All rights reserved.\nNon-confidential\n37\n",
+      "headings": [],
+      "requirements": [],
+      "figures": [
+        {
+          "caption": "Figure A2.8: Example of a channel with 3 Resource Planes",
+          "file": "AXI_SPEC_OUTPUT/figures/figure_p37_1_Figure_A2_8__Example_of_a_channel_with_3.png",
+          "section": "A5.5",
+          "page": 37,
+          "ocr_text": "Dedicated RPO credit count\nDedicated RP1 credit count\nDedicated RP2 credit count\n\noO} JO} JO] |O",
+          "visual_requirement_hints": []
+        }
+      ],
+      "table_captions": [],
+      "tables": [
+        {
+          "page": 37,
+          "csv_file": "AXI_SPEC_OUTPUT/tables/table_p37_1.csv"
+        }
+      ],
+      "images": []
+    },
+    {
+      "page_number": 38,
+      "text": "Chapter A2. AXI transport\nA2.4. Credited transport\nA2.4.4\nTransfer-level clock gating\nThe PENDING signal associated with a channel is guaranteed to be asserted the cycle before a transfer is sent, so\ncan be used to gate the clock of the receiver circuitry.\nThe following rules apply:\n• There is one PENDING signal per channel.\n• It is required that PENDING is asserted in the cycle before VALID is asserted.\n• When PENDING is deasserted, it is required that VALID is deasserted in the next cycle.\n• When PENDING is asserted, it is permitted but not required that VALID is asserted in the next cycle.\nThe PENDING signal is independent of credits and credit control. For example, a transmitter is permitted to do\nany of the following:\n• Keep PENDING permanently asserted, including during reset. It might do this if it is unable to determine in\nadvance when a transfer is to be sent.\n• Assert PENDING when it does not have a credit.\n• Assert and then deassert PENDING without sending a transfer.\nAn example of the use of PENDING is shown in Figure A2.9.\nACLK\nPENDING\nVALID\nFigure A2.9: Example usage of the PENDING signal\nSee A14.2 Interface gating with credited transport for information regarding gating of interfaces using credited\nchannels.\nARM IHI 0022\nIssue L\nCopyright © 2003-2025 Arm Limited or its affiliates. All rights reserved.\nNon-confidential\n38\n",
+      "headings": [],
+      "requirements": [
+        {
+          "id": "REQ_A5_5_001",
+          "text": "The PENDING signal associated with a channel is guaranteed to be asserted the cycle before a transfer is sent, so can be used to gate the clock of the receiver circuitry.",
+          "source_section": "A5.5",
+          "signals": [
+            "PENDING"
+          ],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A5_5_002",
+          "text": "When PENDING is asserted, it is permitted but not required that VALID is asserted in the next cycle.",
+          "source_section": "A5.5",
+          "signals": [
+            "PENDING",
+            "VALID"
+          ],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A5_5_003",
+          "text": "For example, a transmitter is permitted to do any of the following:",
+          "source_section": "A5.5",
+          "signals": [],
+          "type": "protocol_rule"
+        }
+      ],
+      "figures": [
+        {
+          "caption": "Figure A2.9: Example usage of the PENDING signal",
+          "file": "AXI_SPEC_OUTPUT/figures/figure_p38_1_Figure_A2_9__Example_usage_of_the_PENDIN.png",
+          "section": "A5.5",
+          "page": 38,
+          "ocr_text": "¢ Assert and then deassert PENDING without sending a transfer.\nAn example of the use of PENDING is shown in Figure A2.9.",
+          "visual_requirement_hints": [
+            "TRANSFER"
+          ]
+        }
+      ],
+      "table_captions": [],
+      "tables": [],
+      "images": []
+    },
+    {
+      "page_number": 39,
+      "text": "Chapter A2. AXI transport\nA2.4. Credited transport\nA2.4.5\nCredited transport signals\nTable A2.9 shows the signals that can be included when AXI_Transport is Credited. Each channel also has a\nVALID signal, as shown in Table A2.2.\nTable A2.9: Signals when using credited transport\nName\nWidth\nDefault\nDescription\nAWPENDING\n1\n0b1\nAsserted HIGH to indicate that a transfer might\noccur in the following cycle.\nAWCRDT\nNum_RP_AWW\nAll zeros\nAsserted HIGH to give one AW credit on the\nrespective RP.\nAWCRDTSH\n1\n0b0\nAsserted HIGH to give one shared AW credit,\nsupports up to one shared credit per cycle.\nAWRP\nclog2(Num_RP_AWW)\nAll zeros\nEncoded indicator of the Resource Plane number\nfor an AW transfer.\nAWSHAREDCRD\n1\n0b0\nAsserted HIGH to indicate that an AW transfer is\nusing a shared credit.\nWPENDING\n1\n0b1\nAsserted HIGH to indicate that a transfer might\noccur in the following cycle.\nWCRDT\nNum_RP_AWW\nAll zeros\nAsserted HIGH to give one W credit on the\nrespective RP.\nWCRDTSH\n1\n0b0\nAsserted HIGH to give one shared W credit,\nsupports up to one shared credit per cycle.\nWRP\nclog2(Num_RP_AWW)\nAll zeros\nEncoded indicator of the Resource Plane number\nfor a W transfer.\nWSHAREDCRD\n1\n0b0\nAsserted HIGH to indicate that a W transfer is\nusing a shared credit.\nBPENDING\n1\n0b1\nAsserted HIGH to indicate that a transfer might\noccur in the following cycle.\nBCRDT\n1\n0b0\nAsserted HIGH to give one B credit.\nARPENDING\n1\n0b1\nAsserted HIGH to indicate that a transfer might\noccur in the following cycle.\nARCRDT\nNum_RP_AR\nAll zeros\nAsserted HIGH to give one AR credit on the\nrespective RP.\nARCRDTSH\n1\n0b0\nAsserted HIGH to give one shared AR credit,\nsupports up to one shared credit per cycle.\nARRP\nclog2(Num_RP_AR)\nAll zeros\nEncoded indicator of the Resource Plane number\nfor an AR transfer.\nARSHAREDCRD\n1\n0b0\nAsserted HIGH to indicate that an AR transfer is\nusing a shared credit.\nRPENDING\n1\n0b1\nAsserted HIGH to indicate that a transfer might\noccur in the following cycle.\nRCRDT\n1\n0b0\nAsserted HIGH to give one R credit.\nARM IHI 0022\nIssue L\nCopyright © 2003-2025 Arm Limited or its affiliates. All rights reserved.\nNon-confidential\n39\n",
+      "headings": [],
+      "requirements": [
+        {
+          "id": "REQ_A5_5_001",
+          "text": "AWCRDTSH 1 0b0 Asserted HIGH to give one shared AW credit, supports up to one shared credit per cycle.",
+          "source_section": "A5.5",
+          "signals": [
+            "AWCRDTSH",
+            "HIGH"
+          ],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A5_5_002",
+          "text": "WCRDTSH 1 0b0 Asserted HIGH to give one shared W credit, supports up to one shared credit per cycle.",
+          "source_section": "A5.5",
+          "signals": [
+            "HIGH",
+            "WCRDTSH"
+          ],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A5_5_003",
+          "text": "ARCRDTSH 1 0b0 Asserted HIGH to give one shared AR credit, supports up to one shared credit per cycle.",
+          "source_section": "A5.5",
+          "signals": [
+            "ARCRDTSH",
+            "HIGH"
+          ],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_AXI_0001",
+          "text": "0b0 | Asserted | HIGH to give one shared AW credit, supports up to one shared credit per cycle. AWRP clog2(Num_RP_AWW) All zeros Encoded indicator of the Resource Plane number for an AW transfer. AWSHAREDCRD",
+          "source_section": "A5.5",
+          "signals": [
+            "AWRP",
+            "AWSHAREDCRD",
+            "HIGH"
+          ],
+          "type": "encoding_rule"
+        },
+        {
+          "id": "REQ_AXI_0002",
+          "text": "0b0 | Asserted | HIGH to give one shared W credit, supports up to one shared credit per cycle. WRP clog2(Num_RP_AWW) All zeros Encoded indicator of the Resource Plane number for a W transfer. WSHAREDCRD",
+          "source_section": "A5.5",
+          "signals": [
+            "HIGH",
+            "WRP",
+            "WSHAREDCRD"
+          ],
+          "type": "encoding_rule"
+        },
+        {
+          "id": "REQ_AXI_0003",
+          "text": "0b0 | Asserted | HIGH to give one shared AR credit, supports up to one shared credit per cycle. ARRP clog2(Num_RP_AR) All zeros Encoded indicator of the Resource Plane number for an AR transfer. ARSHAREDCRD",
+          "source_section": "A5.5",
+          "signals": [
+            "ARRP",
+            "ARSHAREDCRD",
+            "HIGH"
+          ],
+          "type": "encoding_rule"
+        }
+      ],
+      "figures": [],
+      "table_captions": [
+        {
+          "caption": "Table A2.9 shows the signals that can be included when AXI_Transport is Credited. Each channel also has a"
+        },
+        {
+          "caption": "Table A2.9: Signals when using credited transport"
+        }
+      ],
+      "tables": [],
+      "images": []
+    },
+    {
+      "page_number": 40,
+      "text": "Chapter A2. AXI transport\nA2.5. Pipelining and register stages\nA2.5 Pipelining and register stages\nEach AXI channel transfers information in only one direction, and the architecture does not require any fixed\nrelationship between the channels. This means that a register stage can be inserted at any point in any channel at\nthe cost of an additional cycle of latency.\nThese qualities make the following possible:\n• Trade-off between cycles of latency and maximum frequency of operation.\n• Direct, fast connection between a processor and high-performance memory, while using simple register\nslices to isolate longer paths to less performance critical peripherals.\nThe following rules apply to the registering of channels:\n• There can be any number of register stages on VALID, READY, and CRDT paths between components.\n• Different channels can have a different number of register stages, depending on their timing requirements.\n• VALID signals must be pipelined by the same number of cycles as the payload signals of that channel\nincluding RP and SHAREDCRD signals, if present.\n• PENDING signals must retain the relationship that they are HIGH in the cycle before VALID is HIGH.\nARM IHI 0022\nIssue L\nCopyright © 2003-2025 Arm Limited or its affiliates. All rights reserved.\nNon-confidential\n40\n",
+      "headings": [
+        {
+          "section_id": "A2.5",
+          "title": "Pipelining and register stages",
+          "font_size": null
+        }
+      ],
+      "requirements": [
+        {
+          "id": "REQ_A2_5_001",
+          "text": "VALID signals must be pipelined by the same number of cycles as the payload signals of that channel including RP and SHAREDCRD signals, if present.",
+          "source_section": "A2.5",
+          "signals": [
+            "SHAREDCRD",
+            "VALID"
+          ],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A2_5_002",
+          "text": "PENDING signals must retain the relationship that they are HIGH in the cycle before VALID is HIGH.",
+          "source_section": "A2.5",
+          "signals": [
+            "HIGH",
+            "PENDING",
+            "VALID"
+          ],
+          "type": "protocol_rule"
+        }
+      ],
+      "figures": [],
+      "table_captions": [],
+      "tables": [],
+      "images": []
+    },
+    {
+      "page_number": 41,
+      "text": "Chapter A2. AXI transport\nA2.6. AXI transactions and transfers\nA2.6 AXI transactions and transfers\nThe AXI protocol requires the following relationships to be maintained:\n• A write response must always follow the last write transfer in a write transaction.\n• Read data and responses must always follow the read request.\n• When a Manager issues a write request, it must be able to provide all write data for that transaction, without\ndependency on other transactions from that Manager.\n• When a Manager has issued a write request and all write data, it must be able to accept all responses for that\ntransaction, without dependency on other transactions from that Manager.\n• When a Manager has issued a read request, it must be able to accept all read data for that transaction, without\ndependency on other transactions from that Manager.\n– Note that a Manager can rely on read data returning in order from transactions that use the same ID, so\nthe Manager only needs enough storage for read data from transactions with different IDs.\n• A Manager is permitted to wait for one transaction to complete before issuing another transaction request.\n• A Subordinate is permitted to wait for one transaction to complete before accepting another request, giving\ncredits or sending transfers for another transaction.\n• A Subordinate must not block acceptance of data-less write requests due to transactions with leading write\ndata.\nThe protocol does not define any other relationship between the channels.\nThe lack of relationship means, for example, that the write data can appear at an interface before the write request\nfor the transaction. This can occur if the write request channel contains more register stages than the write data\nchannel. Similarly, the write data might appear in the same cycle as the request.\nWhen the interconnect is required to determine the destination address space or Subordinate space, it must realign\nthe request and write data. This realignment is required to assure that the write data is signaled as being valid only\nto the Subordinate for which it is destined.\nARM IHI 0022\nIssue L\nCopyright © 2003-2025 Arm Limited or its affiliates. All rights reserved.\nNon-confidential\n41\n",
+      "headings": [
+        {
+          "section_id": "A2.6",
+          "title": "AXI transactions and transfers",
+          "font_size": null
+        }
+      ],
+      "requirements": [
+        {
+          "id": "REQ_A2_6_001",
+          "text": "A write response must always follow the last write transfer in a write transaction.",
+          "source_section": "A2.6",
+          "signals": [],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A2_6_002",
+          "text": "Read data and responses must always follow the read request.",
+          "source_section": "A2.6",
+          "signals": [],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A2_6_003",
+          "text": "When a Manager issues a write request, it must be able to provide all write data for that transaction, without dependency on other transactions from that Manager.",
+          "source_section": "A2.6",
+          "signals": [],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A2_6_004",
+          "text": "When a Manager has issued a write request and all write data, it must be able to accept all responses for that transaction, without dependency on other transactions from that Manager.",
+          "source_section": "A2.6",
+          "signals": [],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A2_6_005",
+          "text": "When a Manager has issued a read request, it must be able to accept all read data for that transaction, without dependency on other transactions from that Manager.",
+          "source_section": "A2.6",
+          "signals": [],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A2_6_006",
+          "text": "A Manager is permitted to wait for one transaction to complete before issuing another transaction request.",
+          "source_section": "A2.6",
+          "signals": [],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A2_6_007",
+          "text": "A Subordinate is permitted to wait for one transaction to complete before accepting another request, giving credits or sending transfers for another transaction.",
+          "source_section": "A2.6",
+          "signals": [],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A2_6_008",
+          "text": "A Subordinate must not block acceptance of data-less write requests due to transactions with leading write data.",
+          "source_section": "A2.6",
+          "signals": [],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A2_6_009",
+          "text": "This can occur if the write request channel contains more register stages than the write data channel.",
+          "source_section": "A2.6",
+          "signals": [],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A2_6_010",
+          "text": "When the interconnect is required to determine the destination address space or Subordinate space, it must realign the request and write data.",
+          "source_section": "A2.6",
+          "signals": [],
+          "type": "protocol_rule"
+        },
+        {
+          "id": "REQ_A2_6_011",
+          "text": "This realignment is required to assure that the write data is signaled as being valid only to the Subordinate for which it is destined.",
+          "source_section": "A2.6",
+          "signals": [],
+          "type": "protocol_rule"
+        }
+      ],
+      "figures": [],
+      "table_captions": [],
+      "tables": [],
+      "images": []
+    }
+  ]
+}

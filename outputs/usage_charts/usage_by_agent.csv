@@ -33,3 +33,17 @@ run_id,timestamp,output_file,agent_name,model_name,prompt_tokens,completion_toke
 16,2026-07-06T11:20:24,generated_vplan_2026-07-06_11-19-58.json,edge_case_extractor,gpt-5.4,2076,441,2517,0.011805
 17,2026-07-06T11:27:33,generated_vplan_2026-07-06_11-27-09.json,vplan_generator,gpt-5.4,2005,1894,3899,0.0334225
 17,2026-07-06T11:27:33,generated_vplan_2026-07-06_11-27-09.json,edge_case_extractor,gpt-5.4,2076,468,2544,0.01221
+18,2026-07-07T11:29:35,generated_vplan_2026-07-07_11-28-22.json,vplan_generator,gpt-5.4,5244,6589,11833,0.111945
+18,2026-07-07T11:29:35,generated_vplan_2026-07-07_11-28-22.json,edge_case_extractor,gpt-5.4,2881,501,3382,0.0147175
+19,2026-07-07T15:16:28,generated_vplan_2026-07-07_15-15-00.json,vplan_generator,gpt-5.4,5306,6777,12083,0.11492
+19,2026-07-07T15:16:28,generated_vplan_2026-07-07_15-15-00.json,edge_case_extractor,gpt-5.4,2881,563,3444,0.0156475
+20,2026-07-07T16:20:38,generated_vplan_2026-07-07_16-19-17.json,vplan_generator,gpt-5.4,5430,6271,11701,0.10764
+20,2026-07-07T16:20:38,generated_vplan_2026-07-07_16-19-17.json,edge_case_extractor,gpt-5.4,2881,687,3568,0.0175075
+21,2026-07-08T10:37:16,generated_vplan_2026-07-08_10-31-36.json,vplan_generator,gpt-5.4,23086,26647,49733,0.45742
+21,2026-07-08T10:37:16,generated_vplan_2026-07-08_10-31-36.json,edge_case_extractor,gpt-5.4,19170,2256,21426,0.081765
+22,2026-07-08T11:00:21,generated_vplan_2026-07-08_10-59-13.json,vplan_generator,gpt-5.4,5415,5874,11289,0.1016475
+22,2026-07-08T11:00:21,generated_vplan_2026-07-08_10-59-13.json,edge_case_extractor,gpt-5.4,2881,672,3553,0.0172825
+23,2026-07-08T11:03:16,generated_vplan_2026-07-08_11-01-56.json,vplan_generator,gpt-5.4,5347,6413,11760,0.1095625
+23,2026-07-08T11:03:16,generated_vplan_2026-07-08_11-01-56.json,edge_case_extractor,gpt-5.4,2881,604,3485,0.0162625
+24,2026-07-09T10:54:24,generated_vplan_2026-07-09_10-49-35.json,vplan_generator,gpt-5.4,18108,20826,38934,0.35766
+24,2026-07-09T10:54:24,generated_vplan_2026-07-09_10-49-35.json,edge_case_extractor,gpt-5.4,15213,1832,17045,0.0655125

@@ -38,15 +38,70 @@ def calculate_cost(
     return input_cost + output_cost
 
 
+def parse_decimal_cost(value: Any) -> Decimal:
+    if value is None:
+        return Decimal("0")
+
+    if isinstance(value, Decimal):
+        return value
+
+    if isinstance(value, (int, float)):
+        return Decimal(str(value))
+
+    if isinstance(value, str):
+        cleaned = value.strip().replace("$", "").replace(",", "")
+
+        if cleaned == "":
+            return Decimal("0")
+
+        try:
+            return Decimal(cleaned)
+        except Exception:
+            return Decimal("0")
+
+    return Decimal("0")
+
+
+def parse_int_token_count(value: Any) -> int:
+    if value is None:
+        return 0
+
+    if isinstance(value, int):
+        return value
+
+    if isinstance(value, float):
+        return int(value)
+
+    if isinstance(value, Decimal):
+        return int(value)
+
+    if isinstance(value, str):
+        cleaned = value.strip().replace(",", "")
+
+        if cleaned == "":
+            return 0
+
+        try:
+            return int(float(cleaned))
+        except ValueError:
+            return 0
+
+    return 0
+
+
 def normalise_usage(
     agent_name: str,
     input_tokens: int,
     output_tokens: int,
     total_tokens: int,
-    total_cost: float | str,
+    total_cost: float | str | Decimal,
     model_name: str,
 ) -> dict[str, Any]:
-    callback_cost = Decimal(str(total_cost or 0))
+    input_tokens = parse_int_token_count(input_tokens)
+    output_tokens = parse_int_token_count(output_tokens)
+    total_tokens = parse_int_token_count(total_tokens)
+
+    callback_cost = parse_decimal_cost(total_cost)
 
     calculated_cost = calculate_cost(
         model_name=model_name,
@@ -78,12 +133,15 @@ def aggregate_usage(*usage_items: dict[str, Any]) -> dict[str, Any]:
         if not usage:
             continue
 
-        total_prompt_tokens += int(usage.get("prompt_tokens", 0) or 0)
-        total_completion_tokens += int(usage.get("completion_tokens", 0) or 0)
-        total_tokens += int(usage.get("total_tokens", 0) or 0)
-        total_cost += Decimal(str(usage.get("total_cost", 0) or 0))
+        total_prompt_tokens += parse_int_token_count(usage.get("prompt_tokens"))
+        total_completion_tokens += parse_int_token_count(usage.get("completion_tokens"))
+        total_tokens += parse_int_token_count(usage.get("total_tokens"))
+        total_cost += parse_decimal_cost(usage.get("total_cost"))
 
-        agents.append(usage)
+        if usage.get("agents") and isinstance(usage["agents"], list):
+            agents.extend(usage["agents"])
+        elif usage.get("agent_name"):
+            agents.append(usage)
 
     return {
         "prompt_tokens": total_prompt_tokens,

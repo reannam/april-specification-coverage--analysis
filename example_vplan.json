@@ -1,0 +1,810 @@
+{
+  "metadata": {
+    "requirements_file": "78b7fb83fe014371a338c8c77d5aad48_amba_axi_A2_extracted_original_requirements_only.json",
+    "date_created": "July 07 2026",
+    "time_created": "11:28am",
+    "number_of_requirements": 43,
+    "number_of_tests": 47,
+    "batch_size": 30,
+    "number_of_batches": 2,
+    "number_of_edge_case_candidates": 6,
+    "langsmith_trace_id": "f4032fb5-9c4b-4903-9207-e3ab969258f3",
+    "batch_trace_ids": [
+      "cb701432-4087-48b9-b53f-6cbece167cf7",
+      "46a85b49-1204-410a-8ec7-86f7dfd9c402"
+    ]
+  },
+  "feature_list": [
+    {
+      "test_id": "TEST_REQ_A2_1_001_001",
+      "requirement_id": "REQ_A2_1_001",
+      "test_type": "positive",
+      "test_description": "Traceability for absence of combinatorial paths between interface input and output signals.",
+      "test_constraints": "Requirement does not identify specific interface signals, paths, or an observable dynamic method to prove absence of combinatorial logic from the provided information.",
+      "test_steps": [
+        "Identify the specific input and output signals and the interface instance to be checked.",
+        "Define the verification method or structural analysis criteria needed to prove no combinatorial path exists."
+      ],
+      "expected_results": [
+        "Verification is blocked until signal scope and analysis method are defined."
+      ],
+      "coverage": "blocked",
+      "requirement_text": "There must be no combinatorial paths between input and output signals on an interface."
+    },
+    {
+      "test_id": "TEST_REQ_A2_1_002_001",
+      "requirement_id": "REQ_A2_1_002",
+      "test_type": "positive",
+      "test_description": "Traceability for use of a single active-LOW reset signal ARESETn.",
+      "test_constraints": "Requirement names ARESETn but does not provide observable interface instances, reset mapping, or configuration context needed to verify that it is the single reset used.",
+      "test_steps": [
+        "Identify the reset ports/signals implemented on the AXI interface.",
+        "Confirm which reset signal is designated as the protocol reset and whether any additional reset signals exist."
+      ],
+      "expected_results": [
+        "Verification is blocked until the implemented reset interface and observability are defined."
+      ],
+      "coverage": "blocked",
+      "requirement_text": "A2.1.2 Reset The AXI protocol uses a single active-LOW reset signal, ARESETn."
+    },
+    {
+      "test_id": "TEST_REQ_A2_1_003_001",
+      "requirement_id": "REQ_A2_1_003",
+      "test_type": "positive",
+      "test_description": "Verify that reset deassertion occurs only synchronously with a rising edge of ACLK.",
+      "test_constraints": "Asynchronous assertion is optional per edge case; only synchronous deassertion is mandatory and directly testable from the requirement.",
+      "test_steps": [
+        "Assert reset, then deassert ARESETn at a non-rising-clock time relative to ACLK.",
+        "Observe when protocol-visible reset release takes effect."
+      ],
+      "expected_results": [
+        "Reset release does not take effect until a rising edge of ACLK.",
+        "No earlier deassertion is recognized between rising edges."
+      ],
+      "coverage": "partially_covered",
+      "requirement_text": "The reset signal can be asserted asynchronously, but deassertion can only be synchronous with a rising edge of ACLK."
+    },
+    {
+      "test_id": "TEST_REQ_A2_1_003_002",
+      "requirement_id": "REQ_A2_1_003",
+      "test_type": "positive",
+      "test_description": "Traceability for optional asynchronous reset assertion capability.",
+      "test_constraints": "Edge case states asynchronous assertion is not mandatory; requirement permits but does not require implementations to support asynchronous assertion.",
+      "test_steps": [
+        "Determine whether the implementation claims support for asynchronous reset assertion.",
+        "If supported, define the observable reset-entry behavior and timing needed for verification."
+      ],
+      "expected_results": [
+        "Asynchronous assertion support is implementation-dependent from the provided information."
+      ],
+      "coverage": "partially_covered",
+      "requirement_text": "The reset signal can be asserted asynchronously, but deassertion can only be synchronous with a rising edge of ACLK."
+    },
+    {
+      "test_id": "TEST_REQ_A2_1_004_001",
+      "requirement_id": "REQ_A2_1_004",
+      "test_type": "positive",
+      "test_description": "Verify that signals required to be deasserted during reset remain deasserted until at least the rising ACLK edge after ARESETn is HIGH.",
+      "test_constraints": "Requirement does not identify which specific signals are required to be deasserted during reset; applies only to those signals once identified.",
+      "test_steps": [
+        "Hold a reset-deasserted-during-reset signal LOW while ARESETn is asserted, then drive ARESETn HIGH before a rising ACLK edge.",
+        "Observe the signal through the first rising ACLK edge after ARESETn is HIGH."
+      ],
+      "expected_results": [
+        "The signal remains deasserted until at least the first rising ACLK edge after ARESETn goes HIGH.",
+        "No earlier assertion occurs before that edge."
+      ],
+      "coverage": "partially_covered",
+      "requirement_text": "Signals that are required to be deasserted during reset must remain deasserted at least until the rising ACLK edge after ARESETn is HIGH."
+    },
+    {
+      "test_id": "TEST_REQ_A2_1_005_001",
+      "requirement_id": "REQ_A2_1_005",
+      "test_type": "positive",
+      "test_description": "Verify that a signal required to be deasserted during reset is not asserted before a rising ACLK edge after ARESETn is HIGH.",
+      "test_constraints": "Edge case notes the requirement defines only the earliest legal assertion point, not that assertion must occur on the first eligible edge; specific applicable signals are not identified.",
+      "test_steps": [
+        "Drive ARESETn HIGH between rising edges of ACLK while keeping a reset-deasserted signal LOW.",
+        "Observe whether the signal asserts before the next rising ACLK edge."
+      ],
+      "expected_results": [
+        "The signal does not assert before a rising ACLK edge after ARESETn is HIGH."
+      ],
+      "coverage": "partially_covered",
+      "requirement_text": "The earliest point these signals can be asserted is at a rising ACLK edge after ARESETn is HIGH."
+    },
+    {
+      "test_id": "TEST_REQ_A2_2_001_001",
+      "requirement_id": "REQ_A2_2_001",
+      "test_type": "positive",
+      "test_description": "Traceability for matching AXI_Transport property values on connected Manager and Subordinate interfaces.",
+      "test_constraints": "Requirement refers to AXI_Transport property values, but no property encoding, access mechanism, or connected interface instances are provided.",
+      "test_steps": [
+        "Identify the connected Manager and Subordinate interfaces and how AXI_Transport is represented.",
+        "Define the allowed property values and how equality is to be checked."
+      ],
+      "expected_results": [
+        "Verification is blocked until property definition and interface configuration are provided."
+      ],
+      "coverage": "blocked",
+      "requirement_text": "Connected Manager and Subordinate interfaces must have the same value for the AXI_Transport property."
+    },
+    {
+      "test_id": "TEST_REQ_A2_3_001_001",
+      "requirement_id": "REQ_A2_3_001",
+      "test_type": "positive",
+      "test_description": "Verify that VALID signals are LOW during reset.",
+      "test_constraints": "Applies to each VALID signal present on the interface; specific channel instances are not enumerated in the requirement.",
+      "test_steps": [
+        "Assert reset.",
+        "Observe each implemented VALID signal during reset."
+      ],
+      "expected_results": [
+        "Each VALID signal remains LOW while reset is asserted."
+      ],
+      "coverage": "covered",
+      "requirement_text": "The Manager must not wait for the Subordinate to assert ARREADY before asserting ARVALID."
+    },
+    {
+      "test_id": "TEST_REQ_A2_3_002_001",
+      "requirement_id": "REQ_A2_3_002",
+      "test_type": "positive",
+      "test_description": "Verify that the transmitter keeps its information stable until the transfer occurs when the VALID assertion is recognized.",
+      "test_constraints": "Requirement references 'information' and a transfer event but does not identify the exact signal set for the information payload/control.",
+      "test_steps": [
+        "Assert VALID with associated information while READY is not completing the transfer.",
+        "Observe the information until the handshake occurs."
+      ],
+      "expected_results": [
+        "The transmitted information remains stable until the transfer occurs.",
+        "The transfer is recognized only at the handshake edge."
+      ],
+      "coverage": "partially_covered",
+      "requirement_text": "The Subordinate must wait for both ARVALID and ARREADY to be asserted before it asserts RVALID to indicate that valid data is available."
+    },
+    {
+      "test_id": "TEST_REQ_A2_3_003_001",
+      "requirement_id": "REQ_A2_3_003",
+      "test_type": "negative",
+      "test_description": "Verify that the transmitter does not wait for READY before asserting VALID.",
+      "test_constraints": "Requires stimulus that keeps READY deasserted while the transmitter has data to send; exact transmitter-side request trigger is not specified.",
+      "test_steps": [
+        "Hold READY LOW while making data available for transmission.",
+        "Observe whether VALID is asserted before READY goes HIGH."
+      ],
+      "expected_results": [
+        "VALID is asserted without waiting for READY to be asserted."
+      ],
+      "coverage": "partially_covered",
+      "requirement_text": "The Subordinate must not wait for the Manager to assert RREADY before asserting RVALID."
+    },
+    {
+      "test_id": "TEST_REQ_A2_3_004_001",
+      "requirement_id": "REQ_A2_3_004",
+      "test_type": "positive",
+      "test_description": "Verify that once VALID is asserted, it remains asserted until a rising-edge handshake with READY occurs.",
+      "test_constraints": "Assumes a clocked handshake observation point; applies per VALID/READY channel pair.",
+      "test_steps": [
+        "Assert VALID while READY is LOW.",
+        "Observe VALID until a rising clock edge where VALID and READY are both HIGH."
+      ],
+      "expected_results": [
+        "VALID remains asserted before the handshake edge.",
+        "Handshake completes only at a rising clock edge with VALID and READY both asserted."
+      ],
+      "coverage": "covered",
+      "requirement_text": "The Subordinate must wait for the last write data transfer before asserting BVALID."
+    },
+    {
+      "test_id": "TEST_REQ_A2_3_005_001",
+      "requirement_id": "REQ_A2_3_005",
+      "test_type": "positive",
+      "test_description": "Verify that the receiver may wait for VALID before asserting the corresponding READY.",
+      "test_constraints": "Edge case identifies this as permitted rather than mandatory behaviour; verifying this legal mode does not prove READY must wait in all cases.",
+      "test_steps": [
+        "Keep READY LOW before VALID is asserted.",
+        "Assert VALID and then allow the receiver to assert READY afterward."
+      ],
+      "expected_results": [
+        "A sequence with READY asserted after VALID is accepted as legal behaviour."
+      ],
+      "coverage": "partially_covered",
+      "requirement_text": "The Subordinate must not wait for the Manager to assert BREADY before asserting BVALID."
+    },
+    {
+      "test_id": "TEST_REQ_A2_3_006_001",
+      "requirement_id": "REQ_A2_3_006",
+      "test_type": "positive",
+      "test_description": "Verify that READY may be deasserted before VALID is asserted when READY had been asserted earlier.",
+      "test_constraints": "Permitted conditional behaviour only; edge case notes transient READY pulse with no transfer is legal.",
+      "test_steps": [
+        "Assert READY while VALID is LOW.",
+        "Deassert READY before VALID is asserted and observe for transfer activity."
+      ],
+      "expected_results": [
+        "READY may return LOW before VALID is asserted.",
+        "No handshake occurs while VALID remains LOW."
+      ],
+      "coverage": "partially_covered",
+      "requirement_text": "If READY is asserted, it is permitted to deassert READY before VALID is asserted."
+    },
+    {
+      "test_id": "TEST_REQ_A2_3_001_002",
+      "requirement_id": "REQ_A2_3_001",
+      "test_type": "positive",
+      "test_description": "Traceability for requirement that the Subordinate must be able to accept any valid request that is presented to it.",
+      "test_constraints": "Requirement lacks definition of 'any valid request', acceptance criteria, channels, and observable outcomes.",
+      "test_steps": [
+        "Define the set of requests considered valid for the interface implementation.",
+        "Define the observable acceptance condition for each request type."
+      ],
+      "expected_results": [
+        "Verification is blocked until valid request space and acceptance observables are defined."
+      ],
+      "coverage": "blocked",
+      "requirement_text": "The Manager must not wait for the Subordinate to assert ARREADY before asserting ARVALID."
+    },
+    {
+      "test_id": "TEST_REQ_A2_3_001_003",
+      "requirement_id": "REQ_A2_3_001",
+      "test_type": "positive",
+      "test_description": "Traceability for dependency indicated by double-headed arrows requiring assertion ordering.",
+      "test_constraints": "Requirement refers to a diagrammatic notation not included in the input; the actual signal pairs and ordering dependencies are missing.",
+      "test_steps": [
+        "Provide the referenced diagram or enumerate each arrow-defined signal dependency.",
+        "Define the assertion ordering to be checked for each dependency."
+      ],
+      "expected_results": [
+        "Verification is blocked until the referenced arrow relationships are supplied."
+      ],
+      "coverage": "blocked",
+      "requirement_text": "The Manager must not wait for the Subordinate to assert ARREADY before asserting ARVALID."
+    },
+    {
+      "test_id": "TEST_REQ_A2_3_002_002",
+      "requirement_id": "REQ_A2_3_002",
+      "test_type": "negative",
+      "test_description": "Verify that the Manager does not wait for AWREADY before asserting AWVALID.",
+      "test_constraints": "Requires a write request pending while AWREADY is held LOW.",
+      "test_steps": [
+        "Hold AWREADY LOW while a write address request is pending.",
+        "Observe whether AWVALID is asserted before AWREADY goes HIGH."
+      ],
+      "expected_results": [
+        "AWVALID is asserted without waiting for AWREADY."
+      ],
+      "coverage": "covered",
+      "requirement_text": "The Subordinate must wait for both ARVALID and ARREADY to be asserted before it asserts RVALID to indicate that valid data is available."
+    },
+    {
+      "test_id": "TEST_REQ_A2_3_002_003",
+      "requirement_id": "REQ_A2_3_002",
+      "test_type": "negative",
+      "test_description": "Verify that the Manager does not wait for WREADY before asserting WVALID.",
+      "test_constraints": "Requires write data pending while WREADY is held LOW.",
+      "test_steps": [
+        "Hold WREADY LOW while write data is pending.",
+        "Observe whether WVALID is asserted before WREADY goes HIGH."
+      ],
+      "expected_results": [
+        "WVALID is asserted without waiting for WREADY."
+      ],
+      "coverage": "covered",
+      "requirement_text": "The Subordinate must wait for both ARVALID and ARREADY to be asserted before it asserts RVALID to indicate that valid data is available."
+    },
+    {
+      "test_id": "TEST_REQ_A2_3_003_002",
+      "requirement_id": "REQ_A2_3_003",
+      "test_type": "positive",
+      "test_description": "Verify that the Subordinate asserts BVALID only after AWVALID, AWREADY, WVALID, and WREADY have all been asserted.",
+      "test_constraints": "Requirement gives prerequisite signals but does not state whether they must occur in one cycle or over prior handshakes; assertion ordering is still observable.",
+      "test_steps": [
+        "Generate a write transaction and delay one prerequisite handshake condition at a time.",
+        "Observe when BVALID is first asserted."
+      ],
+      "expected_results": [
+        "BVALID is not asserted before AWVALID, AWREADY, WVALID, and WREADY have all been asserted.",
+        "BVALID can assert only after the required prerequisites have occurred."
+      ],
+      "coverage": "partially_covered",
+      "requirement_text": "The Subordinate must not wait for the Manager to assert RREADY before asserting RVALID."
+    },
+    {
+      "test_id": "TEST_REQ_A2_3_004_002",
+      "requirement_id": "REQ_A2_3_004",
+      "test_type": "positive",
+      "test_description": "Verify that the Subordinate waits for the last write data transfer before asserting BVALID.",
+      "test_constraints": "Applies when write data has a defined last transfer indication, but that indication is not named in the requirement text.",
+      "test_steps": [
+        "Issue a multi-beat write transaction and prevent the final write data transfer from completing.",
+        "Observe BVALID before and after the last write data transfer."
+      ],
+      "expected_results": [
+        "BVALID is not asserted before the last write data transfer occurs.",
+        "BVALID may assert after the last write data transfer."
+      ],
+      "coverage": "partially_covered",
+      "requirement_text": "The Subordinate must wait for the last write data transfer before asserting BVALID."
+    },
+    {
+      "test_id": "TEST_REQ_A2_3_005_002",
+      "requirement_id": "REQ_A2_3_005",
+      "test_type": "negative",
+      "test_description": "Verify that the Subordinate does not wait for BREADY before asserting BVALID.",
+      "test_constraints": "Requires a completed write response condition while BREADY is held LOW.",
+      "test_steps": [
+        "Hold BREADY LOW after the write response becomes due.",
+        "Observe whether BVALID is asserted before BREADY goes HIGH."
+      ],
+      "expected_results": [
+        "BVALID is asserted without waiting for BREADY."
+      ],
+      "coverage": "covered",
+      "requirement_text": "The Subordinate must not wait for the Manager to assert BREADY before asserting BVALID."
+    },
+    {
+      "test_id": "TEST_REQ_A2_3_001_004",
+      "requirement_id": "REQ_A2_3_001",
+      "test_type": "negative",
+      "test_description": "Verify that the Manager does not wait for ARREADY before asserting ARVALID.",
+      "test_constraints": "Requires a read request pending while ARREADY is held LOW.",
+      "test_steps": [
+        "Hold ARREADY LOW while a read address request is pending.",
+        "Observe whether ARVALID is asserted before ARREADY goes HIGH."
+      ],
+      "expected_results": [
+        "ARVALID is asserted without waiting for ARREADY."
+      ],
+      "coverage": "covered",
+      "requirement_text": "The Manager must not wait for the Subordinate to assert ARREADY before asserting ARVALID."
+    },
+    {
+      "test_id": "TEST_REQ_A2_3_002_004",
+      "requirement_id": "REQ_A2_3_002",
+      "test_type": "positive",
+      "test_description": "Verify that the Subordinate asserts RVALID only after both ARVALID and ARREADY have been asserted.",
+      "test_constraints": "Requirement covers availability indication only; data content and response timing beyond prerequisite assertion are not specified.",
+      "test_steps": [
+        "Issue a read transaction while delaying ARVALID or ARREADY assertion.",
+        "Observe when RVALID is first asserted."
+      ],
+      "expected_results": [
+        "RVALID is not asserted before both ARVALID and ARREADY have been asserted.",
+        "RVALID may assert after both prerequisites are asserted."
+      ],
+      "coverage": "covered",
+      "requirement_text": "The Subordinate must wait for both ARVALID and ARREADY to be asserted before it asserts RVALID to indicate that valid data is available."
+    },
+    {
+      "test_id": "TEST_REQ_A2_3_003_003",
+      "requirement_id": "REQ_A2_3_003",
+      "test_type": "negative",
+      "test_description": "Verify that the Subordinate does not wait for RREADY before asserting RVALID.",
+      "test_constraints": "Requires read data available while RREADY is held LOW.",
+      "test_steps": [
+        "Hold RREADY LOW when read data becomes available.",
+        "Observe whether RVALID is asserted before RREADY goes HIGH."
+      ],
+      "expected_results": [
+        "RVALID is asserted without waiting for RREADY."
+      ],
+      "coverage": "covered",
+      "requirement_text": "The Subordinate must not wait for the Manager to assert RREADY before asserting RVALID."
+    },
+    {
+      "test_id": "TEST_REQ_A2_4_001_001",
+      "requirement_id": "REQ_A2_4_001",
+      "test_type": "positive",
+      "test_description": "Verify that all CRDT and CRDTSH signals are LOW.",
+      "test_constraints": "Requirement does not specify operating state or timeframe; interpreted as a static protocol rule for implemented CRDT and CRDTSH signals.",
+      "test_steps": [
+        "Observe each implemented CRDT and CRDTSH signal.",
+        "Check their driven values."
+      ],
+      "expected_results": [
+        "All observed CRDT signals are LOW.",
+        "All observed CRDTSH signals are LOW."
+      ],
+      "coverage": "covered",
+      "requirement_text": "All CRDT and CRDTSH signals must be LOW."
+    },
+    {
+      "test_id": "TEST_REQ_A2_4_002_001",
+      "requirement_id": "REQ_A2_4_002",
+      "test_type": "positive",
+      "test_description": "Verify that the channel transmitter uses one credit in each cycle that VALID is asserted.",
+      "test_constraints": "Requires visibility of transmitter credit count or equivalent observable credit accounting; such observability is not defined in the input.",
+      "test_steps": [
+        "Identify how transmitter credit usage is observed or measured.",
+        "Drive VALID for one or more cycles and monitor corresponding credit consumption."
+      ],
+      "expected_results": [
+        "One credit is consumed in each cycle that VALID is asserted."
+      ],
+      "coverage": "partially_covered",
+      "requirement_text": "The channel transmitter uses a credit each cycle that VALID is asserted."
+    },
+    {
+      "test_id": "TEST_REQ_A2_4_003_001",
+      "requirement_id": "REQ_A2_4_003",
+      "test_type": "negative",
+      "test_description": "Verify that VALID is not asserted when the channel transmitter has zero credits.",
+      "test_constraints": "Requires a controllable or observable zero-credit condition; credit state visibility is not specified in the input.",
+      "test_steps": [
+        "Drive the transmitter to a zero-credit condition.",
+        "Observe whether VALID is asserted while credits remain at zero."
+      ],
+      "expected_results": [
+        "VALID is not asserted when the transmitter has zero credits."
+      ],
+      "coverage": "partially_covered",
+      "requirement_text": "VALID must not be asserted when the channel transmitter has zero credits."
+    },
+    {
+      "test_id": "TEST_REQ_A2_4_004_001",
+      "requirement_id": "REQ_A2_4_004",
+      "test_type": "positive",
+      "test_description": "Traceability for absence of combinatorial paths between credit signals and other channel signals in either direction.",
+      "test_constraints": "Requirement does not identify channel signals, implementation structure, or an observable method to prove absence of combinatorial paths.",
+      "test_steps": [
+        "Identify the credit signals and the other channel signals in scope.",
+        "Define the structural or timing analysis needed to prove no combinatorial paths in either direction."
+      ],
+      "expected_results": [
+        "Verification is blocked until signal scope and proof method are defined."
+      ],
+      "coverage": "blocked",
+      "requirement_text": "There must not be combinatorial paths between credit signals and other signals on a channel in either direction."
+    },
+    {
+      "test_id": "TEST_REQ_A2_4_005_001",
+      "requirement_id": "REQ_A2_4_005",
+      "test_type": "negative",
+      "test_description": "Verify that a credit given in a cycle cannot be used for a transfer in that same cycle.",
+      "test_constraints": "Requires observability of the cycle in which a credit is given and the cycle in which a transfer consumes credit; exact credit-give signal is not identified.",
+      "test_steps": [
+        "Cause a credit to be given in a cycle.",
+        "Check whether a transfer uses that credit in the same cycle."
+      ],
+      "expected_results": [
+        "No transfer uses a newly given credit in the same cycle it is given."
+      ],
+      "coverage": "partially_covered",
+      "requirement_text": "A credit cannot be used for a transfer in the same cycle that it is given."
+    },
+    {
+      "test_id": "TEST_REQ_A2_4_006_001",
+      "requirement_id": "REQ_A2_4_006",
+      "test_type": "negative",
+      "test_description": "Verify that a credit cannot be given in the same cycle that it is used by a transfer.",
+      "test_constraints": "Requires observability of both credit-give and credit-use events in cycle alignment; exact signals are not provided.",
+      "test_steps": [
+        "Create a cycle in which a transfer uses a credit.",
+        "Check whether a credit-give event also occurs in that same cycle."
+      ],
+      "expected_results": [
+        "A credit is not given in the same cycle that a transfer uses a credit."
+      ],
+      "coverage": "partially_covered",
+      "requirement_text": "A credit cannot be given in the same cycle that it is used by a transfer."
+    },
+    {
+      "test_id": "TEST_REQ_A2_4_007_001",
+      "requirement_id": "REQ_A2_4_007",
+      "test_type": "positive",
+      "test_description": "Traceability for example-specific statement that cycle 4 uses a credit for a transfer.",
+      "test_constraints": "Requirement is example-specific and lacks the preceding scenario definition, cycle numbering reference, and observable setup needed to reproduce 'cycle 4'.",
+      "test_steps": [
+        "Provide the full example waveform or scenario that defines cycle numbering and prior credit state.",
+        "Define the observable transfer and credit events for cycle 4."
+      ],
+      "expected_results": [
+        "Verification is blocked until the referenced example context is provided."
+      ],
+      "coverage": "blocked",
+      "requirement_text": "Cycle 4 The Tx uses the credit for a transfer."
+    },
+    {
+      "test_id": "TEST_REQ_A2_4_008_001",
+      "requirement_id": "REQ_A2_4_008",
+      "test_type": "positive",
+      "test_description": "Traceability for example-specific statement that cycle 5 uses the second credit for a transfer.",
+      "test_constraints": "Requirement is example-specific and lacks the prior scenario, credit sequence, and cycle numbering needed to verify 'cycle 5' and 'second credit'.",
+      "test_steps": [
+        "Provide the full example waveform or scenario that defines cycle numbering and prior credit issuance/use.",
+        "Define the observable event corresponding to use of the second credit on cycle 5."
+      ],
+      "expected_results": [
+        "Verification is blocked until the referenced example context is provided."
+      ],
+      "coverage": "blocked",
+      "requirement_text": "Cycle 5 The Tx uses the second credit for a transfer."
+    },
+    {
+      "test_id": "TEST_REQ_A2_4_009_001",
+      "requirement_id": "REQ_A2_4_009",
+      "test_type": "positive",
+      "test_description": "Traceability for example-specific statement that cycle 8 uses a credit for a transfer.",
+      "test_constraints": "Requirement is example-specific and lacks the full scenario, cycle numbering reference, and prior credit state needed to verify 'cycle 8'.",
+      "test_steps": [
+        "Provide the full example waveform or scenario that defines cycle numbering and credit state through cycle 8.",
+        "Define the observable transfer and credit-use event for cycle 8."
+      ],
+      "expected_results": [
+        "Verification is blocked until the referenced example context is provided."
+      ],
+      "coverage": "blocked",
+      "requirement_text": "Cycle 8 The Tx uses the credit for a transfer."
+    },
+    {
+      "test_id": "TEST_REQ_A2_5_001_001",
+      "requirement_id": "REQ_A2_5_001",
+      "test_type": "positive",
+      "test_description": "Verify VALID is delayed by the same number of pipeline cycles as the channel payload signals.",
+      "test_constraints": "Requires a channel configuration with observable payload signals and known pipeline stages. RP and SHAREDCRD are only applicable if present.",
+      "test_steps": [
+        "Apply a transaction on a channel with known payload timing and observe payload pipeline delay.",
+        "Observe the corresponding VALID timing through the same path.",
+        "Compare VALID delay against payload signal delay for the channel."
+      ],
+      "expected_results": [
+        "VALID is delayed by the same number of cycles as the payload signals.",
+        "The VALID-to-payload alignment is preserved at the output of the pipeline."
+      ],
+      "coverage": "partially_covered",
+      "requirement_text": "VALID signals must be pipelined by the same number of cycles as the payload signals of that channel including RP and SHAREDCRD signals, if present."
+    },
+    {
+      "test_id": "TEST_REQ_A2_5_001_002",
+      "requirement_id": "REQ_A2_5_001",
+      "test_type": "positive",
+      "test_description": "Verify SHAREDCRD is delayed consistently with VALID when SHAREDCRD is present on the channel.",
+      "test_constraints": "Applicable only if SHAREDCRD is implemented on the channel. Exact channel and pipeline configuration must be available.",
+      "test_steps": [
+        "Configure or select a channel instance where SHAREDCRD is present and pipelined.",
+        "Drive activity that propagates SHAREDCRD and VALID through the pipeline.",
+        "Compare the observed cycle delay of VALID and SHAREDCRD on that channel."
+      ],
+      "expected_results": [
+        "VALID and SHAREDCRD are delayed by the same number of pipeline cycles on the channel.",
+        "Their timing relationship is preserved after pipelining."
+      ],
+      "coverage": "partially_covered",
+      "requirement_text": "VALID signals must be pipelined by the same number of cycles as the payload signals of that channel including RP and SHAREDCRD signals, if present."
+    },
+    {
+      "test_id": "TEST_REQ_A2_5_002_001",
+      "requirement_id": "REQ_A2_5_002",
+      "test_type": "positive",
+      "test_description": "Verify PENDING is HIGH in the cycle immediately before VALID is HIGH.",
+      "test_constraints": "Requires observable PENDING and VALID timing on the same interface. No additional timing exceptions are specified.",
+      "test_steps": [
+        "Drive or observe a transfer where VALID is asserted.",
+        "Check the value of PENDING in the cycle immediately preceding VALID assertion.",
+        "Repeat across representative transfers if multiple opportunities exist."
+      ],
+      "expected_results": [
+        "PENDING is HIGH in the cycle before VALID is HIGH.",
+        "The required one-cycle relationship is preserved."
+      ],
+      "coverage": "covered",
+      "requirement_text": "PENDING signals must retain the relationship that they are HIGH in the cycle before VALID is HIGH."
+    },
+    {
+      "test_id": "TEST_REQ_A2_6_001_001",
+      "requirement_id": "REQ_A2_6_001",
+      "test_type": "positive",
+      "test_description": "Verify a write response follows the last write transfer of a write transaction.",
+      "test_constraints": "Requires identifiable write transaction boundaries and observable write response signaling.",
+      "test_steps": [
+        "Issue a write transaction with a defined final write transfer.",
+        "Observe completion of the last write transfer for that transaction.",
+        "Observe the subsequent write response for the same transaction."
+      ],
+      "expected_results": [
+        "A write response occurs after the last write transfer.",
+        "The response does not precede the final write transfer of that transaction."
+      ],
+      "coverage": "covered",
+      "requirement_text": "A write response must always follow the last write transfer in a write transaction."
+    },
+    {
+      "test_id": "TEST_REQ_A2_6_002_001",
+      "requirement_id": "REQ_A2_6_002",
+      "test_type": "positive",
+      "test_description": "Verify read data follows the read request.",
+      "test_constraints": "Requires observable read request and read data association for the same transaction.",
+      "test_steps": [
+        "Issue a read request.",
+        "Observe the corresponding read data timing for that transaction.",
+        "Check that read data occurs after the read request."
+      ],
+      "expected_results": [
+        "Read data occurs only after the read request.",
+        "The ordering from request to read data is preserved."
+      ],
+      "coverage": "covered",
+      "requirement_text": "Read data and responses must always follow the read request."
+    },
+    {
+      "test_id": "TEST_REQ_A2_6_002_002",
+      "requirement_id": "REQ_A2_6_002",
+      "test_type": "positive",
+      "test_description": "Verify read response follows the read request.",
+      "test_constraints": "Requires observable read request and response association for the same transaction.",
+      "test_steps": [
+        "Issue a read request.",
+        "Observe the corresponding read response timing for that transaction.",
+        "Check that the response occurs after the read request."
+      ],
+      "expected_results": [
+        "Read response occurs only after the read request.",
+        "The ordering from request to response is preserved."
+      ],
+      "coverage": "covered",
+      "requirement_text": "Read data and responses must always follow the read request."
+    },
+    {
+      "test_id": "TEST_REQ_A2_6_003_001",
+      "requirement_id": "REQ_A2_6_003",
+      "test_type": "positive",
+      "test_description": "Verify a Manager can provide all write data for a transaction without dependency on other transactions from that Manager.",
+      "test_constraints": "Requires a controllable Manager capable of issuing multiple transactions and observable write-data progress. Dependency conditions are only indirectly testable from interface behavior.",
+      "test_steps": [
+        "Issue a write request from the Manager and begin providing all write data for that transaction.",
+        "Create another transaction context from the same Manager that is inactive or delayed.",
+        "Observe whether write-data completion for the original transaction proceeds without waiting on the other transaction."
+      ],
+      "expected_results": [
+        "All write data for the transaction can be provided independently of the other transaction state.",
+        "No cross-transaction dependency is required for write-data completion from that Manager."
+      ],
+      "coverage": "partially_covered",
+      "requirement_text": "When a Manager issues a write request, it must be able to provide all write data for that transaction, without dependency on other transactions from that Manager."
+    },
+    {
+      "test_id": "TEST_REQ_A2_6_004_001",
+      "requirement_id": "REQ_A2_6_004",
+      "test_type": "positive",
+      "test_description": "Verify a Manager that has issued a write request and all write data can accept all responses for that transaction without dependency on other transactions from that Manager.",
+      "test_constraints": "Requires observable write completion and response acceptance at the Manager. Internal acceptance capability may only be inferred from interface behavior.",
+      "test_steps": [
+        "Issue a write request and complete all write data from the Manager.",
+        "Hold another transaction from the same Manager inactive or unfinished.",
+        "Observe whether all responses for the completed write transaction are accepted without waiting on the other transaction."
+      ],
+      "expected_results": [
+        "All responses for the transaction are accepted independently of other transactions from that Manager.",
+        "No cross-transaction dependency is required for response acceptance."
+      ],
+      "coverage": "partially_covered",
+      "requirement_text": "When a Manager has issued a write request and all write data, it must be able to accept all responses for that transaction, without dependency on other transactions from that Manager."
+    },
+    {
+      "test_id": "TEST_REQ_A2_6_005_001",
+      "requirement_id": "REQ_A2_6_005",
+      "test_type": "positive",
+      "test_description": "Verify a Manager that has issued a read request can accept all read data for that transaction without dependency on other transactions from that Manager.",
+      "test_constraints": "Requires observable read-data acceptance at the Manager with more than one transaction context. Internal acceptance capability may only be inferred from interface behavior.",
+      "test_steps": [
+        "Issue a read request from the Manager.",
+        "Create another transaction context from the same Manager that is inactive or incomplete.",
+        "Observe whether all read data for the issued read transaction is accepted without waiting on the other transaction."
+      ],
+      "expected_results": [
+        "All read data for the transaction is accepted independently of other transactions from that Manager.",
+        "No cross-transaction dependency is required for read-data acceptance."
+      ],
+      "coverage": "partially_covered",
+      "requirement_text": "When a Manager has issued a read request, it must be able to accept all read data for that transaction, without dependency on other transactions from that Manager."
+    },
+    {
+      "test_id": "TEST_REQ_A2_6_006_001",
+      "requirement_id": "REQ_A2_6_006",
+      "test_type": "positive",
+      "test_description": "Trace permission for a Manager to wait for one transaction to complete before issuing another transaction request.",
+      "test_constraints": "Requirement is permission language, not a mandatory behavior. Edge case states concurrency is not mandatory, so only permissibility can be traced unless implementation behavior is defined.",
+      "test_steps": [
+        "Identify whether the implementation allows serialized transaction issue by the Manager.",
+        "Confirm what observable condition defines transaction completion and subsequent issue eligibility.",
+        "Clarify implementation policy if verification of this permitted mode is required."
+      ],
+      "expected_results": [
+        "The requirement is recognized as optional behavior rather than a mandatory concurrency rule.",
+        "Additional implementation-specific context is needed to verify the permitted serialized mode concretely."
+      ],
+      "coverage": "blocked",
+      "requirement_text": "A Manager is permitted to wait for one transaction to complete before issuing another transaction request."
+    },
+    {
+      "test_id": "TEST_REQ_A2_6_007_001",
+      "requirement_id": "REQ_A2_6_007",
+      "test_type": "positive",
+      "test_description": "Trace permission for a Subordinate to wait for one transaction to complete before accepting another request, giving credits, or sending transfers for another transaction.",
+      "test_constraints": "Requirement is permission language, not a mandatory behavior. Edge case states a fully serialized Subordinate is allowed, so only permissibility can be traced unless implementation behavior is defined.",
+      "test_steps": [
+        "Identify whether the implementation allows a fully serialized Subordinate behavior across transactions.",
+        "Confirm what observable condition defines transaction completion and when cross-transaction activity may resume.",
+        "Clarify implementation policy if verification of this permitted mode is required."
+      ],
+      "expected_results": [
+        "The requirement is recognized as optional behavior rather than a mandatory acceptance or concurrency rule.",
+        "Additional implementation-specific context is needed to verify the permitted serialized Subordinate mode concretely."
+      ],
+      "coverage": "blocked",
+      "requirement_text": "A Subordinate is permitted to wait for one transaction to complete before accepting another request, giving credits or sending transfers for another transaction."
+    },
+    {
+      "test_id": "TEST_REQ_A2_6_008_001",
+      "requirement_id": "REQ_A2_6_008",
+      "test_type": "negative",
+      "test_description": "Verify a Subordinate does not block acceptance of data-less write requests due to transactions with leading write data.",
+      "test_constraints": "Requires a scenario with a data-less write request and another transaction containing leading write data, plus observable request acceptance behavior.",
+      "test_steps": [
+        "Present a transaction with leading write data and, while it is active, issue a data-less write request to the Subordinate.",
+        "Observe acceptance of the data-less write request under that condition.",
+        "Check whether the active leading-write-data transaction prevents acceptance."
+      ],
+      "expected_results": [
+        "The data-less write request is accepted despite transactions with leading write data being present.",
+        "Acceptance of the data-less write request is not blocked by the other transaction condition."
+      ],
+      "coverage": "covered",
+      "requirement_text": "A Subordinate must not block acceptance of data-less write requests due to transactions with leading write data."
+    },
+    {
+      "test_id": "TEST_REQ_A2_6_009_001",
+      "requirement_id": "REQ_A2_6_009",
+      "test_type": "positive",
+      "test_description": "Trace the stated example condition where the write request channel contains more register stages than the write data channel.",
+      "test_constraints": "This is explanatory cause text, not a normative requirement. No mandatory behavior is defined by this statement alone.",
+      "test_steps": [
+        "Identify the implementation pipeline depths of the write request and write data channels.",
+        "Determine whether the write request channel can have more register stages than the write data channel.",
+        "Link this condition to any separately specified required behavior, if applicable."
+      ],
+      "expected_results": [
+        "The statement is treated as contextual explanatory text rather than a standalone measurable requirement.",
+        "No independent pass/fail functional verification can be completed from this text alone."
+      ],
+      "coverage": "blocked",
+      "requirement_text": "This can occur if the write request channel contains more register stages than the write data channel."
+    },
+    {
+      "test_id": "TEST_REQ_A2_6_010_001",
+      "requirement_id": "REQ_A2_6_010",
+      "test_type": "positive",
+      "test_description": "Verify the interconnect realigns the request and write data when it is required to determine the destination address space or Subordinate space.",
+      "test_constraints": "Requires an implementation where the interconnect performs destination determination and observable alignment of request and write data. Exact alignment mechanism and observability are not specified.",
+      "test_steps": [
+        "Create a write path scenario where the interconnect determines the destination address space or Subordinate space.",
+        "Drive a write request and corresponding write data through the interconnect.",
+        "Observe whether the request and write data are realigned before delivery toward the destination."
+      ],
+      "expected_results": [
+        "The interconnect realigns the request and write data in the stated condition.",
+        "The delivered request and write data are aligned for the resolved destination path."
+      ],
+      "coverage": "partially_covered",
+      "requirement_text": "When the interconnect is required to determine the destination address space or Subordinate space, it must realign the request and write data."
+    },
+    {
+      "test_id": "TEST_REQ_A2_6_011_001",
+      "requirement_id": "REQ_A2_6_011",
+      "test_type": "positive",
+      "test_description": "Verify realignment causes write data to be signaled as valid only to the Subordinate for which it is destined.",
+      "test_constraints": "Requires observable destination-specific write-data validity signaling after realignment. The exact validity indication and destination tagging are not specified.",
+      "test_steps": [
+        "Drive a write transaction through the realignment condition toward a resolved destination Subordinate.",
+        "Observe where write data validity is signaled after realignment.",
+        "Check that validity is asserted only on the destination Subordinate path for that write data."
+      ],
+      "expected_results": [
+        "Write data is signaled as valid only to the destined Subordinate.",
+        "No non-destination Subordinate path observes valid write data for that transaction."
+      ],
+      "coverage": "partially_covered",
+      "requirement_text": "This realignment is required to assure that the write data is signaled as being valid only to the Subordinate for which it is destined."
+    }
+  ]
+}

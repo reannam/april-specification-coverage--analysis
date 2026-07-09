@@ -1,0 +1,353 @@
+{
+  "metadata": {
+    "vplan_file": "/home/eng-7038/Documents/Specification-Analyser/april-specification-coverage--analysis/outputs/generated_vplan_2026-07-07_11-28-22.json",
+    "edge_case_file": "/home/eng-7038/Documents/Specification-Analyser/april-specification-coverage--analysis/outputs/edge_cases/generated_edge_case_info_2026-07-07_11-28-13.json",
+    "date_created": "July 07 2026",
+    "time_created": "11:29am",
+    "number_of_blocked_tests": 12,
+    "number_of_partially_covered_tests": 21
+  },
+  "blocked_tests": [
+    {
+      "test_id": "TEST_REQ_A2_1_001_001",
+      "requirement_id": "REQ_A2_1_001",
+      "coverage": "blocked",
+      "test_description": "Traceability for absence of combinatorial paths between interface input and output signals.",
+      "reason": "Requirement does not identify specific interface signals, paths, or an observable dynamic method to prove absence of combinatorial logic from the provided information.",
+      "required_clarification": "Review requirement wording and provide enough detail for verification.",
+      "related_edge_cases": []
+    },
+    {
+      "test_id": "TEST_REQ_A2_1_002_001",
+      "requirement_id": "REQ_A2_1_002",
+      "coverage": "blocked",
+      "test_description": "Traceability for use of a single active-LOW reset signal ARESETn.",
+      "reason": "Requirement names ARESETn but does not provide observable interface instances, reset mapping, or configuration context needed to verify that it is the single reset used.",
+      "required_clarification": "Review requirement wording and provide enough detail for verification.",
+      "related_edge_cases": []
+    },
+    {
+      "test_id": "TEST_REQ_A2_2_001_001",
+      "requirement_id": "REQ_A2_2_001",
+      "coverage": "blocked",
+      "test_description": "Traceability for matching AXI_Transport property values on connected Manager and Subordinate interfaces.",
+      "reason": "Requirement refers to AXI_Transport property values, but no property encoding, access mechanism, or connected interface instances are provided.",
+      "required_clarification": "Review requirement wording and provide enough detail for verification.",
+      "related_edge_cases": []
+    },
+    {
+      "test_id": "TEST_REQ_A2_3_001_002",
+      "requirement_id": "REQ_A2_3_001",
+      "coverage": "blocked",
+      "test_description": "Traceability for requirement that the Subordinate must be able to accept any valid request that is presented to it.",
+      "reason": "Requirement lacks definition of 'any valid request', acceptance criteria, channels, and observable outcomes.",
+      "required_clarification": "Review requirement wording and provide enough detail for verification.",
+      "related_edge_cases": []
+    },
+    {
+      "test_id": "TEST_REQ_A2_3_001_003",
+      "requirement_id": "REQ_A2_3_001",
+      "coverage": "blocked",
+      "test_description": "Traceability for dependency indicated by double-headed arrows requiring assertion ordering.",
+      "reason": "Requirement refers to a diagrammatic notation not included in the input; the actual signal pairs and ordering dependencies are missing.",
+      "required_clarification": "Review requirement wording and provide enough detail for verification.",
+      "related_edge_cases": []
+    },
+    {
+      "test_id": "TEST_REQ_A2_4_004_001",
+      "requirement_id": "REQ_A2_4_004",
+      "coverage": "blocked",
+      "test_description": "Traceability for absence of combinatorial paths between credit signals and other channel signals in either direction.",
+      "reason": "Requirement does not identify channel signals, implementation structure, or an observable method to prove absence of combinatorial paths.",
+      "required_clarification": "Review requirement wording and provide enough detail for verification.",
+      "related_edge_cases": []
+    },
+    {
+      "test_id": "TEST_REQ_A2_4_007_001",
+      "requirement_id": "REQ_A2_4_007",
+      "coverage": "blocked",
+      "test_description": "Traceability for example-specific statement that cycle 4 uses a credit for a transfer.",
+      "reason": "Requirement is example-specific and lacks the preceding scenario definition, cycle numbering reference, and observable setup needed to reproduce 'cycle 4'.",
+      "required_clarification": "Review requirement wording and provide enough detail for verification.",
+      "related_edge_cases": []
+    },
+    {
+      "test_id": "TEST_REQ_A2_4_008_001",
+      "requirement_id": "REQ_A2_4_008",
+      "coverage": "blocked",
+      "test_description": "Traceability for example-specific statement that cycle 5 uses the second credit for a transfer.",
+      "reason": "Requirement is example-specific and lacks the prior scenario, credit sequence, and cycle numbering needed to verify 'cycle 5' and 'second credit'.",
+      "required_clarification": "Review requirement wording and provide enough detail for verification.",
+      "related_edge_cases": []
+    },
+    {
+      "test_id": "TEST_REQ_A2_4_009_001",
+      "requirement_id": "REQ_A2_4_009",
+      "coverage": "blocked",
+      "test_description": "Traceability for example-specific statement that cycle 8 uses a credit for a transfer.",
+      "reason": "Requirement is example-specific and lacks the full scenario, cycle numbering reference, and prior credit state needed to verify 'cycle 8'.",
+      "required_clarification": "Review requirement wording and provide enough detail for verification.",
+      "related_edge_cases": []
+    },
+    {
+      "test_id": "TEST_REQ_A2_6_006_001",
+      "requirement_id": "REQ_A2_6_006",
+      "coverage": "blocked",
+      "test_description": "Trace permission for a Manager to wait for one transaction to complete before issuing another transaction request.",
+      "reason": "Requirement is permission language, not a mandatory behavior. Edge case states concurrency is not mandatory, so only permissibility can be traced unless implementation behavior is defined.",
+      "required_clarification": "Clarify the edge-case behaviour before treating this requirement as fully testable.",
+      "related_edge_cases": [
+        {
+          "edge_case_id": "EDGE_REQ_A2_6_006_001",
+          "edge_case_type": "optional_behaviour",
+          "edge_case_description": "Because a Manager is 'permitted' to wait for one transaction to complete before issuing another, verification must cover both serialized issue and overlapping/pipelined transaction issue; concurrency is not mandatory."
+        }
+      ]
+    },
+    {
+      "test_id": "TEST_REQ_A2_6_007_001",
+      "requirement_id": "REQ_A2_6_007",
+      "coverage": "blocked",
+      "test_description": "Trace permission for a Subordinate to wait for one transaction to complete before accepting another request, giving credits, or sending transfers for another transaction.",
+      "reason": "Requirement is permission language, not a mandatory behavior. Edge case states a fully serialized Subordinate is allowed, so only permissibility can be traced unless implementation behavior is defined.",
+      "required_clarification": "Clarify the edge-case behaviour before treating this requirement as fully testable.",
+      "related_edge_cases": [
+        {
+          "edge_case_id": "EDGE_REQ_A2_6_007_001",
+          "edge_case_type": "optional_behaviour",
+          "edge_case_description": "Because a Subordinate is 'permitted' to wait for one transaction to complete before accepting another request, giving credits or sending transfers for another transaction, verification must cover a fully serialized Subordinate that stalls cross-transaction acceptance/response activity until completion."
+        }
+      ]
+    },
+    {
+      "test_id": "TEST_REQ_A2_6_009_001",
+      "requirement_id": "REQ_A2_6_009",
+      "coverage": "blocked",
+      "test_description": "Trace the stated example condition where the write request channel contains more register stages than the write data channel.",
+      "reason": "This is explanatory cause text, not a normative requirement. No mandatory behavior is defined by this statement alone.",
+      "required_clarification": "Review requirement wording and provide enough detail for verification.",
+      "related_edge_cases": []
+    }
+  ],
+  "partially_covered_tests": [
+    {
+      "test_id": "TEST_REQ_A2_1_003_001",
+      "requirement_id": "REQ_A2_1_003",
+      "coverage": "partially_covered",
+      "test_description": "Verify that reset deassertion occurs only synchronously with a rising edge of ACLK.",
+      "reason": "Asynchronous assertion is optional per edge case; only synchronous deassertion is mandatory and directly testable from the requirement.",
+      "required_clarification": "Clarify the edge-case behaviour before treating this requirement as fully testable.",
+      "related_edge_cases": [
+        {
+          "edge_case_id": "EDGE_REQ_A2_1_003_001",
+          "edge_case_type": "optional_behaviour",
+          "edge_case_description": "Because reset assertion 'can be asserted asynchronously', verification must consider both implementations that support asynchronous assertion and implementations that do not; the requirement does not make asynchronous assertion mandatory."
+        }
+      ]
+    },
+    {
+      "test_id": "TEST_REQ_A2_1_003_002",
+      "requirement_id": "REQ_A2_1_003",
+      "coverage": "partially_covered",
+      "test_description": "Traceability for optional asynchronous reset assertion capability.",
+      "reason": "Edge case states asynchronous assertion is not mandatory; requirement permits but does not require implementations to support asynchronous assertion.",
+      "required_clarification": "Clarify the edge-case behaviour before treating this requirement as fully testable.",
+      "related_edge_cases": [
+        {
+          "edge_case_id": "EDGE_REQ_A2_1_003_001",
+          "edge_case_type": "optional_behaviour",
+          "edge_case_description": "Because reset assertion 'can be asserted asynchronously', verification must consider both implementations that support asynchronous assertion and implementations that do not; the requirement does not make asynchronous assertion mandatory."
+        }
+      ]
+    },
+    {
+      "test_id": "TEST_REQ_A2_1_004_001",
+      "requirement_id": "REQ_A2_1_004",
+      "coverage": "partially_covered",
+      "test_description": "Verify that signals required to be deasserted during reset remain deasserted until at least the rising ACLK edge after ARESETn is HIGH.",
+      "reason": "Requirement does not identify which specific signals are required to be deasserted during reset; applies only to those signals once identified.",
+      "required_clarification": "Review requirement wording and provide enough detail for verification.",
+      "related_edge_cases": []
+    },
+    {
+      "test_id": "TEST_REQ_A2_1_005_001",
+      "requirement_id": "REQ_A2_1_005",
+      "coverage": "partially_covered",
+      "test_description": "Verify that a signal required to be deasserted during reset is not asserted before a rising ACLK edge after ARESETn is HIGH.",
+      "reason": "Edge case notes the requirement defines only the earliest legal assertion point, not that assertion must occur on the first eligible edge; specific applicable signals are not identified.",
+      "required_clarification": "Clarify the edge-case behaviour before treating this requirement as fully testable.",
+      "related_edge_cases": [
+        {
+          "edge_case_id": "EDGE_REQ_A2_1_005_001",
+          "edge_case_type": "ambiguous_expected_result",
+          "edge_case_description": "The wording defines only the earliest point signals can be asserted after ARESETn goes HIGH, but does not state whether assertion is required on that first rising ACLK edge or may be delayed arbitrarily; verification must treat delayed first assertion as a possible edge case."
+        }
+      ]
+    },
+    {
+      "test_id": "TEST_REQ_A2_3_002_001",
+      "requirement_id": "REQ_A2_3_002",
+      "coverage": "partially_covered",
+      "test_description": "Verify that the transmitter keeps its information stable until the transfer occurs when the VALID assertion is recognized.",
+      "reason": "Requirement references 'information' and a transfer event but does not identify the exact signal set for the information payload/control.",
+      "required_clarification": "Review requirement wording and provide enough detail for verification.",
+      "related_edge_cases": []
+    },
+    {
+      "test_id": "TEST_REQ_A2_3_003_001",
+      "requirement_id": "REQ_A2_3_003",
+      "coverage": "partially_covered",
+      "test_description": "Verify that the transmitter does not wait for READY before asserting VALID.",
+      "reason": "Requires stimulus that keeps READY deasserted while the transmitter has data to send; exact transmitter-side request trigger is not specified.",
+      "required_clarification": "Provide the missing signal, timing, configuration, or behavioural detail.",
+      "related_edge_cases": []
+    },
+    {
+      "test_id": "TEST_REQ_A2_3_005_001",
+      "requirement_id": "REQ_A2_3_005",
+      "coverage": "partially_covered",
+      "test_description": "Verify that the receiver may wait for VALID before asserting the corresponding READY.",
+      "reason": "Edge case identifies this as permitted rather than mandatory behaviour; verifying this legal mode does not prove READY must wait in all cases.",
+      "required_clarification": "Clarify the edge-case behaviour before treating this requirement as fully testable.",
+      "related_edge_cases": [
+        {
+          "edge_case_id": "EDGE_REQ_A2_3_005_001",
+          "edge_case_type": "optional_behaviour",
+          "edge_case_description": "Because the receiver is 'permitted' to wait for VALID before asserting READY, verification must cover both legal behaviours: READY asserted before VALID and READY withheld until after VALID is seen."
+        }
+      ]
+    },
+    {
+      "test_id": "TEST_REQ_A2_3_006_001",
+      "requirement_id": "REQ_A2_3_006",
+      "coverage": "partially_covered",
+      "test_description": "Verify that READY may be deasserted before VALID is asserted when READY had been asserted earlier.",
+      "reason": "Permitted conditional behaviour only; edge case notes transient READY pulse with no transfer is legal.",
+      "required_clarification": "Clarify the edge-case behaviour before treating this requirement as fully testable.",
+      "related_edge_cases": [
+        {
+          "edge_case_id": "EDGE_REQ_A2_3_006_001",
+          "edge_case_type": "conditional_behaviour",
+          "edge_case_description": "The condition 'If READY is asserted' creates an edge case where READY may pulse high and then deassert before VALID is asserted; verification should cover transient READY assertion with no transfer."
+        }
+      ]
+    },
+    {
+      "test_id": "TEST_REQ_A2_3_003_002",
+      "requirement_id": "REQ_A2_3_003",
+      "coverage": "partially_covered",
+      "test_description": "Verify that the Subordinate asserts BVALID only after AWVALID, AWREADY, WVALID, and WREADY have all been asserted.",
+      "reason": "Requirement gives prerequisite signals but does not state whether they must occur in one cycle or over prior handshakes; assertion ordering is still observable.",
+      "required_clarification": "Review requirement wording and provide enough detail for verification.",
+      "related_edge_cases": []
+    },
+    {
+      "test_id": "TEST_REQ_A2_3_004_002",
+      "requirement_id": "REQ_A2_3_004",
+      "coverage": "partially_covered",
+      "test_description": "Verify that the Subordinate waits for the last write data transfer before asserting BVALID.",
+      "reason": "Applies when write data has a defined last transfer indication, but that indication is not named in the requirement text.",
+      "required_clarification": "Review requirement wording and provide enough detail for verification.",
+      "related_edge_cases": []
+    },
+    {
+      "test_id": "TEST_REQ_A2_4_002_001",
+      "requirement_id": "REQ_A2_4_002",
+      "coverage": "partially_covered",
+      "test_description": "Verify that the channel transmitter uses one credit in each cycle that VALID is asserted.",
+      "reason": "Requires visibility of transmitter credit count or equivalent observable credit accounting; such observability is not defined in the input.",
+      "required_clarification": "Review requirement wording and provide enough detail for verification.",
+      "related_edge_cases": []
+    },
+    {
+      "test_id": "TEST_REQ_A2_4_003_001",
+      "requirement_id": "REQ_A2_4_003",
+      "coverage": "partially_covered",
+      "test_description": "Verify that VALID is not asserted when the channel transmitter has zero credits.",
+      "reason": "Requires a controllable or observable zero-credit condition; credit state visibility is not specified in the input.",
+      "required_clarification": "Provide the missing signal, timing, configuration, or behavioural detail.",
+      "related_edge_cases": []
+    },
+    {
+      "test_id": "TEST_REQ_A2_4_005_001",
+      "requirement_id": "REQ_A2_4_005",
+      "coverage": "partially_covered",
+      "test_description": "Verify that a credit given in a cycle cannot be used for a transfer in that same cycle.",
+      "reason": "Requires observability of the cycle in which a credit is given and the cycle in which a transfer consumes credit; exact credit-give signal is not identified.",
+      "required_clarification": "Review requirement wording and provide enough detail for verification.",
+      "related_edge_cases": []
+    },
+    {
+      "test_id": "TEST_REQ_A2_4_006_001",
+      "requirement_id": "REQ_A2_4_006",
+      "coverage": "partially_covered",
+      "test_description": "Verify that a credit cannot be given in the same cycle that it is used by a transfer.",
+      "reason": "Requires observability of both credit-give and credit-use events in cycle alignment; exact signals are not provided.",
+      "required_clarification": "Review requirement wording and provide enough detail for verification.",
+      "related_edge_cases": []
+    },
+    {
+      "test_id": "TEST_REQ_A2_5_001_001",
+      "requirement_id": "REQ_A2_5_001",
+      "coverage": "partially_covered",
+      "test_description": "Verify VALID is delayed by the same number of pipeline cycles as the channel payload signals.",
+      "reason": "Requires a channel configuration with observable payload signals and known pipeline stages. RP and SHAREDCRD are only applicable if present.",
+      "required_clarification": "Review requirement wording and provide enough detail for verification.",
+      "related_edge_cases": []
+    },
+    {
+      "test_id": "TEST_REQ_A2_5_001_002",
+      "requirement_id": "REQ_A2_5_001",
+      "coverage": "partially_covered",
+      "test_description": "Verify SHAREDCRD is delayed consistently with VALID when SHAREDCRD is present on the channel.",
+      "reason": "Applicable only if SHAREDCRD is implemented on the channel. Exact channel and pipeline configuration must be available.",
+      "required_clarification": "Review requirement wording and provide enough detail for verification.",
+      "related_edge_cases": []
+    },
+    {
+      "test_id": "TEST_REQ_A2_6_003_001",
+      "requirement_id": "REQ_A2_6_003",
+      "coverage": "partially_covered",
+      "test_description": "Verify a Manager can provide all write data for a transaction without dependency on other transactions from that Manager.",
+      "reason": "Requires a controllable Manager capable of issuing multiple transactions and observable write-data progress. Dependency conditions are only indirectly testable from interface behavior.",
+      "required_clarification": "Review requirement wording and provide enough detail for verification.",
+      "related_edge_cases": []
+    },
+    {
+      "test_id": "TEST_REQ_A2_6_004_001",
+      "requirement_id": "REQ_A2_6_004",
+      "coverage": "partially_covered",
+      "test_description": "Verify a Manager that has issued a write request and all write data can accept all responses for that transaction without dependency on other transactions from that Manager.",
+      "reason": "Requires observable write completion and response acceptance at the Manager. Internal acceptance capability may only be inferred from interface behavior.",
+      "required_clarification": "Review requirement wording and provide enough detail for verification.",
+      "related_edge_cases": []
+    },
+    {
+      "test_id": "TEST_REQ_A2_6_005_001",
+      "requirement_id": "REQ_A2_6_005",
+      "coverage": "partially_covered",
+      "test_description": "Verify a Manager that has issued a read request can accept all read data for that transaction without dependency on other transactions from that Manager.",
+      "reason": "Requires observable read-data acceptance at the Manager with more than one transaction context. Internal acceptance capability may only be inferred from interface behavior.",
+      "required_clarification": "Review requirement wording and provide enough detail for verification.",
+      "related_edge_cases": []
+    },
+    {
+      "test_id": "TEST_REQ_A2_6_010_001",
+      "requirement_id": "REQ_A2_6_010",
+      "coverage": "partially_covered",
+      "test_description": "Verify the interconnect realigns the request and write data when it is required to determine the destination address space or Subordinate space.",
+      "reason": "Requires an implementation where the interconnect performs destination determination and observable alignment of request and write data. Exact alignment mechanism and observability are not specified.",
+      "required_clarification": "Provide the missing signal, timing, configuration, or behavioural detail.",
+      "related_edge_cases": []
+    },
+    {
+      "test_id": "TEST_REQ_A2_6_011_001",
+      "requirement_id": "REQ_A2_6_011",
+      "coverage": "partially_covered",
+      "test_description": "Verify realignment causes write data to be signaled as valid only to the Subordinate for which it is destined.",
+      "reason": "Requires observable destination-specific write-data validity signaling after realignment. The exact validity indication and destination tagging are not specified.",
+      "required_clarification": "Provide the missing signal, timing, configuration, or behavioural detail.",
+      "related_edge_cases": []
+    }
+  ]
+}

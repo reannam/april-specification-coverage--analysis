@@ -162,6 +162,7 @@ def edge_case_agent_call(requirements: str) -> dict:
     return {
         "edge_cases": edge_cases.model_dump(),
         "edge_case_output_file": str(generated_edge_case_info),
+        "weak_words_file": str(weak_language_file),
         "edge_case_trace_id": edge_case_trace_id,
         "edge_case_usage": usage,
     }

@@ -1,0 +1,51 @@
+{
+  "metadata": {
+    "requirements_file": "/home/eng-7038/Documents/Specification-Analyser/april-specification-coverage--analysis/uploads/preprocessed/78b7fb83fe014371a338c8c77d5aad48_amba_axi_A2_extracted_original_requirements_only.json",
+    "weak_language_file": "/home/eng-7038/Documents/Specification-Analyser/april-specification-coverage--analysis/outputs/weak_language/weak_words_2026-07-07_11-28-13.json",
+    "date_created": "July 07 2026",
+    "time_created": "11:28am",
+    "total_requirements": 43,
+    "number_of_weak_language_instances": 26,
+    "number_of_flagged_requirements": 21,
+    "number_of_edge_case_candidates": 6,
+    "langsmith_trace_id": "e82be177-a537-4509-9eb6-48fc7c235908"
+  },
+  "edge_cases": [
+    {
+      "edge_case_id": "EDGE_REQ_A2_1_003_001",
+      "requirement_id": "REQ_A2_1_003",
+      "edge_case_type": "optional_behaviour",
+      "edge_case_description": "Because reset assertion 'can be asserted asynchronously', verification must consider both implementations that support asynchronous assertion and implementations that do not; the requirement does not make asynchronous assertion mandatory."
+    },
+    {
+      "edge_case_id": "EDGE_REQ_A2_1_005_001",
+      "requirement_id": "REQ_A2_1_005",
+      "edge_case_type": "ambiguous_expected_result",
+      "edge_case_description": "The wording defines only the earliest point signals can be asserted after ARESETn goes HIGH, but does not state whether assertion is required on that first rising ACLK edge or may be delayed arbitrarily; verification must treat delayed first assertion as a possible edge case."
+    },
+    {
+      "edge_case_id": "EDGE_REQ_A2_3_005_001",
+      "requirement_id": "REQ_A2_3_005",
+      "edge_case_type": "optional_behaviour",
+      "edge_case_description": "Because the receiver is 'permitted' to wait for VALID before asserting READY, verification must cover both legal behaviours: READY asserted before VALID and READY withheld until after VALID is seen."
+    },
+    {
+      "edge_case_id": "EDGE_REQ_A2_3_006_001",
+      "requirement_id": "REQ_A2_3_006",
+      "edge_case_type": "conditional_behaviour",
+      "edge_case_description": "The condition 'If READY is asserted' creates an edge case where READY may pulse high and then deassert before VALID is asserted; verification should cover transient READY assertion with no transfer."
+    },
+    {
+      "edge_case_id": "EDGE_REQ_A2_6_006_001",
+      "requirement_id": "REQ_A2_6_006",
+      "edge_case_type": "optional_behaviour",
+      "edge_case_description": "Because a Manager is 'permitted' to wait for one transaction to complete before issuing another, verification must cover both serialized issue and overlapping/pipelined transaction issue; concurrency is not mandatory."
+    },
+    {
+      "edge_case_id": "EDGE_REQ_A2_6_007_001",
+      "requirement_id": "REQ_A2_6_007",
+      "edge_case_type": "optional_behaviour",
+      "edge_case_description": "Because a Subordinate is 'permitted' to wait for one transaction to complete before accepting another request, giving credits or sending transfers for another transaction, verification must cover a fully serialized Subordinate that stalls cross-transaction acceptance/response activity until completion."
+    }
+  ]
+}

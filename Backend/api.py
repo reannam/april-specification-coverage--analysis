@@ -3,16 +3,20 @@ import shutil
 import uuid
 import json
 
-from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 
 from Backend.config import UPLOAD_DIR, OUTPUT_DIR
 from Backend.pre_processing.agent_scheduler import build_workflow
+from Backend.coverage.coverage_workflow import run_coverage_workflow
 
 app = FastAPI(
     title="Specification Coverage Analysis API",
-    description="Runs the vPlan and edge-case agents against an uploaded specification JSON file.",
+    description=(
+        "Runs vPlan generation, edge-case analysis, and coverage analysis "
+        "against an uploaded specification JSON file."
+    ),
     version="0.1.0",
 )
 
@@ -34,36 +38,140 @@ def health_check():
     return {"status": "ok"}
 
 
-@app.post("/api/run-agents")
-async def run_agents(requirements_file: UploadFile = File(...)):
-    if not requirements_file.filename:
+def save_and_validate_uploaded_json(uploaded_file: UploadFile) -> Path:
+    if not uploaded_file.filename:
         raise HTTPException(status_code=400, detail="No file uploaded.")
 
-    if not requirements_file.filename.lower().endswith(".json"):
+    if not uploaded_file.filename.lower().endswith(".json"):
         raise HTTPException(
-            status_code=400, detail="Only .json specification files are supported."
+            status_code=400,
+            detail="Only .json specification files are supported.",
         )
 
     upload_id = uuid.uuid4().hex
-    safe_filename = Path(requirements_file.filename).name
+    safe_filename = Path(uploaded_file.filename).name
     uploaded_file_path = UPLOAD_DIR / f"{upload_id}_{safe_filename}"
 
-    try:
-        with uploaded_file_path.open("wb") as buffer:
-            shutil.copyfileobj(requirements_file.file, buffer)
+    with uploaded_file_path.open("wb") as buffer:
+        shutil.copyfileobj(uploaded_file.file, buffer)
 
-        try:
-            with uploaded_file_path.open("r", encoding="utf-8") as f:
-                json.load(f)
-        except json.JSONDecodeError as error:
-            uploaded_file_path.unlink(missing_ok=True)
+    try:
+        with uploaded_file_path.open("r", encoding="utf-8") as file:
+            json.load(file)
+    except json.JSONDecodeError as error:
+        uploaded_file_path.unlink(missing_ok=True)
+        raise HTTPException(
+            status_code=400,
+            detail=f"Uploaded file is not valid JSON: {error}",
+        ) from error
+
+    return uploaded_file_path
+
+def normalise_existing_output_path(path_value: str) -> Path:
+    cleaned = path_value.strip().replace("\\", "/")
+    cleaned = cleaned.removeprefix("./")
+
+    if cleaned.startswith("/api/download/"):
+        filename = Path(cleaned).name
+        return resolve_downloadable_file(filename)
+
+    if cleaned.startswith("api/download/"):
+        filename = Path(cleaned).name
+        return resolve_downloadable_file(filename)
+
+    if cleaned.startswith("/outputs/"):
+        return OUTPUT_DIR.parent / cleaned.removeprefix("/")
+
+    if cleaned.startswith("outputs/"):
+        return OUTPUT_DIR.parent / cleaned
+
+    if cleaned.startswith("/backend/outputs/"):
+        return OUTPUT_DIR.parent / cleaned.removeprefix("/backend/")
+
+    if cleaned.startswith("backend/outputs/"):
+        return OUTPUT_DIR.parent / cleaned.removeprefix("backend/")
+
+    path = Path(cleaned)
+
+    if path.is_absolute():
+        return path
+
+    return OUTPUT_DIR.parent / path
+
+
+def resolve_downloadable_file(filename: str) -> Path:
+    safe_filename = Path(filename).name
+
+    possible_paths = [
+        OUTPUT_DIR / safe_filename,
+        OUTPUT_DIR / "edge_cases" / safe_filename,
+        OUTPUT_DIR / "langsmith_logs" / safe_filename,
+        OUTPUT_DIR / "traceability" / safe_filename,
+        OUTPUT_DIR / "requirement_test_links" / safe_filename,
+        OUTPUT_DIR / "blocked_tests" / safe_filename,
+        OUTPUT_DIR / "coverage_status" / safe_filename,
+        OUTPUT_DIR / "final_coverage_report" / safe_filename,
+        OUTPUT_DIR / "coverage_summary" / safe_filename,
+        OUTPUT_DIR / "usage_charts" / safe_filename,
+        OUTPUT_DIR / "weak_words" / safe_filename,
+        OUTPUT_DIR / "vplans" / safe_filename,
+        OUTPUT_DIR / "coverage_upload_cache" / safe_filename,
+    ]
+
+    file_path = next((path for path in possible_paths if path.exists()), None)
+
+    if file_path is None:
+        raise HTTPException(status_code=404, detail=f"File not found: {safe_filename}")
+
+    return file_path
+
+
+async def resolve_coverage_input(
+    *,
+    label: str,
+    existing_path: str | None,
+    uploaded_file: UploadFile | None,
+) -> Path:
+    if uploaded_file and uploaded_file.filename:
+        return save_and_validate_uploaded_json(uploaded_file)
+
+    if existing_path:
+        resolved_path = normalise_existing_output_path(existing_path)
+
+        if not resolved_path.exists():
             raise HTTPException(
                 status_code=400,
-                detail=f"Uploaded file is not valid JSON: {error}",
-            ) from error
+                detail=f"{label} path does not exist: {resolved_path}",
+            )
+
+        return resolved_path
+
+    raise HTTPException(
+        status_code=400,
+        detail=f"Missing {label}. Provide either a cached path or upload a JSON file.",
+    )
+
+
+def make_download_url(file_path: str | Path | None) -> str | None:
+    if not file_path:
+        return None
+
+    return f"/api/download/{Path(file_path).name}"
+
+
+def make_filename(file_path: str | Path | None) -> str | None:
+    if not file_path:
+        return None
+
+    return Path(file_path).name
+
+
+@app.post("/api/run-agents")
+async def run_agents(requirements_file: UploadFile = File(...)):
+    try:
+        uploaded_file_path = save_and_validate_uploaded_json(requirements_file)
 
         workflow = build_workflow()
-
         result = workflow.invoke({"requirements_file": str(uploaded_file_path)})
 
         vplan_output_file = result.get("vplan_output_file")
@@ -72,6 +180,7 @@ async def run_agents(requirements_file: UploadFile = File(...)):
         requirement_test_links_file = result.get("requirement_test_links_file")
         preprocessed_requirements_file = result.get("preprocessed_requirements_file")
         blocked_test_report_file = result.get("blocked_test_report_file")
+        weak_words_file = result.get("weak_words_file") or result.get("weak_words_output_file")
 
         token_summary = result.get("langsmith_summary", {})
         usage_reports = result.get("usage_reports", {})
@@ -93,28 +202,27 @@ async def run_agents(requirements_file: UploadFile = File(...)):
 
         if not vplan_path.exists():
             raise HTTPException(
-                status_code=500, detail="Generated vPlan file was not found."
+                status_code=500,
+                detail="Generated vPlan file was not found.",
             )
 
         if not edge_case_path.exists():
             raise HTTPException(
-                status_code=500, detail="Generated edge-case file was not found."
+                status_code=500,
+                detail="Generated edge-case file was not found.",
             )
 
         return {
-            "message": "Workflow completed successfully.",
-            "vplan_download_url": f"/api/download/{vplan_path.name}",
-            "edge_cases_download_url": f"/api/download/{edge_case_path.name}",
+            "message": "Agent workflow completed successfully.",
+            "vplan_download_url": make_download_url(vplan_path),
+            "edge_cases_download_url": make_download_url(edge_case_path),
+            "weak_words_file": str(weak_words_file) if weak_words_file else None,
+            "weak_words_download_url": make_download_url(weak_words_file),
+            "weak_words_filename": make_filename(weak_words_file),
             "vplan_filename": vplan_path.name,
             "edge_cases_filename": edge_case_path.name,
-            "langsmith_log_download_url": (
-                f"/api/download/{Path(langsmith_log_file).name}"
-                if langsmith_log_file
-                else None
-            ),
-            "langsmith_log_filename": (
-                Path(langsmith_log_file).name if langsmith_log_file else None
-            ),
+            "langsmith_log_download_url": make_download_url(langsmith_log_file),
+            "langsmith_log_filename": make_filename(langsmith_log_file),
             "input_tokens": token_summary.get("prompt_tokens"),
             "output_tokens": token_summary.get("completion_tokens"),
             "total_tokens": token_summary.get("total_tokens"),
@@ -130,31 +238,23 @@ async def run_agents(requirements_file: UploadFile = File(...)):
                 for key, filename in usage_reports.items()
                 if filename.endswith(".csv")
             },
-            "requirement_test_links_download_url": (
-                f"/api/download/{Path(requirement_test_links_file).name}"
-                if requirement_test_links_file
-                else None
+            "requirement_test_links_download_url": make_download_url(
+                requirement_test_links_file
             ),
-            "requirement_test_links_filename": (
-                Path(requirement_test_links_file).name
-                if requirement_test_links_file
-                else None
+            "requirement_test_links_filename": make_filename(
+                requirement_test_links_file
             ),
-            "preprocessed_requirements_filename": (
-                Path(preprocessed_requirements_file).name
-                if preprocessed_requirements_file
-                else None
+            "preprocessed_requirements_filename": make_filename(
+                preprocessed_requirements_file
             ),
-            "blocked_test_report_download_url": (
-                f"/api/download/{Path(blocked_test_report_file).name}"
-                if blocked_test_report_file
-                else None
+            "blocked_test_report_download_url": make_download_url(
+                blocked_test_report_file
             ),
-            "blocked_test_report_filename": (
-                Path(blocked_test_report_file).name
-                if blocked_test_report_file
-                else None
-            ),
+            "blocked_test_report_filename": make_filename(blocked_test_report_file),
+            "requirements_file": str(uploaded_file_path),
+            "vplan_file": str(vplan_path),
+            "edge_case_file": str(edge_case_path),
+            "weak_words_file": str(result.get("weak_words_file")) if result.get("weak_words_file") else None,
         }
 
     except HTTPException:
@@ -170,32 +270,142 @@ async def run_agents(requirements_file: UploadFile = File(...)):
         requirements_file.file.close()
 
 
+@app.post("/api/run-coverage")
+async def run_coverage(
+    requirements_file: UploadFile = File(...),
+
+    vplan_file: str | None = Form(None),
+    edge_case_file: str | None = Form(None),
+    weak_words_file: str | None = Form(None),
+
+    vplan_upload: UploadFile | None = File(None),
+    edge_case_upload: UploadFile | None = File(None),
+    weak_words_upload: UploadFile | None = File(None),
+):
+    """
+    Runs the coverage workflow using existing files.
+
+    Inputs can come from either:
+    - cached paths from a previous vPlan generation run
+    - manually uploaded JSON files
+    """
+
+    try:
+        uploaded_file_path = save_and_validate_uploaded_json(requirements_file)
+
+        vplan_path = await resolve_coverage_input(
+            label="vPlan file",
+            existing_path=vplan_file,
+            uploaded_file=vplan_upload,
+        )
+
+        edge_case_path = await resolve_coverage_input(
+            label="edge-case file",
+            existing_path=edge_case_file,
+            uploaded_file=edge_case_upload,
+        )
+
+        weak_words_path = await resolve_coverage_input(
+            label="weak-words file",
+            existing_path=weak_words_file,
+            uploaded_file=weak_words_upload,
+        )
+
+        result = run_coverage_workflow(
+            requirements_file=str(uploaded_file_path),
+            vplan_file=str(vplan_path),
+            edge_case_file=str(edge_case_path),
+            weak_words_file=str(weak_words_path),
+        )
+
+        vplan_file_result = result.get("vplan_file")
+        edge_case_file_result = result.get("edge_case_file")
+        weak_words_file_result = result.get("weak_words_file")
+        coverage_status_file = result.get("coverage_status_file")
+
+        final_output_files = result.get("final_coverage_output_files", {})
+        final_report = result.get("final_coverage_report", {})
+
+        total_usage = result.get("total_usage", {})
+        usage_report_files = result.get("usage_report_files", {})
+
+        if not coverage_status_file:
+            raise HTTPException(
+                status_code=500,
+                detail=(
+                    "Coverage workflow completed but did not return a coverage "
+                    "status file."
+                ),
+            )
+
+        coverage_summary = final_report.get("coverage_summary", {})
+        coverage_percentages = final_report.get("coverage_percentages", {})
+
+        return {
+            "message": "Coverage workflow completed successfully.",
+            "vplan_download_url": make_download_url(vplan_file_result),
+            "vplan_filename": make_filename(vplan_file_result),
+            "edge_cases_download_url": make_download_url(edge_case_file_result),
+            "edge_cases_filename": make_filename(edge_case_file_result),
+            "weak_words_download_url": make_download_url(weak_words_file_result),
+            "weak_words_filename": make_filename(weak_words_file_result),
+            "coverage_status_download_url": make_download_url(coverage_status_file),
+            "coverage_status_filename": make_filename(coverage_status_file),
+            "coverage_summary": coverage_summary,
+            "coverage_percentages": coverage_percentages,
+            "coverage_output_files": {
+                key: {
+                    "filename": make_filename(path),
+                    "download_url": make_download_url(path),
+                }
+                for key, path in final_output_files.items()
+            },
+            "input_tokens": total_usage.get("prompt_tokens"),
+            "output_tokens": total_usage.get("completion_tokens"),
+            "total_tokens": total_usage.get("total_tokens"),
+            "estimated_cost_usd": total_usage.get("total_cost"),
+            "coverage_usage": total_usage,
+            "usage_report_files": {
+                key: {
+                    "filename": filename,
+                    "download_url": f"/api/usage-chart/{filename}",
+                }
+                for key, filename in usage_report_files.items()
+            },
+        }
+
+    except HTTPException:
+        raise
+
+    except Exception as error:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Coverage workflow failed: {error}",
+        ) from error
+
+    finally:
+        requirements_file.file.close()
+
+        for file in [vplan_upload, edge_case_upload, weak_words_upload]:
+            if file:
+                file.file.close()
+
 @app.get("/api/download/{filename}")
 def download_file(filename: str):
-    safe_filename = Path(filename).name
+    file_path = resolve_downloadable_file(filename)
 
-    possible_paths = [
-        OUTPUT_DIR / safe_filename,
-        OUTPUT_DIR / "edge_cases" / safe_filename,
-        OUTPUT_DIR / "langsmith_logs" / safe_filename,
-        OUTPUT_DIR / "traceability" / safe_filename,
-        OUTPUT_DIR / "requirement_test_links" / safe_filename,
-        OUTPUT_DIR / "blocked_tests" / safe_filename,
-    ]
-
-    file_path = next((path for path in possible_paths if path.exists()), None)
-
-    if file_path is None:
-        raise HTTPException(status_code=404, detail="File not found.")
-
-    media_type = "text/csv" if file_path.suffix == ".csv" else "application/json"
+    if file_path.suffix == ".csv":
+        media_type = "text/csv"
+    elif file_path.suffix == ".png":
+        media_type = "image/png"
+    else:
+        media_type = "application/json"
 
     return FileResponse(
         path=file_path,
         filename=file_path.name,
         media_type=media_type,
     )
-
 
 @app.get("/api/usage-chart/{filename}")
 def get_usage_chart(filename: str):
