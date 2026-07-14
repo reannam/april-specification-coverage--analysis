@@ -54,31 +54,50 @@ def test_build_requirement_payload():
 
 
 def test_assess_without_id_does_not_call_agent(monkeypatch):
+    def fail_if_agent_requested():
+        raise AssertionError(
+            "Agent should not be created for a requirement without an ID."
+        )
+
     monkeypatch.setattr(
-        metric.agent,
-        "invoke",
-        lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("agent ran")),
-    )
-
-    result = metric.assess_requirement_testability({}, [{"test_id": "T1"}])
-
-    assert result.requirement_id == "UNKNOWN_REQUIREMENT_ID"
-    assert result.testability_label == "unclear"
-
-
-def test_assess_unmapped_does_not_call_agent(monkeypatch):
-    monkeypatch.setattr(
-        metric.agent,
-        "invoke",
-        lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("agent ran")),
+        metric,
+        "get_agent",
+        fail_if_agent_requested,
     )
 
     result = metric.assess_requirement_testability(
-        {"id": "REQ_1", "text": "Requirement"}, []
+        {},
+        [{"test_id": "T1"}],
     )
 
+    assert result.requirement_id == "UNKNOWN_REQUIREMENT_ID"
+    assert result.testability_label == "unclear"
+    assert result.is_testable is False
+    assert result.linked_tests == []
+
+
+def test_assess_unmapped_does_not_call_agent(monkeypatch):
+    def fail_if_agent_requested():
+        raise AssertionError("Agent should not be created for an unmapped requirement.")
+
+    monkeypatch.setattr(
+        metric,
+        "get_agent",
+        fail_if_agent_requested,
+    )
+
+    result = metric.assess_requirement_testability(
+        {
+            "id": "REQ_1",
+            "text": "Requirement",
+        },
+        [],
+    )
+
+    assert result.requirement_id == "REQ_1"
     assert result.testability_label == "not_mapped"
     assert result.is_testable is False
+    assert result.linked_tests == []
 
 
 def test_calculate_testability_coverage_without_running_agent(monkeypatch):

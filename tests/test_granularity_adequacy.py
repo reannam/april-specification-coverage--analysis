@@ -5,6 +5,24 @@ from pydantic import ValidationError
 
 from Backend.coverage import granularity_adequacy as metric
 
+from types import SimpleNamespace
+
+
+class FakeCallbackContext:
+    def __init__(self):
+        self.callback = SimpleNamespace(
+            prompt_tokens=10,
+            completion_tokens=5,
+            total_tokens=15,
+            total_cost=0.001,
+        )
+
+    def __enter__(self):
+        return self.callback
+
+    def __exit__(self, exc_type, exc, traceback):
+        return False
+
 
 def test_granularity_assessment_validation():
     assessment = metric.GranularityAssessment(
@@ -56,47 +74,50 @@ def test_build_requirement_payload_simplifies_tests():
 
 
 def test_assess_requirement_without_id_does_not_call_agent(monkeypatch):
+    def fail_if_agent_requested():
+        raise AssertionError(
+            "Agent should not be created for a requirement without an ID."
+        )
+
     monkeypatch.setattr(
-        metric.agent,
-        "invoke",
-        lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("agent ran")),
-    )
-
-    result = metric.assess_requirement_granularity({}, [{"test_id": "T1"}])
-
-    assert result.requirement_id == "UNKNOWN_REQUIREMENT_ID"
-    assert result.granularity_label == "unclear"
-
-
-def test_assess_unmapped_requirement_does_not_call_agent(monkeypatch):
-    monkeypatch.setattr(
-        metric.agent,
-        "invoke",
-        lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("agent ran")),
+        metric,
+        "get_agent",
+        fail_if_agent_requested,
     )
 
     result = metric.assess_requirement_granularity(
-        {"id": "REQ_1", "text": "Requirement"}, []
+        {},
+        [{"test_id": "T1"}],
     )
 
-    assert result.granularity_label == "not_mapped"
+    assert result.requirement_id == "UNKNOWN_REQUIREMENT_ID"
+    assert result.suitable_detail is False
+    assert result.granularity_label == "unclear"
     assert result.linked_tests == []
 
 
-class FakeCallbackContext:
-    def __init__(self):
-        self.callback = SimpleNamespace(
-            prompt_tokens=10,
-            completion_tokens=5,
-            total_tokens=15,
-            total_cost=0.001,
-        )
+def test_assess_unmapped_requirement_does_not_call_agent(monkeypatch):
+    def fail_if_agent_requested():
+        raise AssertionError("Agent should not be created for an unmapped requirement.")
 
-    def __enter__(self):
-        return self.callback
+    monkeypatch.setattr(
+        metric,
+        "get_agent",
+        fail_if_agent_requested,
+    )
 
-    def __exit__(self, exc_type, exc, tb):
-        return False
+    result = metric.assess_requirement_granularity(
+        {
+            "id": "REQ_1",
+            "text": "Requirement",
+        },
+        [],
+    )
+
+    assert result.requirement_id == "REQ_1"
+    assert result.suitable_detail is False
+    assert result.granularity_label == "not_mapped"
+    assert result.linked_tests == []
 
 
 def test_calculate_granularity_adequacy_without_running_agent(monkeypatch):

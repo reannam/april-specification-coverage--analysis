@@ -73,11 +73,23 @@ Rules:
 """
 
 
-agent = create_agent(
-    model=os.getenv("TESTABILITY_MODEL", "openai:gpt-5.4"),
-    system_prompt=TESTABILITY_PROMPT,
-    response_format=TestabilityAssessmentList,
-)
+_agent = None
+
+
+def get_agent():
+    global _agent
+
+    if _agent is None:
+        _agent = create_agent(
+            model=os.getenv(
+                "TESTABILITY_MODEL",
+                "openai:gpt-5.4",
+            ),
+            system_prompt=TESTABILITY_PROMPT,
+            response_format=TestabilityAssessmentList,
+        )
+
+    return _agent
 
 
 def load_json(file_path: str | Path) -> dict[str, Any] | list[dict[str, Any]]:
@@ -215,7 +227,7 @@ def assess_requirement_testability(
 
     payload = build_requirement_payload(requirement, linked_vplan_items)
 
-    response = agent.invoke(
+    response = get_agent().invoke(
         {
             "messages": [
                 {

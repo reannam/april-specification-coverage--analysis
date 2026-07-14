@@ -81,11 +81,20 @@ GRANULARITY_MODEL = os.getenv(
     "openai:gpt-5.4",
 )
 
-agent = create_agent(
-    model=GRANULARITY_MODEL,
-    system_prompt=GRANULARITY_PROMPT,
-    response_format=GranularityAssessmentList,
-)
+_agent = None
+
+
+def get_agent():
+    global _agent
+
+    if _agent is None:
+        _agent = create_agent(
+            model=GRANULARITY_MODEL,
+            system_prompt=GRANULARITY_PROMPT,
+            response_format=GranularityAssessmentList,
+        )
+
+    return _agent
 
 
 def load_json(file_path: str | Path) -> dict[str, Any] | list[dict[str, Any]]:
@@ -222,7 +231,7 @@ def assess_requirement_granularity(
 
     payload = build_requirement_payload(requirement, linked_vplan_items)
 
-    response = agent.invoke(
+    response = get_agent().invoke(
         {
             "messages": [
                 {
