@@ -1,0 +1,132 @@
+[strong_requirement_words]
+must
+shall
+required
+requires
+require
+
+[weak_requirement_words]
+may
+might
+can
+could
+is permitted to
+are permitted to
+permitted
+allowed
+allowable
+may be
+can be
+could be
+might be
+optional
+optionally
+if supported
+when supported
+where supported
+if implemented
+when implemented
+where implemented
+implementation defined
+implementation-defined
+implementation specific
+implementation-specific
+platform dependent
+platform-dependent
+device dependent
+device-dependent
+configuration dependent
+configuration-dependent
+configurable
+programmable
+where applicable
+if applicable
+when applicable
+as applicable
+as appropriate
+where appropriate
+if appropriate
+when appropriate
+as needed
+if needed
+when needed
+where needed
+as required
+where required
+if required
+when required
+should
+recommended
+recommend
+recommendation
+preferably
+preferred
+it is recommended
+it is preferable
+best effort
+best-effort
+typically
+normally
+generally
+usually
+commonly
+often
+in general
+by default
+default
+timely
+timely manner
+reasonable time
+as soon as possible
+eventually
+soon
+later
+early
+earliest
+latest
+where possible
+if possible
+when possible
+as possible
+approximately
+about
+around
+roughly
+near
+minimum necessary
+sufficient
+sufficiently
+adequate
+adequately
+appropriate
+reasonable
+minimal
+maximum possible
+up to
+at least where possible
+including but not limited to
+for example
+such as
+etc
+and so on
+among others
+support
+supports
+is supported
+is included
+provided
+available
+capable of
+intended to
+designed to
+aims to
+allows
+enables
+unless otherwise specified
+where not otherwise specified
+except where
+except when
+subject to
+depending on
+depends on
+based on

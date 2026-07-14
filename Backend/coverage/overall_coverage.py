@@ -7,22 +7,48 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-COVERAGE_WEIGHTS = {
-    "Covered": 1.0,
-    "covered": 1.0,
-    "Fully covered": 1.0,
-    "fully_covered": 1.0,
-    "Partially covered": 0.5,
-    "partially_covered": 0.5,
-    "Uncovered": 0.0,
-    "uncovered": 0.0,
-    "Not covered": 0.0,
-    "not_covered": 0.0,
-    "Ambiguous / not yet plannable": 0.0,
-    "ambiguous": 0.0,
-    "Blocked": 0.0,
-    "blocked": 0.0,
-}
+TERMS_FILE = Path(__file__).with_name("coverage_terms.txt")
+
+
+def load_term_groups(
+    file_path: str | Path = TERMS_FILE,
+) -> dict[str, set[str]]:
+    path = Path(file_path)
+
+    if not path.exists():
+        raise FileNotFoundError(f"Terms file not found: {path}")
+
+    groups: dict[str, set[str]] = {}
+    current_group: str | None = None
+
+    with path.open("r", encoding="utf-8") as file:
+        for raw_line in file:
+            line = raw_line.rstrip("\n")
+
+            if not line.strip() or line.lstrip().startswith("#"):
+                continue
+
+            if line.startswith("[") and line.endswith("]"):
+                current_group = line[1:-1].strip()
+                groups[current_group] = set()
+                continue
+
+            if current_group is None:
+                raise ValueError(
+                    f"Term found before a section heading in {path}: {line}"
+                )
+
+            groups[current_group].add(line.lower())
+
+    return groups
+
+
+TERM_GROUPS = load_term_groups()
+
+COVERED_STATUSES = TERM_GROUPS["covered_statuses"]
+PARTIALLY_COVERED_STATUSES = TERM_GROUPS["partially_covered_statuses"]
+AMBIGUOUS_STATUSES = TERM_GROUPS["ambiguous_statuses"]
+NOT_COVERED_STATUSES = TERM_GROUPS["not_covered_statuses"]
 
 
 def load_json(file_path: str | Path) -> dict[str, Any]:
@@ -49,14 +75,19 @@ def extract_labelled_requirements(
 
 
 def normalise_coverage_status(status: str | None) -> str:
-    if status in {"Covered", "covered", "Fully covered", "fully_covered"}:
+    normalised_status = str(status or "").strip().lower()
+
+    if normalised_status in COVERED_STATUSES:
         return "Covered"
 
-    if status in {"Partially covered", "partially_covered"}:
+    if normalised_status in PARTIALLY_COVERED_STATUSES:
         return "Partially covered"
 
-    if status in {"Ambiguous / not yet plannable", "ambiguous", "Ambiguous"}:
+    if normalised_status in AMBIGUOUS_STATUSES:
         return "Ambiguous / not yet plannable"
+
+    if normalised_status in NOT_COVERED_STATUSES:
+        return "Uncovered"
 
     return "Uncovered"
 
@@ -79,64 +110,6 @@ def determine_requirement_weight(requirement: dict[str, Any]) -> tuple[int, str]
     text = str(requirement.get("text", "")).lower()
     req_type = str(requirement.get("type", "")).lower()
     source_section = str(requirement.get("source_section", "")).lower()
-
-    critical_terms = [
-        "must",
-        "shall",
-        "required",
-        "not permitted",
-        "must not",
-        "shall not",
-        "cannot",
-        "only",
-        "always",
-        "no ",
-        "must be",
-        "must not be",
-    ]
-
-    optional_terms = [
-        "may",
-        "can be",
-        "permitted",
-        "optional",
-        "recommended",
-        "not required",
-        "is permitted",
-        "are permitted",
-    ]
-
-    explanatory_terms = [
-        "for example",
-        "example",
-        "cycle",
-        "this can occur",
-        "in this case",
-        "description",
-        "indicates",
-        "figure",
-        "shown in",
-    ]
-
-    important_functional_terms = [
-        "transfer",
-        "transaction",
-        "handshake",
-        "valid",
-        "ready",
-        "credit",
-        "reset",
-        "response",
-        "data",
-        "request",
-        "signal",
-        "manager",
-        "subordinate",
-        "interconnect",
-        "channel",
-        "assert",
-        "deassert",
-    ]
 
     # 1. Example / explanatory text should not dominate the overall score.
     if any(term in text for term in explanatory_terms):

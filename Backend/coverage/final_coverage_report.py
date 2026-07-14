@@ -6,6 +6,42 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+TERMS_FILE = Path(__file__).with_name("coverage_terms.txt")
+
+
+def load_term_groups(file_path: str | Path = TERMS_FILE) -> dict[str, list[str]]:
+    path = Path(file_path)
+
+    if not path.exists():
+        raise FileNotFoundError(f"Terms file not found: {path}")
+
+    groups: dict[str, list[str]] = {}
+    current_group: str | None = None
+
+    with path.open("r", encoding="utf-8") as file:
+        for raw_line in file:
+            line = raw_line.strip()
+
+            if not line or line.startswith("#"):
+                continue
+
+            if line.startswith("[") and line.endswith("]"):
+                current_group = line[1:-1].strip()
+                groups[current_group] = []
+                continue
+
+            if current_group is None:
+                raise ValueError(
+                    f"Term found before a section heading in {path}: {line}"
+                )
+
+            groups[current_group].append(line.lower())
+
+    return groups
+
+
+TERM_GROUPS = load_term_groups()
+
 COVERED_STATUSES = {"Covered", "covered", "Fully covered", "fully_covered"}
 PARTIAL_STATUSES = {"Partially covered", "partially_covered"}
 UNCOVERED_STATUSES = {"Uncovered", "uncovered", "Not covered", "not_covered"}
@@ -97,60 +133,13 @@ def determine_requirement_weight(requirement: dict[str, Any]) -> tuple[int, str]
     req_type = str(requirement.get("type", "")).lower()
     source_section = str(requirement.get("source_section", "")).lower()
 
-    critical_terms = [
-        "must",
-        "shall",
-        "required",
-        "not permitted",
-        "must not",
-        "shall not",
-        "cannot",
-        "only",
-        "always",
-    ]
+    critical_terms = TERM_GROUPS["critical_terms"]
 
-    optional_terms = [
-        "may",
-        "can be",
-        "permitted",
-        "optional",
-        "recommended",
-        "not required",
-        "is permitted",
-        "are permitted",
-    ]
+    optional_terms = TERM_GROUPS["optional_terms"]
 
-    explanatory_terms = [
-        "for example",
-        "example",
-        "cycle",
-        "this can occur",
-        "in this case",
-        "description",
-        "indicates",
-        "figure",
-        "shown in",
-    ]
+    explanatory_terms = TERM_GROUPS["explanatory_terms"]
 
-    important_functional_terms = [
-        "transfer",
-        "transaction",
-        "handshake",
-        "valid",
-        "ready",
-        "credit",
-        "reset",
-        "response",
-        "data",
-        "request",
-        "signal",
-        "manager",
-        "subordinate",
-        "interconnect",
-        "channel",
-        "assert",
-        "deassert",
-    ]
+    important_functional_terms = TERM_GROUPS["important_functional_terms"]
 
     if any(term in text for term in explanatory_terms):
         return 1, "Example, explanatory, or cycle-specific detail."

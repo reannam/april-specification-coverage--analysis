@@ -89,6 +89,8 @@ def test_normalise_usage_uses_calculated_cost_for_known_model():
     assert result == {
         "agent_name": "vplan_generator",
         "model_name": "gpt-5.4",
+        "input_tokens": 1_000_000,
+        "output_tokens": 1_000_000,
         "prompt_tokens": 1_000_000,
         "completion_tokens": 1_000_000,
         "total_tokens": 2_000_000,
@@ -109,6 +111,8 @@ def test_normalise_usage_falls_back_to_callback_cost_for_unknown_model():
     assert result == {
         "agent_name": "edge_case_agent",
         "model_name": "unknown-model",
+        "input_tokens": 1_000,
+        "output_tokens": 2_000,
         "prompt_tokens": 1_000,
         "completion_tokens": 2_000,
         "total_tokens": 3_000,
@@ -182,10 +186,12 @@ def test_aggregate_usage_sums_multiple_usage_items():
     result = usage.aggregate_usage(first_usage, second_usage)
 
     assert result == {
+        "input_tokens": 150,
+        "output_tokens": 275,
         "prompt_tokens": 150,
         "completion_tokens": 275,
         "total_tokens": 425,
-        "total_cost": "0.03",
+        "total_cost": 0.03,
         "agents": [first_usage, second_usage],
     }
 
@@ -203,10 +209,12 @@ def test_aggregate_usage_skips_empty_usage_items():
     result = usage.aggregate_usage({}, usage_item, None)
 
     assert result == {
+        "input_tokens": 100,
+        "output_tokens": 200,
         "prompt_tokens": 100,
         "completion_tokens": 200,
         "total_tokens": 300,
-        "total_cost": "0.01",
+        "total_cost": 0.01,
         "agents": [usage_item],
     }
 
@@ -215,10 +223,12 @@ def test_aggregate_usage_returns_zero_summary_for_no_items():
     result = usage.aggregate_usage()
 
     assert result == {
+        "input_tokens": 0,
+        "output_tokens": 0,
         "prompt_tokens": 0,
         "completion_tokens": 0,
         "total_tokens": 0,
-        "total_cost": "0",
+        "total_cost": 0.0,
         "agents": [],
     }
 
@@ -233,10 +243,12 @@ def test_aggregate_usage_handles_missing_token_fields():
     result = usage.aggregate_usage(usage_item)
 
     assert result == {
+        "input_tokens": 0,
+        "output_tokens": 0,
         "prompt_tokens": 0,
         "completion_tokens": 0,
         "total_tokens": 0,
-        "total_cost": "0.01",
+        "total_cost": 0.01,
         "agents": [usage_item],
     }
 
@@ -254,10 +266,12 @@ def test_aggregate_usage_handles_none_token_values():
     result = usage.aggregate_usage(usage_item)
 
     assert result == {
+        "input_tokens": 0,
+        "output_tokens": 0,
         "prompt_tokens": 0,
         "completion_tokens": 0,
         "total_tokens": 0,
-        "total_cost": "0",
+        "total_cost": 0.0,
         "agents": [usage_item],
     }
 
@@ -277,7 +291,7 @@ def test_aggregate_usage_casts_numeric_strings_to_ints():
     assert result["prompt_tokens"] == 100
     assert result["completion_tokens"] == 200
     assert result["total_tokens"] == 300
-    assert result["total_cost"] == "0.01"
+    assert result["total_cost"] == 0.01
 
 
 # ---------------------------------------------------------------------------

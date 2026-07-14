@@ -1,0 +1,12 @@
+import type { ReactNode } from "react";
+const I = ({children}:{children:ReactNode}) => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">{children}</svg>;
+export const HomeIcon=()=> <I><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-7h6v7"/></I>;
+export const FileIcon=()=> <I><path d="M6 3h9l3 3v15H6z"/><path d="M14 3v4h4"/><path d="M9 11h6M9 15h6"/></I>;
+export const ReviewIcon=()=> <I><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4M8 11h6M11 8v6"/></I>;
+export const PlanIcon=()=> <I><path d="M4 4h16v16H4z"/><path d="m8 12 2.5 2.5L16 9"/></I>;
+export const ChartIcon=()=> <I><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></I>;
+export const MenuIcon=()=> <I><path d="M4 7h16M4 12h16M4 17h16"/></I>;
+export const MoonIcon=()=> <I><path d="M20.5 14.2A8 8 0 0 1 9.8 3.5 8.5 8.5 0 1 0 20.5 14.2Z"/></I>;
+export const SunIcon=()=> <I><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></I>;
+export const ChevronIcon=({open=false}:{open?:boolean})=> <I><path d={open ? "m6 9 6 6 6-6" : "m9 6 6 6-6 6"}/></I>;
+export const DownloadIcon=()=> <I><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></I>;

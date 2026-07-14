@@ -54,13 +54,14 @@ Rules:
 - If a requirement states a maximum, such as "up to 1024 bits", test the boundary only if the requirement clearly implies support for that boundary. Otherwise mark as partially_covered and state that supported configurations are implementation-defined.
 - If test_constraints mention missing configuration values, missing thresholds, unspecified signals, or implementation-defined behaviour, coverage should usually be partially_covered or blocked, not covered.
 
-Test types:
-- positive = normal valid behaviour, including valid modes, valid encoded values, and expected state transitions.
-- negative = disabled, invalid, forbidden, error, access-violation, or non-happy-path behaviour.
-- Do not mark an opposite valid encoded value as negative unless it represents an error, disabled state, invalid access, or forbidden behaviour.
+Scenario types:
+- Nominal/legal scenario: valid protocol behaviour, valid encodings, expected transitions.
+- Illegal/error scenario: forbidden encodings, invalid accesses, protocol violations, disabled-mode behaviour, expected error handling.
+- Corner/boundary scenario: legal but stressful edge cases, such as min/max values, transitions at limits, unusual timing, reset-adjacent behaviour.
+- Do not mark an opposite valid encoded value as illegal or corner unless it represents an error, disabled state, invalid access, or forbidden behaviour.
 
 Required columns:
-test_id, requirement_id, test_type, test_description, test_constraints, test_steps, expected_results, coverage.
+test_id, requirement_id, scenario_type, test_description, test_constraints, test_steps, expected_results, coverage.
 
 Edge-case usage:
 - You may be given edge-case candidates linked to requirement_id values.

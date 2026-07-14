@@ -5,33 +5,45 @@ import json
 from pathlib import Path
 from typing import Any
 
-FULLY_COVERED_STATUSES = {
-    "covered",
-    "Covered",
-    "fully_covered",
-    "Fully covered",
-    "Fully Covered",
-}
+TERMS_FILE = Path(__file__).with_name("coverage_terms.txt")
 
-PARTIALLY_COVERED_STATUSES = {
-    "partially_covered",
-    "Partially covered",
-    "Partially Covered",
-}
 
-NOT_COVERED_STATUSES = {
-    "uncovered",
-    "Uncovered",
-    "not_covered",
-    "Not covered",
-    "Not Covered",
-    "blocked",
-    "Blocked",
-    "ambiguous",
-    "Ambiguous",
-    "ambiguous / not yet plannable",
-    "Ambiguous / not yet plannable",
-}
+def load_term_groups(file_path: str | Path = TERMS_FILE) -> dict[str, set[str]]:
+    path = Path(file_path)
+
+    if not path.exists():
+        raise FileNotFoundError(f"Terms file not found: {path}")
+
+    groups: dict[str, set[str]] = {}
+    current_group: str | None = None
+
+    with path.open("r", encoding="utf-8") as file:
+        for raw_line in file:
+            line = raw_line.strip()
+
+            if not line or line.startswith("#"):
+                continue
+
+            if line.startswith("[") and line.endswith("]"):
+                current_group = line[1:-1].strip()
+                groups[current_group] = set()
+                continue
+
+            if current_group is None:
+                raise ValueError(
+                    f"Term found before a section heading in {path}: {line}"
+                )
+
+            groups[current_group].add(line.lower())
+
+    return groups
+
+
+TERM_GROUPS = load_term_groups()
+
+FULLY_COVERED_STATUSES = TERM_GROUPS["fully_covered_statuses"]
+PARTIALLY_COVERED_STATUSES = TERM_GROUPS["partially_covered_statuses"]
+NOT_COVERED_STATUSES = TERM_GROUPS["not_covered_statuses"]
 
 
 def load_json(file_path: str | Path) -> dict[str, Any]:
@@ -58,13 +70,15 @@ def extract_labelled_requirements(
 
 
 def status_to_weight(status: str | None) -> float:
-    if status in FULLY_COVERED_STATUSES:
+    normalised_status = str(status or "").strip().lower()
+
+    if normalised_status in FULLY_COVERED_STATUSES:
         return 1.0
 
-    if status in PARTIALLY_COVERED_STATUSES:
+    if normalised_status in PARTIALLY_COVERED_STATUSES:
         return 0.5
 
-    if status in NOT_COVERED_STATUSES:
+    if normalised_status in NOT_COVERED_STATUSES:
         return 0.0
 
     return 0.0

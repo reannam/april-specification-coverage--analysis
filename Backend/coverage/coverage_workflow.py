@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from pathlib import Path
+from datetime import datetime
+import json
 from typing import Any, TypedDict
 
 from dotenv import load_dotenv
@@ -33,6 +35,8 @@ FINAL_COVERAGE_DIR.mkdir(parents=True, exist_ok=True)
 
 USAGE_LOGS_DIR = OUTPUT_DIR / "langsmith_logs"
 USAGE_LOGS_DIR.mkdir(parents=True, exist_ok=True)
+
+WORKFLOW_IMAGE_PATH = OUTPUT_DIR / "coverage-architecture.png"
 
 
 class CoverageWorkflowState(TypedDict):
@@ -208,15 +212,96 @@ def final_report_node(state: CoverageWorkflowState) -> dict[str, Any]:
         output_dir=FINAL_COVERAGE_DIR,
     )
 
-    if isinstance(result, dict):
+    if not isinstance(result, dict):
         return {
-            "final_coverage_report": result.get("report", {}),
-            "final_coverage_output_files": result.get("output_files", {}),
+            "final_coverage_report": {},
+            "final_coverage_output_files": {},
         }
 
+    report = dict(result.get("report", {}))
+    output_files = dict(result.get("output_files", {}))
+
+    granularity_result = state.get(
+        "granularity_result",
+        {},
+    )
+
+    if granularity_result:
+        granularity_score = float(
+            granularity_result.get(
+                "granularity_adequacy",
+                0,
+            )
+            or 0
+        )
+
+        coverage_percentages = dict(report.get("coverage_percentages", {}))
+        coverage_percentages["granularity_adequacy"] = granularity_score
+        report["coverage_percentages"] = coverage_percentages
+
+        coverage_summary = dict(report.get("coverage_summary", {}))
+        coverage_summary.update(
+            {
+                "granularity_mapped_requirements": (
+                    granularity_result.get(
+                        "mapped_requirements",
+                        0,
+                    )
+                ),
+                "granularity_suitable_detail": (
+                    granularity_result.get(
+                        "requirements_covered_at_suitable_detail",
+                        0,
+                    )
+                ),
+                "granularity_not_mapped": (
+                    granularity_result.get(
+                        "requirements_not_mapped",
+                        0,
+                    )
+                ),
+            }
+        )
+        report["coverage_summary"] = coverage_summary
+        report["granularity_adequacy"] = granularity_result
+
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
+        granularity_output_file = (
+            FINAL_COVERAGE_DIR / f"granularity_adequacy_{timestamp}.json"
+        )
+        with granularity_output_file.open(
+            "w",
+            encoding="utf-8",
+        ) as file:
+            json.dump(
+                granularity_result,
+                file,
+                indent=2,
+                ensure_ascii=False,
+            )
+
+        output_files["granularity_adequacy_report"] = str(granularity_output_file)
+
+        final_report_file = (
+            FINAL_COVERAGE_DIR / f"final_coverage_report_{timestamp}.json"
+        )
+        with final_report_file.open(
+            "w",
+            encoding="utf-8",
+        ) as file:
+            json.dump(
+                report,
+                file,
+                indent=2,
+                ensure_ascii=False,
+            )
+
+        output_files["final_coverage_report"] = str(final_report_file)
+
     return {
-        "final_coverage_report": {},
-        "final_coverage_output_files": {},
+        "final_coverage_report": report,
+        "final_coverage_output_files": output_files,
     }
 
 
@@ -246,6 +331,19 @@ def usage_summary_node(state: CoverageWorkflowState) -> dict[str, Any]:
         "total_usage": total_usage,
         "usage_report_files": usage_report_files,
     }
+
+
+def save_workflow_image(chain) -> None:
+    if WORKFLOW_IMAGE_PATH.exists():
+        return
+
+    try:
+        image_bytes = chain.get_graph().draw_mermaid_png()
+        WORKFLOW_IMAGE_PATH.write_bytes(image_bytes)
+        print(f"Workflow image saved to {WORKFLOW_IMAGE_PATH}")
+
+    except Exception as error:
+        print(f"Could not save workflow image: {error}")
 
 
 def build_coverage_workflow():
@@ -293,7 +391,13 @@ def build_coverage_workflow():
     graph.add_edge("final_coverage_report", "usage_summary")
     graph.add_edge("usage_summary", END)
 
-    return graph.compile()
+    chain = graph.compile()
+
+    print("Compiled agents")
+
+    save_workflow_image(chain)
+
+    return chain
 
 
 coverage_workflow = build_coverage_workflow()

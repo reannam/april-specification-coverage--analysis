@@ -24,3 +24,16 @@ run_id,timestamp,output_file,models_used,prompt_tokens,completion_tokens,total_t
 23,2026-07-08T11:03:16,generated_vplan_2026-07-08_11-01-56.json,gpt-5.4,8228,7017,15245,0.125825
 24,2026-07-09T10:54:24,generated_vplan_2026-07-09_10-49-35.json,gpt-5.4,33321,22658,55979,0.4231725
 25,2026-07-09T11:49:11,coverage_workflow.json,Unknown model,0,0,0,0.0
+26,2026-07-10T16:42:07,generated_vplan_2026-07-10_16-37-49.json,gpt-5.4,33314,21997,55311,0.41324
+27,2026-07-13T11:59:10,generated_vplan_2026-07-13_11-54-39.json,"gpt-5.4, gpt-5.4-mini",46570,26511,73081,0.4623005
+28,2026-07-13T13:39:04,generated_vplan_2026-07-13_13-34-27.json,"gpt-5.4, gpt-5.4-mini",46583,27374,73957,0.4759045
+29,2026-07-13T14:06:50,generated_vplan_2026-07-13_13-58-20.json,"gpt-5.4, gpt-5.4-mini",45976,25956,71932,0.453292
+30,2026-07-13T14:16:08,generated_vplan_2026-07-13_14-11-32.json,"gpt-5.4, gpt-5.4-mini",45698,25643,71341,0.449414
+31,2026-07-13T14:53:38,generated_vplan_2026-07-13_14-49-16.json,"gpt-5.4, gpt-5.4-mini",41991,25585,67576,0.4464235
+32,2026-07-13T15:29:29,generated_vplan_2026-07-13_15-25-20.json,"gpt-5.4, gpt-5.4-mini",41940,25983,67923,0.45147325
+33,2026-07-13T15:39:55,coverage_workflow.json,Unknown model,0,0,0,0.0
+34,2026-07-13T16:07:13,coverage_workflow.json,Unknown model,0,0,0,0.0
+35,2026-07-14T10:02:00,generated_vplan_2026-07-14_09-56-37.json,"gpt-5.4, gpt-5.4-mini",52738,33413,86151,0.57704525
+36,2026-07-14T10:19:17,coverage_workflow.json,Unknown model,0,0,0,0.0
+37,2026-07-14T11:23:47,generated_vplan_2026-07-14_11-22-35.json,"gpt-5.4, gpt-5.4-mini",8402,6751,15153,0.12227
+38,2026-07-14T11:28:25,coverage_workflow.json,gpt-5.4,32375,4576,36951,0.1495775

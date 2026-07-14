@@ -9,6 +9,9 @@ from typing import Any, Literal
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field
 from langchain.agents import create_agent
+from langchain_community.callbacks.manager import get_openai_callback
+
+from Backend.post_processing.usage_logger import normalise_usage
 
 load_dotenv()
 
@@ -73,8 +76,13 @@ Rules:
 """
 
 
+GRANULARITY_MODEL = os.getenv(
+    "GRANULARITY_MODEL",
+    "openai:gpt-5.4",
+)
+
 agent = create_agent(
-    model=os.getenv("GRANULARITY_MODEL", "openai:gpt-5.4"),
+    model=GRANULARITY_MODEL,
     system_prompt=GRANULARITY_PROMPT,
     response_format=GranularityAssessmentList,
 )
@@ -257,16 +265,37 @@ def calculate_granularity_adequacy(
 
     assessments = []
 
-    for requirement in spec_requirements:
-        requirement_id = get_requirement_id(requirement)
-        linked_vplan_items = vplan_by_requirement_id.get(requirement_id, [])
+    with get_openai_callback() as callback:
+        for requirement in spec_requirements:
+            requirement_id = get_requirement_id(requirement)
+            linked_vplan_items = vplan_by_requirement_id.get(
+                requirement_id,
+                [],
+            )
 
-        assessment = assess_requirement_granularity(
-            requirement=requirement,
-            linked_vplan_items=linked_vplan_items,
-        )
+            assessment = assess_requirement_granularity(
+                requirement=requirement,
+                linked_vplan_items=linked_vplan_items,
+            )
 
-        assessments.append(assessment.model_dump())
+            assessment_data = assessment.model_dump()
+            assessment_data["requirement_text"] = (
+                requirement.get("text") or requirement.get("description") or ""
+            )
+            assessment_data["source_section"] = requirement.get(
+                "source_section"
+            ) or requirement.get("section")
+
+            assessments.append(assessment_data)
+
+    usage = normalise_usage(
+        agent_name="granularity_adequacy",
+        input_tokens=callback.prompt_tokens,
+        output_tokens=callback.completion_tokens,
+        total_tokens=callback.total_tokens,
+        total_cost=callback.total_cost,
+        model_name=GRANULARITY_MODEL.removeprefix("openai:"),
+    )
 
     mapped_assessments = [
         assessment
@@ -310,6 +339,7 @@ def calculate_granularity_adequacy(
         "granularity_adequacy": granularity_adequacy,
         "label_counts": label_counts,
         "assessments": assessments,
+        "usage": usage,
     }
 
 

@@ -12,6 +12,20 @@ from Backend.config import (
 MASTER_USAGE_FILE = LOGS_DIR / "all_usage_runs.json"
 
 
+def _token_value(
+    data: dict,
+    preferred_key: str,
+    fallback_key: str,
+) -> int:
+    return int(
+        data.get(
+            preferred_key,
+            data.get(fallback_key, 0),
+        )
+        or 0
+    )
+
+
 def load_usage_data() -> tuple[pd.DataFrame, pd.DataFrame]:
     if not MASTER_USAGE_FILE.exists():
         return pd.DataFrame(), pd.DataFrame()
@@ -24,11 +38,14 @@ def load_usage_data() -> tuple[pd.DataFrame, pd.DataFrame]:
 
     for index, run in enumerate(runs, start=1):
         summary = run.get("summary", {})
-
         agents = summary.get("agents", [])
 
         models_used = sorted(
-            {agent.get("model_name") for agent in agents if agent.get("model_name")}
+            {
+                str(agent.get("model_name"))
+                for agent in agents
+                if agent.get("model_name")
+            }
         )
 
         models_used_text = ", ".join(models_used) if models_used else "Unknown model"
@@ -39,23 +56,39 @@ def load_usage_data() -> tuple[pd.DataFrame, pd.DataFrame]:
                 "timestamp": run.get("timestamp"),
                 "output_file": run.get("output_file"),
                 "models_used": models_used_text,
-                "prompt_tokens": int(summary.get("prompt_tokens", 0) or 0),
-                "completion_tokens": int(summary.get("completion_tokens", 0) or 0),
+                "prompt_tokens": _token_value(
+                    summary,
+                    "prompt_tokens",
+                    "input_tokens",
+                ),
+                "completion_tokens": _token_value(
+                    summary,
+                    "completion_tokens",
+                    "output_tokens",
+                ),
                 "total_tokens": int(summary.get("total_tokens", 0) or 0),
                 "total_cost": float(summary.get("total_cost", 0) or 0),
             }
         )
 
-        for agent in summary.get("agents", []):
+        for agent in agents:
             agent_rows.append(
                 {
                     "run_id": index,
                     "timestamp": run.get("timestamp"),
                     "output_file": run.get("output_file"),
-                    "agent_name": agent.get("agent_name"),
-                    "model_name": agent.get("model_name"),
-                    "prompt_tokens": int(agent.get("prompt_tokens", 0) or 0),
-                    "completion_tokens": int(agent.get("completion_tokens", 0) or 0),
+                    "agent_name": (agent.get("agent_name") or "Unknown agent"),
+                    "model_name": (agent.get("model_name") or "Unknown model"),
+                    "prompt_tokens": _token_value(
+                        agent,
+                        "prompt_tokens",
+                        "input_tokens",
+                    ),
+                    "completion_tokens": _token_value(
+                        agent,
+                        "completion_tokens",
+                        "output_tokens",
+                    ),
                     "total_tokens": int(agent.get("total_tokens", 0) or 0),
                     "total_cost": float(agent.get("total_cost", 0) or 0),
                 }
@@ -64,9 +97,21 @@ def load_usage_data() -> tuple[pd.DataFrame, pd.DataFrame]:
     return pd.DataFrame(run_rows), pd.DataFrame(agent_rows)
 
 
-def save_csvs(run_df: pd.DataFrame, agent_df: pd.DataFrame) -> None:
-    run_df.to_csv(CHARTS_DIR / "usage_by_run.csv", index=False)
-    agent_df.to_csv(CHARTS_DIR / "usage_by_agent.csv", index=False)
+def save_csvs(
+    run_df: pd.DataFrame,
+    agent_df: pd.DataFrame,
+) -> None:
+    CHARTS_DIR.mkdir(parents=True, exist_ok=True)
+
+    run_df.to_csv(
+        CHARTS_DIR / "usage_by_run.csv",
+        index=False,
+    )
+
+    agent_df.to_csv(
+        CHARTS_DIR / "usage_by_agent.csv",
+        index=False,
+    )
 
 
 def plot_total_cost_by_run(run_df: pd.DataFrame) -> None:
@@ -115,11 +160,25 @@ def plot_total_tokens_by_run(run_df: pd.DataFrame) -> None:
     plt.close()
 
 
-def plot_cost_by_agent(agent_df: pd.DataFrame) -> None:
+def _add_agent_model_column(agent_df: pd.DataFrame) -> pd.DataFrame:
     agent_df = agent_df.copy()
+
+    agent_df["agent_name"] = agent_df["agent_name"].fillna("Unknown agent").astype(str)
+
+    agent_df["model_name"] = agent_df["model_name"].fillna("Unknown model").astype(str)
+
     agent_df["agent_model"] = agent_df["agent_name"] + "\n" + agent_df["model_name"]
 
-    grouped = agent_df.groupby("agent_model", as_index=False)["total_cost"].sum()
+    return agent_df
+
+
+def plot_cost_by_agent(agent_df: pd.DataFrame) -> None:
+    agent_df = _add_agent_model_column(agent_df)
+
+    grouped = agent_df.groupby(
+        "agent_model",
+        as_index=False,
+    )["total_cost"].sum()
 
     plt.figure(figsize=(10, 6))
     plt.bar(grouped["agent_model"], grouped["total_cost"])
@@ -132,10 +191,12 @@ def plot_cost_by_agent(agent_df: pd.DataFrame) -> None:
 
 
 def plot_tokens_by_agent(agent_df: pd.DataFrame) -> None:
-    agent_df = agent_df.copy()
-    agent_df["agent_model"] = agent_df["agent_name"] + "\n" + agent_df["model_name"]
+    agent_df = _add_agent_model_column(agent_df)
 
-    grouped = agent_df.groupby("agent_model", as_index=False)["total_tokens"].sum()
+    grouped = agent_df.groupby(
+        "agent_model",
+        as_index=False,
+    )["total_tokens"].sum()
 
     plt.figure(figsize=(10, 6))
     plt.bar(grouped["agent_model"], grouped["total_tokens"])
@@ -148,6 +209,8 @@ def plot_tokens_by_agent(agent_df: pd.DataFrame) -> None:
 
 
 def generate_usage_reports() -> dict[str, str]:
+    CHARTS_DIR.mkdir(parents=True, exist_ok=True)
+
     run_df, agent_df = load_usage_data()
 
     if run_df.empty:

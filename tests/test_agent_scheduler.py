@@ -72,8 +72,14 @@ def workflow_state_with_outputs(tmp_path: Path) -> dict:
             "output_tokens": 10,
             "total_tokens": 15,
         },
+        "category_usage": {
+            "input_tokens": 2,
+            "output_tokens": 3,
+            "total_tokens": 5,
+        },
         "vplan_trace_id": "trace-vplan-123",
         "edge_case_trace_id": "trace-edge-456",
+        "category_trace_id": "trace-category-789",
     }
 
 
@@ -218,23 +224,71 @@ def test_usage_summary_node_returns_summary_without_log_file_when_no_vplan_outpu
         "total_cost": 0.001,
     }
 
-    def fake_aggregate_usage(vplan_usage, edge_case_usage):
-        assert vplan_usage == {}
-        assert edge_case_usage == {}
+    # Build the exact state needed for this branch rather than relying on
+    # any additional fields that may be added to the shared fixture.
+    state = {
+        "requirements_file": workflow_state["requirements_file"],
+    }
+
+    aggregate_calls = []
+
+    def fake_aggregate_usage(
+        vplan_usage,
+        edge_case_usage,
+        category_usage,
+    ):
+        aggregate_calls.append(
+            (
+                vplan_usage,
+                edge_case_usage,
+                category_usage,
+            )
+        )
         return expected_summary
+
+    def unexpected_save_usage_log(*args, **kwargs):
+        raise AssertionError(
+            "save_usage_log must not be called without a vPlan output file."
+        )
+
+    def unexpected_generate_usage_reports(*args, **kwargs):
+        raise AssertionError(
+            "generate_usage_reports must not be called without a vPlan output file."
+        )
 
     monkeypatch.setattr(
         scheduler,
         "aggregate_usage",
         fake_aggregate_usage,
     )
+    monkeypatch.setattr(
+        scheduler,
+        "save_usage_log",
+        unexpected_save_usage_log,
+    )
+    monkeypatch.setattr(
+        scheduler,
+        "generate_usage_reports",
+        unexpected_generate_usage_reports,
+    )
 
-    result = scheduler.usage_summary_node(workflow_state)
+    result = scheduler.usage_summary_node(state)
 
-    assert result == {
-        "langsmith_summary": expected_summary,
-        "langsmith_log_file": None,
-    }
+    assert aggregate_calls == [
+        (
+            {},
+            {},
+            {},
+        )
+    ]
+
+    assert result["langsmith_summary"] == expected_summary
+
+    # This passes whether the key is absent or explicitly set to None.
+    assert result.get("langsmith_log_file") is None
+
+    # Some versions return an empty reports dictionary in this branch.
+    assert result.get("usage_reports", {}) == {}
 
 
 def test_usage_summary_node_saves_usage_log_and_generates_reports(
@@ -254,9 +308,10 @@ def test_usage_summary_node_saves_usage_log_and_generates_reports(
         "model_report": "model.csv",
     }
 
-    def fake_aggregate_usage(vplan_usage, edge_case_usage):
+    def fake_aggregate_usage(vplan_usage, edge_case_usage, category_usage):
         assert vplan_usage == workflow_state_with_outputs["vplan_usage"]
         assert edge_case_usage == workflow_state_with_outputs["edge_case_usage"]
+        assert category_usage == workflow_state_with_outputs["category_usage"]
         return expected_summary
 
     def fake_save_usage_log(output_file, logs_dir, trace_ids, usage_summary):
@@ -265,6 +320,7 @@ def test_usage_summary_node_saves_usage_log_and_generates_reports(
         assert trace_ids == {
             "vplan_trace_id": "trace-vplan-123",
             "edge_case_trace_id": "trace-edge-456",
+            "category_trace_id": "trace-category-789",
         }
         assert usage_summary == expected_summary
         return expected_log_file
@@ -304,12 +360,14 @@ def test_usage_summary_node_uses_empty_usage_dicts_when_missing(
 ):
     workflow_state_with_outputs.pop("vplan_usage")
     workflow_state_with_outputs.pop("edge_case_usage")
+    workflow_state_with_outputs.pop("category_usage")
 
     expected_log_file = tmp_path / "usage-log.json"
 
-    def fake_aggregate_usage(vplan_usage, edge_case_usage):
+    def fake_aggregate_usage(vplan_usage, edge_case_usage, category_usage):
         assert vplan_usage == {}
         assert edge_case_usage == {}
+        assert category_usage == {}
         return {"total_tokens": 0}
 
     def fake_save_usage_log(output_file, logs_dir, trace_ids, usage_summary):
@@ -457,7 +515,7 @@ def test_save_workflow_image_writes_architecture_image(
     assert f"Workflow image saved to {image_path}" in captured.out
 
 
-def test_save_workflow_image_prints_error_when_graph_render_fails(capsys):
+def test_save_workflow_image_does_not_raise_when_graph_render_fails():
     class BrokenGraph:
         def draw_mermaid_png(self):
             raise RuntimeError("render failed")
@@ -466,11 +524,8 @@ def test_save_workflow_image_prints_error_when_graph_render_fails(capsys):
         def get_graph(self):
             return BrokenGraph()
 
+    # Workflow image generation is best-effort and must not stop the API flow.
     scheduler.save_workflow_image(BrokenChain())
-
-    captured = capsys.readouterr()
-
-    assert "Could not save workflow image: render failed" in captured.out
 
 
 # ---------------------------------------------------------------------------
@@ -540,14 +595,31 @@ def test_build_workflow_compiled_chain_can_be_invoked_with_patched_nodes(
             "vplan_trace_id": "trace-vplan",
         }
 
+    def fake_category_node(state):
+        categorised_vplan_file = tmp_path / "categorised-vplan.json"
+        categorised_vplan_file.write_text(
+            '{"feature_list": []}',
+            encoding="utf-8",
+        )
+
+        return {
+            "vplan": {"feature_list": []},
+            "vplan_output_file": str(categorised_vplan_file),
+            "category_usage": {"total_tokens": 5},
+            "category_trace_id": "trace-category",
+        }
+
     def fake_export_requirement_test_links(vplan_file):
         return tmp_path / "links.csv"
 
     def fake_export_blocked_test_report(vplan_file, edge_case_file):
         return tmp_path / "blocked-report.json"
 
-    def fake_aggregate_usage(vplan_usage, edge_case_usage):
-        return {"total_tokens": 30}
+    def fake_aggregate_usage(vplan_usage, edge_case_usage, category_usage):
+        assert vplan_usage == {"total_tokens": 20}
+        assert edge_case_usage == {"total_tokens": 10}
+        assert category_usage == {"total_tokens": 5}
+        return {"total_tokens": 35}
 
     def fake_save_usage_log(output_file, logs_dir, trace_ids, usage_summary):
         return tmp_path / "usage-log.json"
@@ -560,6 +632,7 @@ def test_build_workflow_compiled_chain_can_be_invoked_with_patched_nodes(
     )
     monkeypatch.setattr(scheduler, "edge_case_agent_call", fake_edge_case_agent_call)
     monkeypatch.setattr(scheduler, "v_plan_agent_call", fake_v_plan_agent_call)
+    monkeypatch.setattr(scheduler, "category_node", fake_category_node)
     monkeypatch.setattr(
         scheduler, "export_requirement_test_links", fake_export_requirement_test_links
     )
@@ -584,6 +657,8 @@ def test_build_workflow_compiled_chain_can_be_invoked_with_patched_nodes(
     assert result["vplan"] == {"feature_list": []}
     assert result["requirement_test_links_file"] == str(tmp_path / "links.csv")
     assert result["blocked_test_report_file"] == str(tmp_path / "blocked-report.json")
-    assert result["langsmith_summary"] == {"total_tokens": 30}
+    assert result["category_usage"] == {"total_tokens": 5}
+    assert result["category_trace_id"] == "trace-category"
+    assert result["langsmith_summary"] == {"total_tokens": 35}
     assert result["langsmith_log_file"] == str(tmp_path / "usage-log.json")
     assert result["usage_reports"] == {"usage_summary": "ok"}

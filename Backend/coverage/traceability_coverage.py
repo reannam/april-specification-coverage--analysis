@@ -6,33 +6,69 @@ import re
 from pathlib import Path
 from typing import Any
 
-TRACEABILITY_FIELDS = [
-    "requirement_id",
-    "source_requirement_id",
-    "source_section",
-    "section",
-    "section_id",
-    "table_id",
-    "figure_id",
-    "rule_id",
-    "page",
-    "page_number",
-    "paragraph",
-    "source_reference",
-    "source_refs",
-    "traceability",
-]
+TERMS_FILE = Path(__file__).with_name("coverage_terms.txt")
 
 
-SECTION_PATTERN = re.compile(r"\b[A-Z]\d+(?:\.\d+)*\b")
-REQUIREMENT_PATTERN = re.compile(r"\bREQ_[A-Z0-9_]+\b")
+def load_text_config(
+    file_path: str | Path = TERMS_FILE,
+) -> tuple[dict[str, list[str]], dict[str, str]]:
+    path = Path(file_path)
+
+    if not path.exists():
+        raise FileNotFoundError(f"Terms file not found: {path}")
+
+    groups: dict[str, list[str]] = {}
+    regex_patterns: dict[str, str] = {}
+    current_group: str | None = None
+
+    with path.open("r", encoding="utf-8") as file:
+        for raw_line in file:
+            line = raw_line.strip()
+
+            if not line or line.startswith("#"):
+                continue
+
+            if line.startswith("[") and line.endswith("]"):
+                current_group = line[1:-1].strip()
+                groups[current_group] = []
+                continue
+
+            if current_group is None:
+                raise ValueError(
+                    f"Value found before a section heading in {path}: {line}"
+                )
+
+            if current_group == "regex_patterns":
+                name, separator, pattern = line.partition("=")
+
+                if not separator:
+                    raise ValueError(f"Invalid regex entry in {path}: {line}")
+
+                regex_patterns[name.strip()] = pattern.strip()
+            else:
+                groups[current_group].append(line)
+
+    return groups, regex_patterns
+
+
+TERM_GROUPS, REGEX_PATTERNS = load_text_config()
+
+TRACEABILITY_FIELDS = TERM_GROUPS["traceability_fields"]
+
+SECTION_PATTERN = re.compile(REGEX_PATTERNS["section"])
+REQUIREMENT_PATTERN = re.compile(REGEX_PATTERNS["requirement"])
 TABLE_PATTERN = re.compile(
-    r"\bTABLE_[A-Z0-9_]+\b|\bTable\s+[A-Z]?\d+(?:\.\d+)*\b", re.IGNORECASE
+    REGEX_PATTERNS["table"],
+    re.IGNORECASE,
 )
 FIGURE_PATTERN = re.compile(
-    r"\bFIG_[A-Z0-9_]+\b|\bFigure\s+[A-Z]?\d+(?:\.\d+)*\b", re.IGNORECASE
+    REGEX_PATTERNS["figure"],
+    re.IGNORECASE,
 )
-PAGE_PATTERN = re.compile(r"\bpage\s+\d+\b", re.IGNORECASE)
+PAGE_PATTERN = re.compile(
+    REGEX_PATTERNS["page"],
+    re.IGNORECASE,
+)
 
 
 def load_json(file_path: str | Path) -> dict[str, Any] | list[dict[str, Any]]:
@@ -112,7 +148,7 @@ def text_contains_source_trace(vplan_item: dict[str, Any]) -> bool:
 
     searchable_text = json.dumps(vplan_item, ensure_ascii=False)
 
-    trace_patterns = [
+    TRACE_PATTERNS = [
         SECTION_PATTERN,
         REQUIREMENT_PATTERN,
         TABLE_PATTERN,

@@ -979,5 +979,833 @@
       "total_cost": "0",
       "agents": []
     }
+  },
+  {
+    "timestamp": "2026-07-10T16:42:07",
+    "output_file": "generated_vplan_2026-07-10_16-37-49.json",
+    "trace_ids": {
+      "vplan_trace_id": "1de7581c-0c7e-4a54-857c-a60528af8524",
+      "edge_case_trace_id": "6b6aedd0-8cda-4e0c-98f0-bc1eeeb06c19"
+    },
+    "summary": {
+      "prompt_tokens": 33314,
+      "completion_tokens": 21997,
+      "total_tokens": 55311,
+      "total_cost": "0.41324000",
+      "agents": [
+        {
+          "agent_name": "vplan_generator",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 18101,
+          "completion_tokens": 20174,
+          "total_tokens": 38275,
+          "total_cost": "0.34786250",
+          "number_of_batches": 5,
+          "batches": [
+            {
+              "agent_name": "vplan_generator_batch_1",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3652,
+              "completion_tokens": 3989,
+              "total_tokens": 7641,
+              "total_cost": "0.06896500"
+            },
+            {
+              "agent_name": "vplan_generator_batch_2",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3805,
+              "completion_tokens": 4660,
+              "total_tokens": 8465,
+              "total_cost": "0.07941250"
+            },
+            {
+              "agent_name": "vplan_generator_batch_3",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3879,
+              "completion_tokens": 4135,
+              "total_tokens": 8014,
+              "total_cost": "0.07172250"
+            },
+            {
+              "agent_name": "vplan_generator_batch_4",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3769,
+              "completion_tokens": 4966,
+              "total_tokens": 8735,
+              "total_cost": "0.08391250"
+            },
+            {
+              "agent_name": "vplan_generator_batch_5",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 2996,
+              "completion_tokens": 2424,
+              "total_tokens": 5420,
+              "total_cost": "0.04385000"
+            }
+          ]
+        },
+        {
+          "agent_name": "edge_case_extractor",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 15213,
+          "completion_tokens": 1823,
+          "total_tokens": 17036,
+          "total_cost": "0.06537750"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-07-13T11:59:10",
+    "output_file": "generated_vplan_2026-07-13_11-54-39.json",
+    "trace_ids": {
+      "vplan_trace_id": "a475ae38-82dd-4d3b-af69-a9270602a753",
+      "edge_case_trace_id": "d9856593-7dc7-4676-aef7-c953303ce90b",
+      "category_trace_id": null
+    },
+    "summary": {
+      "input_tokens": 46570,
+      "output_tokens": 26511,
+      "total_tokens": 73081,
+      "total_cost": 0.4623005,
+      "agents": [
+        {
+          "agent_name": "vplan_generator",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 18413,
+          "completion_tokens": 21741,
+          "total_tokens": 40154,
+          "total_cost": "0.37214750",
+          "number_of_batches": 5,
+          "batches": [
+            {
+              "agent_name": "vplan_generator_batch_1",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3705,
+              "completion_tokens": 4369,
+              "total_tokens": 8074,
+              "total_cost": "0.07479750"
+            },
+            {
+              "agent_name": "vplan_generator_batch_2",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3854,
+              "completion_tokens": 5101,
+              "total_tokens": 8955,
+              "total_cost": "0.08615000"
+            },
+            {
+              "agent_name": "vplan_generator_batch_3",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3926,
+              "completion_tokens": 4503,
+              "total_tokens": 8429,
+              "total_cost": "0.07736000"
+            },
+            {
+              "agent_name": "vplan_generator_batch_4",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3817,
+              "completion_tokens": 5036,
+              "total_tokens": 8853,
+              "total_cost": "0.08508250"
+            },
+            {
+              "agent_name": "vplan_generator_batch_5",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3111,
+              "completion_tokens": 2732,
+              "total_tokens": 5843,
+              "total_cost": "0.04875750"
+            }
+          ]
+        },
+        {
+          "agent_name": "edge_case_extractor",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 15213,
+          "completion_tokens": 1995,
+          "total_tokens": 17208,
+          "total_cost": "0.06795750"
+        },
+        {
+          "agent_name": "vplan_category_agent",
+          "model_name": "gpt-5.4-mini",
+          "prompt_tokens": 12944,
+          "completion_tokens": 2775,
+          "total_tokens": 15719,
+          "total_cost": "0.02219550"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-07-13T13:39:04",
+    "output_file": "generated_vplan_2026-07-13_13-34-27.json",
+    "trace_ids": {
+      "vplan_trace_id": "ab00d401-714f-43c5-aaa8-4a4b5bbb69d6",
+      "edge_case_trace_id": "32f47875-daa4-4aa1-bd32-98fae9466974",
+      "category_trace_id": null
+    },
+    "summary": {
+      "input_tokens": 46583,
+      "output_tokens": 27374,
+      "total_tokens": 73957,
+      "total_cost": 0.4759045,
+      "agents": [
+        {
+          "agent_name": "vplan_generator",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 18586,
+          "completion_tokens": 22462,
+          "total_tokens": 41048,
+          "total_cost": "0.38339500",
+          "number_of_batches": 5,
+          "batches": [
+            {
+              "agent_name": "vplan_generator_batch_1",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3793,
+              "completion_tokens": 4697,
+              "total_tokens": 8490,
+              "total_cost": "0.07993750"
+            },
+            {
+              "agent_name": "vplan_generator_batch_2",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3841,
+              "completion_tokens": 4867,
+              "total_tokens": 8708,
+              "total_cost": "0.08260750"
+            },
+            {
+              "agent_name": "vplan_generator_batch_3",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3912,
+              "completion_tokens": 4922,
+              "total_tokens": 8834,
+              "total_cost": "0.08361000"
+            },
+            {
+              "agent_name": "vplan_generator_batch_4",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3938,
+              "completion_tokens": 5053,
+              "total_tokens": 8991,
+              "total_cost": "0.08564000"
+            },
+            {
+              "agent_name": "vplan_generator_batch_5",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3102,
+              "completion_tokens": 2923,
+              "total_tokens": 6025,
+              "total_cost": "0.05160000"
+            }
+          ]
+        },
+        {
+          "agent_name": "edge_case_extractor",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 15213,
+          "completion_tokens": 2170,
+          "total_tokens": 17383,
+          "total_cost": "0.07058250"
+        },
+        {
+          "agent_name": "vplan_category_agent",
+          "model_name": "gpt-5.4-mini",
+          "prompt_tokens": 12784,
+          "completion_tokens": 2742,
+          "total_tokens": 15526,
+          "total_cost": "0.02192700"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-07-13T14:06:50",
+    "output_file": "generated_vplan_2026-07-13_13-58-20.json",
+    "trace_ids": {
+      "vplan_trace_id": "dae012ea-060e-4420-90f3-c9776ac85d2e",
+      "edge_case_trace_id": "daea1a52-a991-4568-a9e6-64f89bfb9211",
+      "category_trace_id": null
+    },
+    "summary": {
+      "input_tokens": 45976,
+      "output_tokens": 25956,
+      "total_tokens": 71932,
+      "total_cost": 0.453292,
+      "agents": [
+        {
+          "agent_name": "vplan_generator",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 18061,
+          "completion_tokens": 21574,
+          "total_tokens": 39635,
+          "total_cost": "0.36876250",
+          "number_of_batches": 5,
+          "batches": [
+            {
+              "agent_name": "vplan_generator_batch_1",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3518,
+              "completion_tokens": 4352,
+              "total_tokens": 7870,
+              "total_cost": "0.07407500"
+            },
+            {
+              "agent_name": "vplan_generator_batch_2",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3770,
+              "completion_tokens": 4767,
+              "total_tokens": 8537,
+              "total_cost": "0.08093000"
+            },
+            {
+              "agent_name": "vplan_generator_batch_3",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3923,
+              "completion_tokens": 4447,
+              "total_tokens": 8370,
+              "total_cost": "0.07651250"
+            },
+            {
+              "agent_name": "vplan_generator_batch_4",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3808,
+              "completion_tokens": 5156,
+              "total_tokens": 8964,
+              "total_cost": "0.08686000"
+            },
+            {
+              "agent_name": "vplan_generator_batch_5",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3042,
+              "completion_tokens": 2852,
+              "total_tokens": 5894,
+              "total_cost": "0.05038500"
+            }
+          ]
+        },
+        {
+          "agent_name": "edge_case_extractor",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 15213,
+          "completion_tokens": 1643,
+          "total_tokens": 16856,
+          "total_cost": "0.06267750"
+        },
+        {
+          "agent_name": "vplan_category_agent",
+          "model_name": "gpt-5.4-mini",
+          "prompt_tokens": 12702,
+          "completion_tokens": 2739,
+          "total_tokens": 15441,
+          "total_cost": "0.02185200"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-07-13T14:16:08",
+    "output_file": "generated_vplan_2026-07-13_14-11-32.json",
+    "trace_ids": {
+      "vplan_trace_id": "56bf7b9a-cf56-442c-b854-c05fd0e6e231",
+      "edge_case_trace_id": "933511ac-8cd6-4aee-82f4-fb83d8479d1d",
+      "category_trace_id": null
+    },
+    "summary": {
+      "input_tokens": 45698,
+      "output_tokens": 25643,
+      "total_tokens": 71341,
+      "total_cost": 0.449414,
+      "agents": [
+        {
+          "agent_name": "vplan_generator",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 18101,
+          "completion_tokens": 21311,
+          "total_tokens": 39412,
+          "total_cost": "0.36491750",
+          "number_of_batches": 5,
+          "batches": [
+            {
+              "agent_name": "vplan_generator_batch_1",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3518,
+              "completion_tokens": 4414,
+              "total_tokens": 7932,
+              "total_cost": "0.07500500"
+            },
+            {
+              "agent_name": "vplan_generator_batch_2",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3846,
+              "completion_tokens": 4185,
+              "total_tokens": 8031,
+              "total_cost": "0.07239000"
+            },
+            {
+              "agent_name": "vplan_generator_batch_3",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3914,
+              "completion_tokens": 4575,
+              "total_tokens": 8489,
+              "total_cost": "0.07841000"
+            },
+            {
+              "agent_name": "vplan_generator_batch_4",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3799,
+              "completion_tokens": 5250,
+              "total_tokens": 9049,
+              "total_cost": "0.08824750"
+            },
+            {
+              "agent_name": "vplan_generator_batch_5",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3024,
+              "completion_tokens": 2887,
+              "total_tokens": 5911,
+              "total_cost": "0.05086500"
+            }
+          ]
+        },
+        {
+          "agent_name": "edge_case_extractor",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 15213,
+          "completion_tokens": 1684,
+          "total_tokens": 16897,
+          "total_cost": "0.06329250"
+        },
+        {
+          "agent_name": "vplan_category_agent",
+          "model_name": "gpt-5.4-mini",
+          "prompt_tokens": 12384,
+          "completion_tokens": 2648,
+          "total_tokens": 15032,
+          "total_cost": "0.02120400"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-07-13T14:53:38",
+    "output_file": "generated_vplan_2026-07-13_14-49-16.json",
+    "trace_ids": {
+      "vplan_trace_id": "84f36c6b-59fe-4144-b2b6-eef4ada062ab",
+      "edge_case_trace_id": "bb33965d-e630-4f61-aa21-5037b96c4dad",
+      "category_trace_id": "7779cdb8-8e5b-487c-8ea7-ba9d3d2466db"
+    },
+    "summary": {
+      "input_tokens": 41991,
+      "output_tokens": 25585,
+      "total_tokens": 67576,
+      "total_cost": 0.4464235,
+      "agents": [
+        {
+          "agent_name": "vplan_generator",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 18628,
+          "completion_tokens": 20701,
+          "total_tokens": 39329,
+          "total_cost": "0.35708500",
+          "number_of_batches": 5,
+          "batches": [
+            {
+              "agent_name": "vplan_generator_batch_1",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3722,
+              "completion_tokens": 4238,
+              "total_tokens": 7960,
+              "total_cost": "0.07287500"
+            },
+            {
+              "agent_name": "vplan_generator_batch_2",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3884,
+              "completion_tokens": 4222,
+              "total_tokens": 8106,
+              "total_cost": "0.07304000"
+            },
+            {
+              "agent_name": "vplan_generator_batch_3",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3985,
+              "completion_tokens": 4312,
+              "total_tokens": 8297,
+              "total_cost": "0.07464250"
+            },
+            {
+              "agent_name": "vplan_generator_batch_4",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3988,
+              "completion_tokens": 4949,
+              "total_tokens": 8937,
+              "total_cost": "0.08420500"
+            },
+            {
+              "agent_name": "vplan_generator_batch_5",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3049,
+              "completion_tokens": 2980,
+              "total_tokens": 6029,
+              "total_cost": "0.05232250"
+            }
+          ]
+        },
+        {
+          "agent_name": "edge_case_extractor",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 15213,
+          "completion_tokens": 2211,
+          "total_tokens": 17424,
+          "total_cost": "0.07119750"
+        },
+        {
+          "agent_name": "vplan_category_agent",
+          "model_name": "gpt-5.4-mini",
+          "prompt_tokens": 8150,
+          "completion_tokens": 2673,
+          "total_tokens": 10823,
+          "total_cost": "0.01814100"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-07-13T15:29:29",
+    "output_file": "generated_vplan_2026-07-13_15-25-20.json",
+    "trace_ids": {
+      "vplan_trace_id": "930d3373-c2c3-4c3e-8b77-5ef1651876c5",
+      "edge_case_trace_id": "6cc51416-4935-4929-8d73-46f35422bb6d",
+      "category_trace_id": "6d9b2352-9940-4171-9e51-7f6f83e2568e"
+    },
+    "summary": {
+      "input_tokens": 41940,
+      "output_tokens": 25983,
+      "total_tokens": 67923,
+      "total_cost": 0.45147325,
+      "agents": [
+        {
+          "agent_name": "vplan_generator",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 18412,
+          "completion_tokens": 21268,
+          "total_tokens": 39680,
+          "total_cost": "0.36505000",
+          "number_of_batches": 5,
+          "batches": [
+            {
+              "agent_name": "vplan_generator_batch_1",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3793,
+              "completion_tokens": 4540,
+              "total_tokens": 8333,
+              "total_cost": "0.07758250"
+            },
+            {
+              "agent_name": "vplan_generator_batch_2",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3867,
+              "completion_tokens": 4888,
+              "total_tokens": 8755,
+              "total_cost": "0.08298750"
+            },
+            {
+              "agent_name": "vplan_generator_batch_3",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3919,
+              "completion_tokens": 4735,
+              "total_tokens": 8654,
+              "total_cost": "0.08082250"
+            },
+            {
+              "agent_name": "vplan_generator_batch_4",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3800,
+              "completion_tokens": 4438,
+              "total_tokens": 8238,
+              "total_cost": "0.07607000"
+            },
+            {
+              "agent_name": "vplan_generator_batch_5",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3033,
+              "completion_tokens": 2667,
+              "total_tokens": 5700,
+              "total_cost": "0.04758750"
+            }
+          ]
+        },
+        {
+          "agent_name": "edge_case_extractor",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 15213,
+          "completion_tokens": 1994,
+          "total_tokens": 17207,
+          "total_cost": "0.06794250"
+        },
+        {
+          "agent_name": "vplan_category_agent",
+          "model_name": "gpt-5.4-mini",
+          "prompt_tokens": 8315,
+          "completion_tokens": 2721,
+          "total_tokens": 11036,
+          "total_cost": "0.01848075"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-07-13T15:39:55",
+    "output_file": "coverage_workflow.json",
+    "trace_ids": {
+      "coverage_status": null,
+      "granularity": null,
+      "testability": null
+    },
+    "summary": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0,
+      "total_cost": 0,
+      "agents": []
+    }
+  },
+  {
+    "timestamp": "2026-07-13T16:07:13",
+    "output_file": "coverage_workflow.json",
+    "trace_ids": {
+      "coverage_status": null,
+      "granularity": null,
+      "testability": null
+    },
+    "summary": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0,
+      "total_cost": 0,
+      "agents": []
+    }
+  },
+  {
+    "timestamp": "2026-07-14T10:02:00",
+    "output_file": "generated_vplan_2026-07-14_09-56-37.json",
+    "trace_ids": {
+      "vplan_trace_id": "b149b77b-50b3-414d-96d3-afe548bf933f",
+      "edge_case_trace_id": "94cbd628-f0ea-48d9-912c-df01776c5ac0",
+      "category_trace_id": "d54d1918-8767-4575-96b0-f93cbc2294a9"
+    },
+    "summary": {
+      "input_tokens": 52738,
+      "output_tokens": 33413,
+      "total_tokens": 86151,
+      "total_cost": 0.57704525,
+      "agents": [
+        {
+          "agent_name": "vplan_generator",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 23033,
+          "completion_tokens": 27847,
+          "total_tokens": 50880,
+          "total_cost": "0.47528750",
+          "number_of_batches": 7,
+          "batches": [
+            {
+              "agent_name": "vplan_generator_batch_1",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3611,
+              "completion_tokens": 4716,
+              "total_tokens": 8327,
+              "total_cost": "0.07976750"
+            },
+            {
+              "agent_name": "vplan_generator_batch_2",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3766,
+              "completion_tokens": 4262,
+              "total_tokens": 8028,
+              "total_cost": "0.07334500"
+            },
+            {
+              "agent_name": "vplan_generator_batch_3",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3622,
+              "completion_tokens": 4958,
+              "total_tokens": 8580,
+              "total_cost": "0.08342500"
+            },
+            {
+              "agent_name": "vplan_generator_batch_4",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3707,
+              "completion_tokens": 4030,
+              "total_tokens": 7737,
+              "total_cost": "0.06971750"
+            },
+            {
+              "agent_name": "vplan_generator_batch_5",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3317,
+              "completion_tokens": 4953,
+              "total_tokens": 8270,
+              "total_cost": "0.08258750"
+            },
+            {
+              "agent_name": "vplan_generator_batch_6",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3657,
+              "completion_tokens": 4770,
+              "total_tokens": 8427,
+              "total_cost": "0.08069250"
+            },
+            {
+              "agent_name": "vplan_generator_batch_7",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 1353,
+              "completion_tokens": 158,
+              "total_tokens": 1511,
+              "total_cost": "0.00575250"
+            }
+          ]
+        },
+        {
+          "agent_name": "edge_case_extractor",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 19170,
+          "completion_tokens": 1989,
+          "total_tokens": 21159,
+          "total_cost": "0.07776000"
+        },
+        {
+          "agent_name": "vplan_category_agent",
+          "model_name": "gpt-5.4-mini",
+          "prompt_tokens": 10535,
+          "completion_tokens": 3577,
+          "total_tokens": 14112,
+          "total_cost": "0.02399775"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-07-14T10:19:17",
+    "output_file": "coverage_workflow.json",
+    "trace_ids": {
+      "coverage_status": null,
+      "granularity": null,
+      "testability": null
+    },
+    "summary": {
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "total_tokens": 0,
+      "total_cost": 0,
+      "agents": []
+    }
+  },
+  {
+    "timestamp": "2026-07-14T11:23:47",
+    "output_file": "generated_vplan_2026-07-14_11-22-35.json",
+    "trace_ids": {
+      "vplan_trace_id": "0228e27b-f48d-4db2-bfe8-20c940f0a4f1",
+      "edge_case_trace_id": "bad3afb0-0962-49ef-abc8-02b4115f8255",
+      "category_trace_id": ""
+    },
+    "summary": {
+      "prompt_tokens": 8402,
+      "completion_tokens": 6751,
+      "input_tokens": 8402,
+      "output_tokens": 6751,
+      "total_tokens": 15153,
+      "total_cost": 0.12227,
+      "agents": [
+        {
+          "agent_name": "vplan_generator",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 5508,
+          "completion_tokens": 6257,
+          "input_tokens": 5508,
+          "output_tokens": 6257,
+          "total_tokens": 11765,
+          "total_cost": "0.10762500",
+          "number_of_batches": 2,
+          "batches": [
+            {
+              "agent_name": "vplan_generator_batch_1",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3445,
+              "completion_tokens": 4642,
+              "input_tokens": 3445,
+              "output_tokens": 4642,
+              "total_tokens": 8087,
+              "total_cost": "0.07824250"
+            },
+            {
+              "agent_name": "vplan_generator_batch_2",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 2063,
+              "completion_tokens": 1615,
+              "input_tokens": 2063,
+              "output_tokens": 1615,
+              "total_tokens": 3678,
+              "total_cost": "0.02938250"
+            }
+          ]
+        },
+        {
+          "agent_name": "edge_case_extractor",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 2894,
+          "completion_tokens": 494,
+          "input_tokens": 2894,
+          "output_tokens": 494,
+          "total_tokens": 3388,
+          "total_cost": "0.01464500"
+        },
+        {
+          "agent_name": "vplan_category_agent",
+          "model_name": "gpt-5.4-mini",
+          "prompt_tokens": 0,
+          "completion_tokens": 0,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "total_tokens": 0,
+          "total_cost": "0"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-07-14T11:28:25",
+    "output_file": "coverage_workflow.json",
+    "trace_ids": {
+      "coverage_status": null,
+      "granularity": null,
+      "testability": null
+    },
+    "summary": {
+      "prompt_tokens": 32375,
+      "completion_tokens": 4576,
+      "input_tokens": 32375,
+      "output_tokens": 4576,
+      "total_tokens": 36951,
+      "total_cost": 0.1495775,
+      "agents": [
+        {
+          "agent_name": "granularity_adequacy",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 32375,
+          "completion_tokens": 4576,
+          "input_tokens": 32375,
+          "output_tokens": 4576,
+          "total_tokens": 36951,
+          "total_cost": "0.14957750"
+        }
+      ]
+    }
   }
 ]

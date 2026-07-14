@@ -1,234 +1,194 @@
 from datetime import datetime
 import json
+import re
 from pathlib import Path
-import argparse
 
 from Backend.config import WEAK_LANGUAGE_DIR
 
-STRONG_REQUIREMENT_WORDS = [
-    "must",
-    "shall",
-    "required",
-    "requires",
-    "require",
-]
+TERMS_FILE = Path(__file__).with_name("regex_config.txt")
 
-WEAK_REQUIREMENT_WORDS = [
-    # Permission / possibility
-    "may",
-    "might",
-    "can",
-    "could",
-    "is permitted to",
-    "are permitted to",
-    "permitted",
-    "allowed",
-    "allowable",
-    "may be",
-    "can be",
-    "could be",
-    "might be",
-    # Optional / conditional support
-    "optional",
-    "optionally",
-    "if supported",
-    "when supported",
-    "where supported",
-    "if implemented",
-    "when implemented",
-    "where implemented",
-    "implementation defined",
-    "implementation-defined",
-    "implementation specific",
-    "implementation-specific",
-    "platform dependent",
-    "platform-dependent",
-    "device dependent",
-    "device-dependent",
-    "configuration dependent",
-    "configuration-dependent",
-    "configurable",
-    "programmable",
-    # Conditional / contextual
-    "where applicable",
-    "if applicable",
-    "when applicable",
-    "as applicable",
-    "as appropriate",
-    "where appropriate",
-    "if appropriate",
-    "when appropriate",
-    "as needed",
-    "if needed",
-    "when needed",
-    "where needed",
-    "as required",
-    "where required",
-    "if required",
-    "when required",
-    # Recommendations / non-mandatory guidance
-    "should",
-    "recommended",
-    "recommend",
-    "recommendation",
-    "preferably",
-    "preferred",
-    "it is recommended",
-    "it is preferable",
-    "best effort",
-    "best-effort",
-    # Frequency / vague normality
-    "typically",
-    "normally",
-    "generally",
-    "usually",
-    "commonly",
-    "often",
-    "in general",
-    "by default",
-    "default",
-    # Ambiguous timing
-    "timely",
-    "timely manner",
-    "reasonable time",
-    "as soon as possible",
-    "eventually",
-    "soon",
-    "later",
-    "early",
-    "earliest",
-    "latest",
-    "where possible",
-    "if possible",
-    "when possible",
-    "as possible",
-    # Ambiguous quantity / degree
-    "approximately",
-    "about",
-    "around",
-    "roughly",
-    "near",
-    "minimum necessary",
-    "sufficient",
-    "sufficiently",
-    "adequate",
-    "adequately",
-    "appropriate",
-    "reasonable",
-    "minimal",
-    "maximum possible",
-    "up to",
-    "at least where possible",
-    # Ambiguous completeness / examples
-    "including but not limited to",
-    "for example",
-    "such as",
-    "etc",
-    "and so on",
-    "among others",
-    # Vague behaviour
-    "support",
-    "supports",
-    "is supported",
-    "is included",
-    "provided",
-    "available",
-    "capable of",
-    "intended to",
-    "designed to",
-    "aims to",
-    "allows",
-    "enables",
-    # Exceptions / unclear scope
-    "unless otherwise specified",
-    "where not otherwise specified",
-    "except where",
-    "except when",
-    "subject to",
-    "depending on",
-    "depends on",
-    "based on",
-]
+
+def load_term_groups(
+    file_path: str | Path = TERMS_FILE,
+) -> dict[str, list[str]]:
+    path = Path(file_path)
+
+    if not path.exists():
+        raise FileNotFoundError(f"Terms file not found: {path}")
+
+    groups: dict[str, list[str]] = {}
+    current_group: str | None = None
+
+    with path.open("r", encoding="utf-8") as file:
+        for raw_line in file:
+            line = raw_line.strip()
+
+            if not line or line.startswith("#"):
+                continue
+
+            if line.startswith("[") and line.endswith("]"):
+                current_group = line[1:-1].strip()
+                groups[current_group] = []
+                continue
+
+            if current_group is None:
+                raise ValueError(
+                    f"Term found before a section heading in {path}: {line}"
+                )
+
+            groups[current_group].append(line.lower())
+
+    return groups
+
+
+TERM_GROUPS = load_term_groups()
+STRONG_REQUIREMENT_WORDS = TERM_GROUPS["strong_requirement_words"]
+WEAK_REQUIREMENT_WORDS = TERM_GROUPS["weak_requirement_words"]
 
 
 def unwrap_requirements(data) -> list[dict]:
-    """Accept either a raw requirements list or a dict with a requirements key."""
+    """Accept either a raw requirements list or a wrapped requirements object."""
 
     if isinstance(data, dict):
         data = data.get("requirements", [])
 
     if not isinstance(data, list):
         raise ValueError(
-            "Expected requirements to be a list, or a dict containing a 'requirements' list."
+            "Expected requirements to be a list, or a dict containing "
+            "a 'requirements' list."
         )
 
     return data
 
 
-def get_requirement_text(requirement: dict) -> str:
-    """Combine requirement fields into one searchable text string."""
+def get_requirement_display_text(requirement: dict) -> str:
+    """Return the exact original requirement wording without lowercasing it."""
 
-    return " ".join(
-        [
-            str(requirement.get("description", "")),
-            str(requirement.get("text", "")),
-        ]
-    ).lower()
+    parts: list[str] = []
+
+    for key in ("text", "description"):
+        value = str(requirement.get(key, "") or "").strip()
+
+        if value and value not in parts:
+            parts.append(value)
+
+    return " ".join(parts)
 
 
-def contains_word_or_phrase(text: str, words_or_phrases: list[str]) -> bool:
-    """Return True if text contains any listed word or phrase."""
+def get_requirement_source_section(requirement: dict) -> str | None:
+    """Return the source section, deriving it from the requirement ID if needed."""
 
-    return any(word_or_phrase in text for word_or_phrase in words_or_phrases)
+    explicit_section = (
+        requirement.get("source_section")
+        or requirement.get("section")
+        or requirement.get("chapter")
+    )
+
+    if explicit_section:
+        return str(explicit_section)
+
+    requirement_id = str(requirement.get("id", ""))
+    match = re.search(
+        r"REQ_([A-Z]+\d+(?:_\d+)*)",
+        requirement_id,
+        flags=re.IGNORECASE,
+    )
+
+    if not match:
+        return None
+
+    return match.group(1).replace("_", ".").upper()
+
+
+def _term_pattern(term: str) -> re.Pattern[str]:
+    escaped = re.escape(term.strip())
+    return re.compile(
+        rf"(?<!\w){escaped}(?!\w)",
+        flags=re.IGNORECASE,
+    )
+
+
+def find_matching_terms(
+    text: str,
+    words_or_phrases: list[str],
+) -> list[str]:
+    """Return exact matched terms, preferring longer phrases first."""
+
+    matches: list[str] = []
+
+    unique_terms = sorted(
+        {term.strip().lower() for term in words_or_phrases if term.strip()},
+        key=lambda term: (-len(term), term),
+    )
+
+    for term in unique_terms:
+        if _term_pattern(term).search(text):
+            matches.append(term)
+
+    return matches
+
+
+def contains_word_or_phrase(
+    text: str,
+    words_or_phrases: list[str],
+) -> bool:
+    return bool(find_matching_terms(text, words_or_phrases))
 
 
 def check_requirement_language(requirements) -> list[dict]:
-    """Check requirements for weak or unclear requirement language."""
+    """Check requirements and include exact source wording in every issue."""
 
     requirements = unwrap_requirements(requirements)
-
-    issues = []
+    issues: list[dict] = []
 
     for requirement in requirements:
         if not isinstance(requirement, dict):
             continue
 
-        requirement_id = requirement.get("id", "UNKNOWN")
-        text = get_requirement_text(requirement)
+        requirement_id = str(requirement.get("id", "UNKNOWN"))
+        requirement_text = get_requirement_display_text(requirement)
+        searchable_text = requirement_text.lower()
+        source_section = get_requirement_source_section(requirement)
 
-        has_strong_language = contains_word_or_phrase(
-            text,
+        strong_matches = find_matching_terms(
+            searchable_text,
             STRONG_REQUIREMENT_WORDS,
         )
-
-        has_weak_language = contains_word_or_phrase(
-            text,
+        weak_matches = find_matching_terms(
+            searchable_text,
             WEAK_REQUIREMENT_WORDS,
         )
 
-        if has_weak_language:
-            matched_words = [word for word in WEAK_REQUIREMENT_WORDS if word in text]
+        shared_fields = {
+            "requirement_id": requirement_id,
+            "requirement_text": requirement_text,
+            "source_section": source_section,
+        }
 
+        if weak_matches:
             issues.append(
                 {
-                    "requirement_id": requirement_id,
+                    **shared_fields,
                     "issue_type": "weak_or_optional_language",
-                    "matched_words": matched_words,
+                    "matched_words": weak_matches,
                     "message": (
                         "Requirement contains weak or optional wording. "
-                        "Do not infer mandatory behaviour unless it is explicitly stated."
+                        "Do not infer mandatory behaviour unless it is "
+                        "explicitly stated."
                     ),
                 }
             )
 
-        if not has_strong_language:
+        if not strong_matches:
             issues.append(
                 {
-                    "requirement_id": requirement_id,
+                    **shared_fields,
                     "issue_type": "missing_strong_requirement_language",
+                    "matched_words": [],
                     "message": (
-                        "Requirement does not contain strong requirement wording "
-                        "such as must, shall, should, required, or requires."
+                        "Requirement does not contain strong requirement "
+                        "wording such as must, shall, should, required, "
+                        "or requires."
                     ),
                 }
             )
@@ -239,25 +199,29 @@ def check_requirement_language(requirements) -> list[dict]:
 def save_requirement_language_report(
     issues: list[dict],
     output_file: str | Path,
+    source_file: str | Path | None = None,
 ) -> None:
-    """Save requirement language issues to a JSON file."""
-
     output_path = Path(output_file)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
 
     report = {
         "number_of_language_issues": len(issues),
+        "source_file": Path(source_file).name if source_file else None,
         "issues": issues,
     }
 
-    with open(output_path, "w", encoding="utf-8") as file:
-        json.dump(report, file, indent=2)
+    with output_path.open("w", encoding="utf-8") as file:
+        json.dump(
+            report,
+            file,
+            indent=2,
+            ensure_ascii=False,
+        )
 
     print(f"Requirement language report saved to {output_path}")
 
 
 def print_requirement_language_summary(issues: list[dict]) -> None:
-    """Print a readable summary of requirement language issues."""
-
     print("\nRequirement language check")
     print("--------------------------")
     print(f"Language issues found: {len(issues)}")
@@ -281,16 +245,13 @@ def get_flagged_requirements(
     requirements,
     language_issues: list[dict],
 ) -> list[dict]:
-    """Return only requirements that have language issues."""
-
     requirements = unwrap_requirements(requirements)
-
-    flagged_ids = {issue["requirement_id"] for issue in language_issues}
+    flagged_ids = {str(issue["requirement_id"]) for issue in language_issues}
 
     return [
         requirement
         for requirement in requirements
-        if requirement.get("id") in flagged_ids
+        if str(requirement.get("id")) in flagged_ids
     ]
 
 
@@ -302,18 +263,25 @@ def run_weak_language_checker(requirements_file: str) -> Path:
 
     input_requirements = unwrap_requirements(input_data)
 
-    now = datetime.now()
-    timestamp = now.strftime("%Y-%m-%d_%H-%M-%S")
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
+    WEAK_LANGUAGE_DIR.mkdir(parents=True, exist_ok=True)
     weak_language_file = WEAK_LANGUAGE_DIR / f"weak_words_{timestamp}.json"
 
     issues = check_requirement_language(input_requirements)
-    save_requirement_language_report(issues, weak_language_file)
-    print_requirement_language_summary(issues)
 
+    save_requirement_language_report(
+        issues,
+        weak_language_file,
+        source_file=requirements_file,
+    )
+
+    print_requirement_language_summary(issues)
     return weak_language_file
 
 
 REQUIREMENTS_FILE = "../ambiguous-requirements.json"
+
 
 if __name__ == "__main__":
     run_weak_language_checker(REQUIREMENTS_FILE)

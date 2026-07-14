@@ -4,8 +4,6 @@ from decimal import Decimal
 from pathlib import Path
 from typing import Any
 
-# Fill these in with the prices you want to use.
-# These are USD per 1 million tokens.
 MODEL_PRICES_PER_1M = {
     "gpt-5.5": {
         "input": Decimal("5.00"),
@@ -33,6 +31,7 @@ def calculate_cost(
         return Decimal("0")
 
     input_cost = (Decimal(input_tokens) / Decimal("1000000")) * prices["input"]
+
     output_cost = (Decimal(output_tokens) / Decimal("1000000")) * prices["output"]
 
     return input_cost + output_cost
@@ -116,38 +115,59 @@ def normalise_usage(
         "model_name": model_name,
         "prompt_tokens": input_tokens,
         "completion_tokens": output_tokens,
+        "input_tokens": input_tokens,
+        "output_tokens": output_tokens,
         "total_tokens": total_tokens,
         "total_cost": str(final_cost),
     }
 
 
-def aggregate_usage(*usage_items: dict[str, Any]) -> dict[str, Any]:
-    total_prompt_tokens = 0
-    total_completion_tokens = 0
-    total_tokens = 0
-    total_cost = Decimal("0")
+def aggregate_usage(*usage_records: dict) -> dict:
+    valid_usage = [usage for usage in usage_records if usage]
 
-    agents = []
+    agents: list[dict] = []
 
-    for usage in usage_items:
-        if not usage:
-            continue
-
-        total_prompt_tokens += parse_int_token_count(usage.get("prompt_tokens"))
-        total_completion_tokens += parse_int_token_count(usage.get("completion_tokens"))
-        total_tokens += parse_int_token_count(usage.get("total_tokens"))
-        total_cost += parse_decimal_cost(usage.get("total_cost"))
-
-        if usage.get("agents") and isinstance(usage["agents"], list):
-            agents.extend(usage["agents"])
-        elif usage.get("agent_name"):
+    for usage in valid_usage:
+        if "agents" in usage:
+            agents.extend(agent for agent in usage.get("agents", []) if agent)
+        else:
             agents.append(usage)
 
+    prompt_tokens = sum(
+        parse_int_token_count(
+            agent.get(
+                "prompt_tokens",
+                agent.get("input_tokens", 0),
+            )
+        )
+        for agent in agents
+    )
+
+    completion_tokens = sum(
+        parse_int_token_count(
+            agent.get(
+                "completion_tokens",
+                agent.get("output_tokens", 0),
+            )
+        )
+        for agent in agents
+    )
+
+    total_tokens = sum(
+        parse_int_token_count(agent.get("total_tokens", 0)) for agent in agents
+    )
+
+    total_cost = sum(
+        float(parse_decimal_cost(agent.get("total_cost", 0))) for agent in agents
+    )
+
     return {
-        "prompt_tokens": total_prompt_tokens,
-        "completion_tokens": total_completion_tokens,
+        "prompt_tokens": prompt_tokens,
+        "completion_tokens": completion_tokens,
+        "input_tokens": prompt_tokens,
+        "output_tokens": completion_tokens,
         "total_tokens": total_tokens,
-        "total_cost": str(total_cost),
+        "total_cost": total_cost,
         "agents": agents,
     }
 

@@ -20,8 +20,8 @@ WEAK_LANGUAGE_DIR = OUTPUT_DIR / "weak_language"
 LANGSMITH_LOGS_DIR = OUTPUT_DIR / "langsmith_logs"
 USAGE_CHARTS_DIR = OUTPUT_DIR / "usage_charts"
 WORKFLOW_IMAGE_DIR = OUTPUT_DIR / "node_architecture_graph"
-REQUIREMENT_TEST_LINKS_DIR = OUTPUT_DIR / "requirement_test_links"
 BLOCKED_TESTS_DIR = OUTPUT_DIR / "blocked_tests"
+PRIORITISED_VPLAN_DIR = OUTPUT_DIR / "prioritised_vplans"
 
 # Create all necessary directories
 for directory in [
@@ -34,7 +34,7 @@ for directory in [
     LANGSMITH_LOGS_DIR,
     USAGE_CHARTS_DIR,
     WORKFLOW_IMAGE_DIR,
-    REQUIREMENT_TEST_LINKS_DIR,
     BLOCKED_TESTS_DIR,
+    PRIORITISED_VPLAN_DIR,
 ]:
     directory.mkdir(parents=True, exist_ok=True)

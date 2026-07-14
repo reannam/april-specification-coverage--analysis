@@ -1,0 +1,185 @@
+[critical_terms]
+must
+shall
+required
+not permitted
+must not
+shall not
+cannot
+only
+always
+
+[optional_terms]
+may
+can be
+permitted
+optional
+recommended
+not required
+is permitted
+are permitted
+
+[explanatory_terms]
+for example
+example
+cycle
+this can occur
+in this case
+description
+indicates
+figure
+shown in
+
+[important_functional_terms]
+transfer
+transaction
+handshake
+valid
+ready
+credit
+reset
+response
+data
+request
+signal
+manager
+subordinate
+interconnect
+channel
+assert
+deassert
+
+[fully_covered_statuses]
+covered
+fully_covered
+fully covered
+
+[partially_covered_statuses]
+partially_covered
+partially covered
+
+[not_covered_statuses]
+uncovered
+not_covered
+not covered
+blocked
+ambiguous
+ambiguous / not yet plannable
+
+[traceability_fields]
+requirement_id
+source_requirement_id
+source_section
+section
+section_id
+table_id
+figure_id
+rule_id
+page
+page_number
+source_reference
+source_refs
+traceability
+
+[regex_patterns]
+section=\b[A-Z]\d+(?:\.\d+)*\b
+requirement=\bREQ_[A-Z0-9_]+\b
+table=\bTABLE_[A-Z0-9_]+\b|\bTable\s+[A-Z]?\d+(?:\.\d+)*\b
+figure=\bFIG_[A-Z0-9_]+\b|\bFigure\s+[A-Z]?\d+(?:\.\d+)*\b
+
+[covered_statuses]
+covered
+fully covered
+fully_covered
+
+[partially_covered_statuses]
+partially covered
+partially_covered
+
+[ambiguous_statuses]
+ambiguous
+ambiguous / not yet plannable
+
+[not_covered_statuses]
+uncovered
+not covered
+not_covered
+blocked
+
+[critical_terms]
+must
+shall
+required
+not permitted
+must not
+shall not
+cannot
+only
+always
+no 
+must be
+must not be
+
+[optional_terms]
+may
+can be
+permitted
+optional
+recommended
+not required
+is permitted
+are permitted
+
+[explanatory_terms]
+for example
+example
+cycle
+this can occur
+in this case
+description
+indicates
+figure
+shown in
+
+[important_functional_terms]
+transfer
+transaction
+handshake
+valid
+ready
+credit
+reset
+response
+data
+request
+signal
+manager
+subordinate
+interconnect
+channel
+assert
+deassert
+
+[traceability_fields]
+requirement_id
+source_requirement_id
+source_section
+section
+section_id
+table_id
+figure_id
+rule_id
+page
+page_number
+paragraph
+source_reference
+source_refs
+traceability
+
+[regex_patterns]
+section=\b[A-Z]\d+(?:\.\d+)*\b
+requirement=\bREQ_[A-Z0-9_]+\b
+table=\bTABLE_[A-Z0-9_]+\b|\bTable\s+[A-Z]?\d+(?:\.\d+)*\b
+figure=\bFIG_[A-Z0-9_]+\b|\bFigure\s+[A-Z]?\d+(?:\.\d+)*\b
+page=\bpage\s+\d+\b
+

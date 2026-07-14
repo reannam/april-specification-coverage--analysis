@@ -22,7 +22,7 @@ def test_vplan_columns_accepts_valid_data():
     row = VPlanColumns(
         test_id="TEST_REQ_I2C_001_001",
         requirement_id="REQ_I2C_001",
-        test_type="positive",
+        scenario_type="nominal",
         test_description="Verify normal-mode operation.",
         test_constraints="None specified",
         test_steps=["Configure the controller.", "Observe the bus speed."],
@@ -32,16 +32,16 @@ def test_vplan_columns_accepts_valid_data():
 
     assert row.test_id == "TEST_REQ_I2C_001_001"
     assert row.requirement_id == "REQ_I2C_001"
-    assert row.test_type == "positive"
+    assert row.scenario_type == "nominal"
     assert row.coverage == "covered"
 
 
-@pytest.mark.parametrize("test_type", ["positive", "negative"])
-def test_vplan_columns_accepts_valid_test_types(test_type):
+@pytest.mark.parametrize("scenario_type", ["nominal", "illegal", "corner"])
+def test_vplan_columns_accepts_valid_scenario_types(scenario_type):
     row = VPlanColumns(
         test_id="TEST_REQ_I2C_001_001",
         requirement_id="REQ_I2C_001",
-        test_type=test_type,
+        scenario_type=scenario_type,
         test_description="Verify behaviour.",
         test_constraints="None specified",
         test_steps=["Step 1"],
@@ -49,15 +49,15 @@ def test_vplan_columns_accepts_valid_test_types(test_type):
         coverage="covered",
     )
 
-    assert row.test_type == test_type
+    assert row.scenario_type == scenario_type
 
 
-def test_vplan_columns_rejects_invalid_test_type():
+def test_vplan_columns_rejects_invalid_scenario_type():
     with pytest.raises(ValidationError):
         VPlanColumns(
             test_id="TEST_REQ_I2C_001_001",
             requirement_id="REQ_I2C_001",
-            test_type="edge",
+            scenario_type="edge",
             test_description="Verify behaviour.",
             test_constraints="None specified",
             test_steps=["Step 1"],
@@ -71,7 +71,7 @@ def test_vplan_columns_accepts_valid_coverage_values(coverage):
     row = VPlanColumns(
         test_id="TEST_REQ_I2C_001_001",
         requirement_id="REQ_I2C_001",
-        test_type="positive",
+        scenario_type="nominal",
         test_description="Verify behaviour.",
         test_constraints="None specified",
         test_steps=["Step 1"],
@@ -87,7 +87,7 @@ def test_vplan_columns_rejects_invalid_coverage_value():
         VPlanColumns(
             test_id="TEST_REQ_I2C_001_001",
             requirement_id="REQ_I2C_001",
-            test_type="positive",
+            scenario_type="nominal",
             test_description="Verify behaviour.",
             test_constraints="None specified",
             test_steps=["Step 1"],
@@ -101,7 +101,7 @@ def test_vplan_columns_requires_all_fields():
         VPlanColumns(
             test_id="TEST_REQ_I2C_001_001",
             requirement_id="REQ_I2C_001",
-            test_type="positive",
+            scenario_type="nominal",
             test_description="Verify behaviour.",
             test_constraints="None specified",
             test_steps=["Step 1"],
@@ -113,7 +113,7 @@ def test_vplan_columns_rejects_non_list_test_steps():
         VPlanColumns(
             test_id="TEST_REQ_I2C_001_001",
             requirement_id="REQ_I2C_001",
-            test_type="positive",
+            scenario_type="nominal",
             test_description="Verify behaviour.",
             test_constraints="None specified",
             test_steps="Step 1",
@@ -127,7 +127,7 @@ def test_vplan_columns_rejects_non_list_expected_results():
         VPlanColumns(
             test_id="TEST_REQ_I2C_001_001",
             requirement_id="REQ_I2C_001",
-            test_type="positive",
+            scenario_type="nominal",
             test_description="Verify behaviour.",
             test_constraints="None specified",
             test_steps=["Step 1"],
@@ -145,7 +145,7 @@ def test_table_accepts_valid_vplan_rows():
     row = VPlanColumns(
         test_id="TEST_REQ_I2C_001_001",
         requirement_id="REQ_I2C_001",
-        test_type="positive",
+        scenario_type="nominal",
         test_description="Verify behaviour.",
         test_constraints="None specified",
         test_steps=["Step 1"],
@@ -165,7 +165,7 @@ def test_table_accepts_dict_rows_and_converts_to_models():
             {
                 "test_id": "TEST_REQ_I2C_001_001",
                 "requirement_id": "REQ_I2C_001",
-                "test_type": "positive",
+                "scenario_type": "nominal",
                 "test_description": "Verify behaviour.",
                 "test_constraints": "None specified",
                 "test_steps": ["Step 1"],
@@ -185,7 +185,7 @@ def test_table_rejects_invalid_row():
                 {
                     "test_id": "TEST_REQ_I2C_001_001",
                     "requirement_id": "REQ_I2C_001",
-                    "test_type": "invalid",
+                    "scenario_type": "invalid",
                     "test_description": "Verify behaviour.",
                     "test_constraints": "None specified",
                     "test_steps": ["Step 1"],

@@ -47,38 +47,39 @@ def test_unwrap_requirements_raises_value_error_for_invalid_input(invalid_input)
 
 
 # ---------------------------------------------------------------------------
-# get_requirement_text
+# get_requirement_display_text
 # ---------------------------------------------------------------------------
 
 
-def test_get_requirement_text_combines_description_and_text_lowercase():
+def test_get_requirement_display_text_combines_text_and_description():
     requirement = {
         "description": "The Core MUST Reset.",
         "text": "The Signal SHALL Be Low.",
     }
 
-    result = wlc.get_requirement_text(requirement)
+    result = wlc.get_requirement_display_text(requirement)
 
-    assert result == "the core must reset. the signal shall be low."
+    assert result.startswith("The Signal SHALL Be Low.")
+    assert "The Core MUST Reset." in result
 
 
-def test_get_requirement_text_handles_missing_fields():
+def test_get_requirement_display_text_handles_missing_fields():
     requirement = {"id": "REQ_I2C_001"}
 
-    result = wlc.get_requirement_text(requirement)
+    result = wlc.get_requirement_display_text(requirement)
 
-    assert result == " "
+    assert result == ""
 
 
-def test_get_requirement_text_casts_non_string_values_to_string():
+def test_get_requirement_display_text_casts_non_string_values_to_string():
     requirement = {
         "description": 123,
         "text": None,
     }
 
-    result = wlc.get_requirement_text(requirement)
+    result = wlc.get_requirement_display_text(requirement)
 
-    assert result == "123 none"
+    assert result == "123"
 
 
 # ---------------------------------------------------------------------------
@@ -116,17 +117,10 @@ def test_contains_word_or_phrase_returns_false_for_empty_word_list():
     assert result is False
 
 
-def test_contains_word_or_phrase_uses_substring_matching_current_behaviour():
-    """
-    Documents current behaviour.
-
-    The implementation uses substring matching, so 'can' matches inside
-    'canonical'. If you later improve this with regex word boundaries,
-    update or remove this test.
-    """
+def test_contains_word_or_phrase_uses_word_boundaries():
     result = wlc.contains_word_or_phrase("the signal is canonical", ["can"])
 
-    assert result is True
+    assert result is False
 
 
 # ---------------------------------------------------------------------------
@@ -248,16 +242,19 @@ def test_check_requirement_language_flags_missing_strong_when_no_strong_or_weak_
 
     result = wlc.check_requirement_language(requirements)
 
-    assert result == [
-        {
-            "requirement_id": "REQ_I2C_001",
-            "issue_type": "missing_strong_requirement_language",
-            "message": (
-                "Requirement does not contain strong requirement wording "
-                "such as must, shall, should, required, or requires."
-            ),
-        }
-    ]
+    assert len(result) == 1
+
+    issue = result[0]
+
+    assert issue["requirement_id"] == "REQ_I2C_001"
+    assert issue["source_section"] == "I2"
+    assert issue["requirement_text"].startswith("The reset signal is low.")
+    assert "The controller resets after power on." in issue["requirement_text"]
+    assert issue["issue_type"] == "missing_strong_requirement_language"
+    assert issue["message"] == (
+        "Requirement does not contain strong requirement wording "
+        "such as must, shall, should, required, or requires."
+    )
 
 
 def test_check_requirement_language_finds_weak_words_from_description_and_text():
@@ -342,6 +339,7 @@ def test_save_requirement_language_report_writes_expected_json(tmp_path):
     saved_data = json.loads(output_file.read_text(encoding="utf-8"))
 
     assert saved_data == {
+        "source_file": None,
         "number_of_language_issues": 1,
         "issues": issues,
     }
@@ -356,6 +354,7 @@ def test_save_requirement_language_report_accepts_string_path(tmp_path):
     saved_data = json.loads(output_file.read_text(encoding="utf-8"))
 
     assert saved_data == {
+        "source_file": None,
         "number_of_language_issues": 0,
         "issues": [],
     }

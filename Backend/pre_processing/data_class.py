@@ -3,23 +3,32 @@ from typing import Literal, TypedDict, NotRequired, Any
 
 
 class VPlanColumns(BaseModel):
-    test_id: str = Field(..., description="Unique test ID, e.g. TEST_REQ_I2C_001")
-    requirement_id: str = Field(
-        ..., description="The exact requirement ID from the input JSON"
-    )
-    test_type: Literal["positive", "negative"] = Field(
-        ..., description="The type of test"
-    )
-    test_description: str = Field(..., description="What is being tested")
-    test_constraints: str = Field(
-        ..., description="Constraints, preconditions, or 'None specified'"
-    )
-    test_steps: list[str] = Field(..., description="Concrete verification steps")
-    expected_results: list[str] = Field(..., description="Expected observable results")
-    coverage: Literal["covered", "partially_covered", "blocked"] = Field(
+    test_id: str = Field(
         ...,
-        description="Coverage status of the requirement",
+        description="Unique test identifier.",
     )
+    requirement_id: str = Field(
+        ...,
+        description="Exact requirement ID from the input.",
+    )
+    scenario_type: Literal["nominal", "illegal", "corner"]
+    category: str = Field(
+        default="Uncategorised",
+        description="One or two word engineering category for the test.",
+    )
+    priority: Literal[1, 2, 3] = Field(
+        default=3,
+        description="1 is highest priority and 3 is lowest.",
+    )
+    test_description: str
+    test_constraints: str
+    test_steps: list[str]
+    expected_results: list[str]
+    coverage: Literal[
+        "covered",
+        "partially_covered",
+        "blocked",
+    ]
 
 
 class Table(BaseModel):
@@ -137,13 +146,17 @@ class GraphState(TypedDict):
 
     vplan_output_file: NotRequired[str]
     edge_case_output_file: NotRequired[str]
+    weak_words_file: NotRequired[str]
+
     requirement_test_links_file: NotRequired[str]
 
     vplan_usage: NotRequired[dict]
     edge_case_usage: NotRequired[dict]
+    category_usage: NotRequired[dict]
 
     vplan_trace_id: NotRequired[str]
     edge_case_trace_id: NotRequired[str]
+    category_trace_id: NotRequired[str | None]
 
     langsmith_summary: NotRequired[dict]
     langsmith_log_file: NotRequired[str]
@@ -160,3 +173,17 @@ class CoverageGraphState(TypedDict):
 
     coverage_validation_errors: NotRequired[list[str]]
     coverage_missing_requirement_ids: NotRequired[list[str]]
+
+
+class TestCategory(BaseModel):
+    test_id: str
+    category: str = Field(
+        ...,
+        min_length=2,
+        max_length=40,
+        description="A concise one or two word engineering category.",
+    )
+
+
+class CategorisedTests(BaseModel):
+    tests: list[TestCategory]
