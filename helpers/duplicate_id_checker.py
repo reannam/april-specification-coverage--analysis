@@ -56,8 +56,9 @@ def write_duplicate_report(
 
 if __name__ == "__main__":
     # Replace this with the path to your JSON file.
-    JSON_FILE = "../amba-axi-extracted-7-7-26.json"
-    OUTPUT_FILE = "duplicate_requirement_ids.txt"
+    # JSON_FILE = "../amba-axi-extracted-7-7-26.json"
+    JSON_FILE = "../document_RISC.json"
+    OUTPUT_FILE = "duplicate_requirement_ids-risc.txt"
 
     try:
         duplicates = find_duplicate_requirement_ids(JSON_FILE)

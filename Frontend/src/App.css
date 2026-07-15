@@ -1,6 +1,7 @@
 :root {
     font-family:
-        Inter,
+        Roboto,
+        "Segoe UI",
         ui-sans-serif,
         -apple-system,
         BlinkMacSystemFont,
@@ -42,9 +43,9 @@
     --shadow-sm: 0 1px 2px rgb(30 32 28 / 6%);
     --shadow-md: 0 12px 32px rgb(30 32 28 / 8%);
 
-    --radius-sm: 6px;
-    --radius-md: 10px;
-    --radius-lg: 14px;
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
 }
 
 :root[data-theme="dark"] {
@@ -639,5 +640,29 @@ svg {
 
     .segmentedControl button {
         flex: 1;
+    }
+}
+
+/* Keep the two primary homepage actions readable and balanced. */
+.welcomeActions {
+    align-items: stretch;
+}
+
+.welcomeActions .button {
+    min-width: 190px;
+    min-height: 48px;
+    padding: 12px 20px;
+    white-space: nowrap;
+    text-align: center;
+}
+
+@media (max-width: 560px) {
+    .welcomeActions {
+        flex-direction: column;
+    }
+
+    .welcomeActions .button {
+        width: 100%;
+        min-width: 0;
     }
 }

@@ -37,3 +37,5 @@ run_id,timestamp,output_file,models_used,prompt_tokens,completion_tokens,total_t
 36,2026-07-14T10:19:17,coverage_workflow.json,Unknown model,0,0,0,0.0
 37,2026-07-14T11:23:47,generated_vplan_2026-07-14_11-22-35.json,"gpt-5.4, gpt-5.4-mini",8402,6751,15153,0.12227
 38,2026-07-14T11:28:25,coverage_workflow.json,gpt-5.4,32375,4576,36951,0.1495775
+39,2026-07-15T09:28:18,generated_vplan_2026-07-15_09-26-47.json,"gpt-5.4, gpt-5.4-mini",8777,6908,15685,0.1255625
+40,2026-07-15T09:32:34,coverage_workflow.json,gpt-5.4,32191,4486,36677,0.1477675
