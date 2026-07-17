@@ -22,14 +22,19 @@ const groups: { label: string; items: NavigationItem[] }[] = [
     ],
   },
   {
-    label: "Review",
+    label: "Analyse and compare",
     items: [
       { to: "/review/inconsistencies", label: "Compare specification versions", icon: <ReviewIcon /> },
       {
         to: "/review/ambiguities",
-        label: "Analyse specification",
+        label: "Check for Inconsistencies",
         icon: <ReviewIcon />,
         badge: "Unused",
+      },
+      {
+        to: "/review/quality",
+        label: "Quality checker",
+        icon: <ReviewIcon />,
       },
     ],
   },

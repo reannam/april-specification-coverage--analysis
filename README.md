@@ -1,272 +1,230 @@
 # Specification Coverage Analysis
 
-This repository contains an AI-assisted workflow for analysing structured requirements, generating a verification plan (vPlan), and producing edge-case analysis output. The project currently combines a FastAPI backend with a Vite frontend so the workflow can be run from a browser.
+AI-assisted verification planning for structured semiconductor requirements. The repository contains a FastAPI backend and a React/Vite frontend.
 
-It takes a JSON requirements file as input and produces:
+The implemented workflow accepts a JSON object containing a top-level `requirements` array and produces:
 
-- A verification plan containing tests mapped to requirements
-- Edge-case analysis based on weak, ambiguous, optional, or conditional wording
-- Traceability information linking generated tests back to requirements
-- Usage and tracing metadata for LangSmith-style analysis
+- a requirement-linked vPlan;
+- concise model-generated test names with deterministic cleanup and fallbacks;
+- edge-case and deterministic weak-language reports;
+- requirement-to-test traceability;
+- uncovered and partially covered test information;
+- deterministic and model-assisted coverage metrics, gap reports, and ambiguity reports;
+- extracted-specification version comparison in JSON, CSV, and Markdown;
+- extraction completeness, accuracy, and table/figure capture analysis;
+- deterministic PDF-to-JSON and requirements extraction;
+- token, cost, and trace metadata.
 
----
+Generated results are engineering aids, not sign-off artefacts. A verification engineer should review them before use.
 
-## Project Structure
+For detailed operating instructions, every output field, score formula, authority order, and known limitation, see [USER_GUIDE.md](USER_GUIDE.md).
+
+## Current workflow
+
+1. Preprocess the uploaded document to retain its `requirements` array.
+2. Use GPT-5.6 Terra by default to derive one bounded whole-specification requirement taxonomy, then assign every requirement to a parent and subcategory in batches.
+3. Run deterministic weak-language checks.
+4. Use GPT-5.4 to extract relevant edge cases.
+5. Use GPT-5.4 to generate vPlan rows in parent-category batches, keeping subcategories contiguous.
+6. Use GPT-5.4-mini to assign consistent test-level categories and concise test names. Names are normalised and receive deterministic description-based fallbacks when necessary.
+7. Export traceability and uncovered-test reports.
+8. Run bounded, progress-logged coverage checks on the requirements, vPlan, edge cases, and weak-language report.
+
+Coverage includes requirement mapping, weighted full/partial coverage, traceability, testability, granularity adequacy, orphan rate, gaps, and ambiguity-related limitations. The UI exposes the formula and supporting records for each displayed metric.
+
+Uncovered rows are traceability-only: they contain no test name, test description, steps, or expected results. Covered and partially covered rows must contain a specific description, at least one executable step, and at least one observable expected result. Final coverage files re-evaluate vPlan labels and are authoritative when the values differ.
+
+## Repository structure
 
 ```text
-.
-├── .gitignore
-├── Backend/
-│   ├── agents/
-│   │   ├── __init__.py
-│   │   ├── coverage_analysis_agent.py
-│   │   ├── edge_case_agent.py
-│   │   └── vplan_generator_agent.py
-│   ├── api.py
-│   ├── coverage/
-│   │   ├── __init__.py
-│   │   ├── coverage_workflow.py
-│   │   └── run_coverage_analysis.py
-│   ├── main.py
-│   ├── post_processing/
-│   │   ├── __init__.py
-│   │   ├── analyse_usage_logs.py
-│   │   └── usage_logger.py
-│   ├── pre_processing/
-│   │   ├── __init__.py
-│   │   ├── agent_scheduler.py
-│   │   ├── data_class.py
-│   │   └── preprocess_requirements.py
-│   ├── report_generation/
-│   │   ├── blocked_test_report_generator.py
-│   │   ├── traceability_record_generator.py
-│   │   ├── vplan_traceability_check.py
-│   │   └── weak_language_check.py
-│   └── requirements.txt
-├── Frontend/
-│   ├── .gitignore
-│   ├── index.html
-│   ├── public/
-│   ├── src/
-│   │   ├── App.css
-│   │   ├── App.tsx
-│   │   ├── assets/
-│   │   ├── index.css
-│   │   └── main.tsx
-├── ambiguous-requirements.json
-├── document_tiny_subset.json
-├── example-requirements.json
-├── example-vplan.json
-├── outputs/
-├── uploads/
-└── README.md
+Backend/
+  vPlan/               vPlan agents, scheduling, reporting and post-processing
+  Coverage/            coverage calculations and final reports
+  AnalyseAndCompareSpecs/
+                       version comparison and extraction-quality analysis
+  Extraction/          PDF parsing, extraction regexes and requirements export
+  config.py            single source of truth for runtime paths and directories
+  api.py                FastAPI endpoints and downloads
+Frontend/
+  src/components/      shared layout and result components
+  src/context/         cached workflow state
+  src/pages/           routed workflow and report pages
+  src/services/        API helpers
+  src/types/           API and document types
+tests/                  backend unit tests
+outputs/                runtime-generated files; not source data
+uploads/                runtime upload cache
 ```
 
-The current backend entry points are Backend/api.py (FastAPI service) and Backend/main.py (workflow runner using example-requirements.json).
+Do not commit `.env`, virtual environments, upload caches, generated outputs, or API keys.
 
----
+## Requirements
 
-## Features
-
-### vPlan Generation
-
-The vPlan generator reads a JSON requirements file and creates a structured verification plan. Each generated test typically includes a test ID, requirement ID, requirement text, test description, constraints, steps, expected results, priority, and coverage information.
-
-### Edge-Case Analysis
-
-The edge-case agent identifies cases implied by weak or ambiguous requirement wording such as may, should, where applicable, normally, could, if supported, and as appropriate.
-
-### Traceability and Usage Logging
-
-Generated tests are checked for traceability. The workflow also produces requirement-test link exports, blocked test reports, usage summaries, token counts, and output plots.
-
----
-
-## Prerequisites
-
-You will need:
-
-- Python 3.11 or later
-- Node.js 18 or later
+- Python 3.11+
+- Node.js 18+
 - npm
-- An OpenAI API key
-- Optional LangSmith/LangChain environment variables if you want tracing
+- an OpenAI API key
+- optional LangSmith credentials for tracing
 
----
+## Setup
 
-## Backend Setup
-
-From the project root, create and activate a virtual environment:
-
-### macOS/Linux
+From the repository root:
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-```
-
-### Windows
-
-```bash
-python -m venv .venv
-.venv\Scripts\activate
-```
-
-Install the backend dependencies from the repository root:
-
-```bash
 python -m pip install -r Backend/requirements.txt
 ```
 
-Create or edit the project-root .env file and add your credentials:
-
-```env
-OPENAI_API_KEY=your_openai_api_key_here
-
-# Optional, but recommended if you want LangSmith tracing
-LANGSMITH_API_KEY=your_langsmith_api_key_here
-LANGSMITH_TRACING=true
-LANGSMITH_PROJECT=specification-analysis
-```
-
-If your LangChain/LangSmith version expects the older variable names, you can also add:
-
-```env
-LANGCHAIN_TRACING_V2=true
-LANGCHAIN_API_KEY=your_langsmith_api_key_here
-LANGCHAIN_PROJECT=specification-analysis
-```
-
----
-
-## Running the Backend
-
-### Option 1: Run the workflow directly
-
-This runs the workflow with the repository's example requirements file:
+If an existing virtual environment predates PDF extraction, refresh it with the
+command above or install the new dependency directly:
 
 ```bash
-python3 Backend/main.py
+python -m pip install pymupdf
 ```
 
-### Option 2: Run the FastAPI service
+Use `python -m pip` while the same environment that runs `uvicorn` is active;
+this prevents the package being installed into a different Python interpreter.
 
-This starts the API used by the frontend:
+On Windows, activate with `.venv\Scripts\activate`.
+
+Create a repository-root `.env` file:
+
+```env
+OPENAI_API_KEY=replace_me
+
+# Optional tracing
+LANGSMITH_API_KEY=replace_me
+LANGSMITH_TRACING=true
+LANGSMITH_PROJECT=specification-analysis
+
+# Optional model/batching overrides
+REQUIREMENT_CATEGORY_MODEL=openai:gpt-5.6-terra
+REQUIREMENT_CATEGORY_BATCH_SIZE=100
+REQUIREMENT_CATEGORY_BATCH_RETRIES=2
+CATEGORY_MODEL=openai:gpt-5.4-mini
+CATEGORY_BATCH_SIZE=24
+CATEGORY_MAX_WORKERS=2
+CATEGORY_BATCH_RETRIES=1
+VPLAN_BATCH_RETRIES=2
+VPLAN_CATEGORY_BATCH_SIZE=40
+MAX_PRIORITY_SELECTIONS=12
+COVERAGE_MODEL_BATCH_SIZE=10
+COVERAGE_MODEL_BATCH_RETRIES=2
+GRANULARITY_MODEL=openai:gpt-5.4
+TESTABILITY_MODEL=openai:gpt-5.4
+```
+
+Install the frontend:
+
+```bash
+cd Frontend
+npm install
+```
+
+## Run locally
+
+Start the backend from the repository root:
 
 ```bash
 uvicorn Backend.api:app --reload --host 127.0.0.1 --port 8000
 ```
 
-The API exposes health and upload endpoints at /api/health and /api/run-agents.
-
----
-
-## Frontend Setup
-
-Navigate to the frontend directory:
+In another terminal:
 
 ```bash
 cd Frontend
-```
-
-Install dependencies:
-
-```bash
-npm install
-```
-
-Run the frontend:
-
-```bash
 npm run dev
 ```
 
-The frontend is served at http://localhost:5173 by default. The current frontend code calls the backend at http://localhost:8000, so both services should be running on those ports for local use.
+The UI defaults to `http://localhost:5173` and the API to `http://localhost:8000`. Set `VITE_API_BASE_URL` before starting Vite to use another API origin. Configure allowed frontend origins with the comma-separated `CORS_ORIGINS` environment variable. Workflow diagram rendering is disabled because it may use a remote Mermaid renderer; set `GENERATE_WORKFLOW_IMAGES=true` only when intentionally refreshing diagrams.
 
----
-
-## Expected Output
-
-Generated files are written under the repository's outputs directory. Typical output locations include:
-
-```text
-outputs/
-outputs/blocked_tests/
-outputs/coverage_reports/
-outputs/edge_cases/
-outputs/langsmith_logs/
-outputs/node_architecture_graph/
-outputs/traceability/
-outputs/usage_charts/
-outputs/weak_language/
-```
-
----
-
-## Input Requirements Format
-
-The backend expects a JSON array of requirements. The repository includes example files at example-requirements.json and ambiguous-requirements.json. The workflow preprocesses the uploaded JSON before analysis.
-
-Example structure:
-
-```json
-[
-  {
-    "id": "REQ_I2C_001",
-    "description": "The controller must support normal-mode I2C operation.",
-    "text": "The I2C controller shall support 100 Kbps normal-mode operation.",
-    "source_section": "1.1 I2C Features",
-    "signals": ["scl", "sda"],
-    "type": "functional_requirement"
-  }
-]
-```
-
-Each requirement should include at least an id, description, text, source_section, signals, and type.
-
----
-
-## Example Workflow
-
-1. Prepare or select a requirements JSON file.
-2. Start the backend API.
-3. Start the frontend.
-4. Upload the JSON file through the frontend.
-5. Review the generated vPlan, edge-case analysis, and usage metrics.
-6. Download the generated files from the API responses.
-
----
-
-## Troubleshooting
-
-### OPENAI_API_KEY not found
-
-Ensure the repository-root .env file exists and contains your OpenAI key.
-
-### Frontend cannot connect to the backend
-
-Check that:
-
-- The backend is running on http://localhost:8000
-- The frontend is still pointing to that URL in Frontend/src/App.tsx
-- CORS is enabled for localhost:5173 in Backend/api.py
-
-### Import errors from backend modules
-
-Run commands from the project root, not from inside Backend. If needed, set:
+The backend can also be run directly:
 
 ```bash
-export PYTHONPATH=.
+python -m Backend.vPlan.main path/to/requirements.json
 ```
 
-On Windows PowerShell:
+## API
 
-```powershell
-$env:PYTHONPATH="."
+- `GET /api/health` — service health.
+- `POST /api/extract-pdf` — upload a PDF; returns the complete structured document.
+- `POST /api/extract-requirements` — derive vPlan-ready requirements from extracted document JSON.
+- `POST /api/run-agents` — upload `requirements_file`; returns vPlan, edge-case, weak-language and traceability outputs.
+- `POST /api/run-coverage` — use cached paths or upload all four coverage inputs.
+- `POST /api/prioritise-vplan` — apply deterministic category-based priorities.
+- `POST /api/compare-specifications` — compare older and newer extractor JSON files.
+- `POST /api/check-specification-quality` — score extractor JSON, optionally using its source PDF and a gold JSON.
+- `GET /api/download/{filename}` — download generated JSON/CSV files.
+- `GET /api/usage-chart/{filename}` — download generated usage charts or CSVs.
+
+## Input format
+
+The uploaded JSON must be an object with a top-level `requirements` list. A raw top-level list is not accepted by the current preprocessor.
+
+```json
+{
+  "requirements": [
+    {
+      "id": "REQ_I2C_001",
+      "description": "The controller must support normal-mode operation.",
+      "text": "The controller shall support 100 Kbps I2C operation.",
+      "source_section": "1.1 I2C Features",
+      "signals": ["scl", "sda"],
+      "type": "functional_requirement"
+    }
+  ]
+}
 ```
 
----
+Unique, non-empty requirement IDs are essential. Duplicate IDs make mapping and coverage results unreliable.
 
-## Disclaimer
+## Frontend status
 
-This tool is intended to support verification planning and specification analysis. Generated vPlans should be reviewed by a human verification engineer before being used as final verification artefacts.
+### Extract from PDF and extract requirements
+
+Implemented as four distinct stages: **Extract from PDF → Extract requirements → Generate vPlan → Check coverage**. PDF extraction creates complete document JSON and table CSVs. The requirements page then validates and refines that document into the compact vPlan input; only this second stage selects a file for vPlan generation.
+
+### Analyse specification
+
+Header/placeholder only. Weak-language results belong to the vPlan workflow; a broader standalone analysis endpoint is not implemented.
+
+### Compare specification versions
+
+Implemented. Upload two extractor JSON versions, inspect grouped expandable changes, and download CSV, JSON, or Markdown reports.
+
+### Quality checker
+
+Implemented as a separate item under **Analyse and compare**. Upload extractor JSON and optionally its source PDF and a manually checked gold-reference JSON to calculate and download extraction-quality results.
+
+## Known pitfalls and limitations
+
+- Model output is non-deterministic. Structured schemas, deterministic cleanup, and retries reduce failures but do not prove technical correctness.
+- Test names are based on descriptions; vague descriptions produce vague names. The deterministic fallback truncates to eight words and may be less polished than a model result.
+- The requirement taxonomy is generated once from the whole specification with GPT-5.6 Terra by default, then assigned in bounded batches. It is more consistent than free-form per-batch labels but still requires engineering review.
+- Large specifications can be slow and expensive. Categorisation, vPlan, and coverage batching protect structured-output limits but do not remove model cost.
+- Parent requirement categories are capped at 12 and refined by subcategories. Oversized parents are still split, so relationships across those chunks can be missed.
+- Granularity and testability use model judgements, while most other coverage calculations are deterministic. Scores are therefore not all equally reproducible.
+- Coverage depends on exact requirement IDs. Missing or duplicate IDs can distort traceability, orphan, and mapping metrics.
+- Weak-language detection is intentionally recall-heavy and can flag harmless prose.
+- A chapter-only input can remove related context from elsewhere in the specification and should be used for testing only.
+- Cached backend file paths stored by the browser stop working if outputs are moved, deleted, or generated on another server.
+- Runtime filenames are timestamp-based. Concurrent runs in the same second may target the same filename.
+- Downloads are resolved by basename across known output folders; identical basenames in different folders can be ambiguous.
+- Version comparison works on extracted JSON, so extractor differences can look like source-specification changes and similarity matches still require engineering review.
+- PDF extraction requires selectable text and uses rule-based heading, requirement, and table detection. Image-only PDFs, unusual layouts, and unconfigured normative wording can be missed.
+- Extraction-quality scores are less authoritative without a source PDF or manually checked gold JSON. Empty expected/captured F1 sets score 100% by definition.
+- The backend writes uploads and outputs locally and has no retention policy or authentication. It is suitable for local/research use, not an exposed production service.
+- The frontend stores recent API responses in `localStorage`; it does not persist uploaded `File` objects across a page reload.
+- Usage-cost estimates rely on a hard-coded price table and can become stale when model pricing changes.
+
+## Checks
+
+```bash
+pytest
+ruff check Backend tests
+black --check Backend tests
+cd Frontend
+npm run lint
+npm run build
+```

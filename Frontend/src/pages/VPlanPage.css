@@ -290,7 +290,7 @@
     color: var(--warning);
 }
 
-.coverageBadge.coverage-blocked {
+.coverageBadge.coverage-uncovered {
     border-color: color-mix(
         in srgb,
         var(--danger) 35%,

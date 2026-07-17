@@ -12,11 +12,15 @@ export default defineConfig([
     extends: [
       js.configs.recommended,
       tseslint.configs.recommended,
-      reactHooks.configs.flat.recommended,
+      reactHooks.configs['recommended-latest'],
       reactRefresh.configs.vite,
     ],
     languageOptions: {
       globals: globals.browser,
+    },
+    rules: {
+      // Context modules intentionally export both providers and their hooks.
+      'react-refresh/only-export-components': 'off',
     },
   },
 ])

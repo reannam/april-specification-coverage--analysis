@@ -8,6 +8,10 @@ import type {
 } from "../types/workflow";
 
 type WorkflowState = {
+  extractedDocumentPath: string | null;
+  setExtractedDocumentPath: (path: string | null) => void;
+  extractedDocumentFilename: string | null;
+  setExtractedDocumentFilename: (filename: string | null) => void;
   requirementsFile: File | null;
   setRequirementsFile: (file: File | null) => void;
   requirementsData: unknown;
@@ -30,6 +34,8 @@ const AGENT_CACHE_KEY = "spec-workspace-agent-result";
 const COVERAGE_CACHE_KEY = "spec-workspace-coverage-result";
 
 const loadCached = <T,>(key: string): T | null => {
+  // Cached JSON survives page navigation; File objects intentionally do not and
+  // must be selected again after a reload when the backend path is unavailable.
   try {
     return JSON.parse(localStorage.getItem(key) ?? "null") as T | null;
   } catch {
@@ -45,6 +51,12 @@ export function WorkflowProvider({ children }: { children: ReactNode }) {
     loadCached<CoverageResponse>(COVERAGE_CACHE_KEY),
   );
 
+  const [extractedDocumentPath, setExtractedDocumentPath] = useState<string | null>(
+    null,
+  );
+  const [extractedDocumentFilename, setExtractedDocumentFilename] = useState<
+    string | null
+  >(null);
   const [requirementsFile, setRequirementsFile] = useState<File | null>(null);
   const [requirementsData, setRequirementsData] = useState<unknown>(null);
   const [agentResult, setAgentResultState] = useState<AgentResponse | null>(cachedAgent);
@@ -84,6 +96,8 @@ export function WorkflowProvider({ children }: { children: ReactNode }) {
   };
 
   const clearRun = () => {
+    setExtractedDocumentPath(null);
+    setExtractedDocumentFilename(null);
     setRequirementsFile(null);
     setRequirementsData(null);
     setAgentResult(null);
@@ -96,6 +110,10 @@ export function WorkflowProvider({ children }: { children: ReactNode }) {
   return (
     <Context.Provider
       value={{
+        extractedDocumentPath,
+        setExtractedDocumentPath,
+        extractedDocumentFilename,
+        setExtractedDocumentFilename,
         requirementsFile,
         setRequirementsFile,
         requirementsData,

@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from "react";
 
-type JsonObject = Record<string, any>;
+type JsonObject = Record<string, unknown>;
 
 type Section = {
   id: string;
@@ -62,7 +62,8 @@ function asArray<T = JsonObject>(value: unknown): T[] {
 }
 
 function getSectionId(value: JsonObject): string | undefined {
-  return value.section ?? value.source_section ?? value.section_id;
+  const section = value.section ?? value.source_section ?? value.section_id;
+  return section === undefined || section === null ? undefined : String(section);
 }
 
 function belongsToChapter(
@@ -152,19 +153,6 @@ function isLikelyExplanatoryRequirement(requirement: JsonObject): boolean {
     /\bdepicts?\b/i.test(text) ||
     /\bpoint to signals\b/i.test(text)
   );
-}
-
-function getRequirementQualityScore(requirement: JsonObject): number {
-  const text = String(requirement.text ?? "");
-  let score = 0;
-
-  if (hasNormativeLanguage(text)) score += 50;
-  if (isFigureOrTableDerivedRequirement(requirement)) score -= 40;
-  if (isLikelyExplanatoryRequirement(requirement)) score -= 30;
-  if (text.length >= 40) score += 5;
-  if (text.length >= 120) score += 5;
-
-  return score;
 }
 
 function getRequirementEvidence(requirement: JsonObject): JsonObject[] {
@@ -327,8 +315,8 @@ export function extractChapterJson(
 
   const pageNumbers = new Set(
     pages
-      .map((page) => page.page_number)
-      .filter((pageNumber) => pageNumber !== undefined),
+      .map((page) => Number(page.page_number))
+      .filter(Number.isFinite),
   );
   const selectedPageText = pages
     .map((page) => String(page.text ?? ""))
@@ -348,7 +336,7 @@ export function extractChapterJson(
 
     return (
       sectionIds.has(figureSection) ||
-      (pageNumbers.has(pageNumber) &&
+      (pageNumbers.has(Number(pageNumber)) &&
         new RegExp(`\\bFigure\\s+${escapeRegex(chapterId)}\\.`).test(caption))
     );
   });
@@ -356,7 +344,7 @@ export function extractChapterJson(
   const tables = asArray<JsonObject>(documentJson.tables).filter((table) => {
     const tableSection = getSectionId(table);
     if (belongsToChapter(tableSection, chapterId)) return true;
-    return pageNumbers.has(table.page);
+    return pageNumbers.has(Number(table.page));
   });
 
   const semanticChunks = asArray<JsonObject>(
@@ -396,9 +384,7 @@ export function extractChapterJson(
   const uniqueAcronyms = uniqueBy(acronyms, String);
 
   const chapterTitle = inferChapterTitle(documentJson, chapterId);
-  const sortedPageNumbers = [...pageNumbers].sort(
-    (a, b) => Number(a) - Number(b),
-  ) as number[];
+  const sortedPageNumbers = [...pageNumbers].sort((a, b) => a - b);
 
   return {
     document_name: documentJson.document_name,

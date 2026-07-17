@@ -128,7 +128,7 @@ textarea:focus-visible, summary:focus-visible {
 .nav-icon { display: grid; width: 30px; place-items: center; }
 .collapsed .nav-link { justify-content: center; }
 .nav-label { display: flex; min-width: 0; flex: 1; align-items: center; justify-content: space-between; gap: 8px; }
-.nav-label > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nav-label > span { overflow-wrap: anywhere; white-space: normal; font-size: .9rem; line-height: 1.2; }
 .nav-badge {
   flex: 0 0 auto;
   padding: 2px 6px;
@@ -264,6 +264,17 @@ button:disabled { opacity: .5; cursor: not-allowed; }
 .status-panel.success { background: var(--success-soft); color: var(--success); }
 .progress { height: 6px; margin-top: 12px; overflow: hidden; background: var(--border); }
 .progress span { display: block; height: 100%; background: var(--primary); }
+.progress.indeterminate span {
+  width: 35%;
+  animation: indeterminate-progress 1.25s ease-in-out infinite;
+}
+@keyframes indeterminate-progress {
+  from { transform: translateX(-110%); }
+  to { transform: translateX(320%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .progress.indeterminate span { animation-duration: 3s; }
+}
 
 .toolbar { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
 .toolbar select, .toolbar input, .toolbar button, .field select,
@@ -302,6 +313,22 @@ button:disabled { opacity: .5; cursor: not-allowed; }
 .metric-card { padding: 18px; border: 1px solid var(--border); border-radius: 4px; background: var(--surface); }
 .metric-card span { display: block; color: var(--muted); text-transform: none; }
 .metric-card strong { display: block; margin-top: 8px; font-size: 1.45rem; }
+.metric-link { color: inherit; text-decoration: none; transition: border-color .15s ease, transform .15s ease; }
+.metric-link:hover { border-color: var(--primary); transform: translateY(-1px); }
+.metric-link small { display: block; margin-top: 12px; color: var(--primary); }
+.back-link { color: var(--primary); font-weight: 600; text-decoration: none; }
+.metric-explanation { display: grid; grid-template-columns: minmax(140px, .4fr) 1fr; gap: 24px; }
+.metric-explanation > div { display: flex; flex-direction: column; gap: 8px; }
+.metric-explanation span { color: var(--faint); font-size: .72rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.metric-explanation strong { color: var(--primary); font-size: 2rem; }
+.metric-explanation code { line-height: 1.6; white-space: normal; }
+.compact-panel { padding: 0; overflow: hidden; }
+.coverage-record { padding: 20px 24px; border-top: 1px solid var(--border); }
+.coverage-record-details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 24px; margin: 0; }
+.coverage-record-details .coverage-record-details { grid-template-columns: 1fr; margin-top: 8px; }
+.coverage-record-details dt { color: var(--faint); font-size: .7rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+.coverage-record-details dd { margin: 5px 0 0; color: var(--muted); line-height: 1.55; overflow-wrap: anywhere; }
+.coverage-record-details ul { margin: 6px 0 0; padding-left: 20px; }
 .report-section { display: flex; flex-direction: column; gap: 14px; }
 .table-panel h2 { margin-top: 0; }
 .table-scroll { overflow-x: auto; }
@@ -365,9 +392,19 @@ mark { padding: 1px 2px; background: #ffe38a; color: #2a2100; }
 .empty-state p, .notice p { max-width: 700px; margin: 8px auto; color: var(--muted); line-height: 1.6; }
 .pill { padding: 6px 9px; border: 1px solid var(--border); border-radius: 3px; color: var(--muted); }
 .pill.success { background: var(--success-soft); color: var(--success); }
+.pill.danger { background: var(--danger-soft); color: var(--danger); }
 .field { display: flex; max-width: 440px; flex-direction: column; gap: 8px; margin: 20px 0; }
 .field > span { font-weight: 600; }
+.field input {
+  min-height: 42px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+  color: var(--text);
+}
 .form-error, .error-text { color: var(--danger); }
+.warning-notice { padding: 15px 18px; border: 1px solid #d69a1b; border-left: 4px solid #d69a1b; border-radius: 4px; background: color-mix(in srgb, #f4b942 13%, var(--surface)); line-height: 1.55; }
 
 .chapter-extraction-panel { display: flex; flex-direction: column; gap: 20px; }
 .selected-chapter-card { display: grid; gap: 10px; padding: 20px; border: 1px solid var(--border); border-left: 4px solid var(--primary); border-radius: 4px; background: var(--surface); }
@@ -392,6 +429,9 @@ mark { padding: 1px 2px; background: #ffe38a; color: #2a2100; }
 .category-selection { padding: 18px; border: 1px solid var(--border); border-radius: 4px; background: var(--subtle); }
 .category-selection h3 { margin: 0; }
 .category-selection header p { margin: 5px 0 14px; color: var(--muted); }
+.category-groups { display: grid; gap: 14px; }
+.category-group { padding: 12px; border: 1px solid var(--border); border-radius: 4px; background: var(--surface); }
+.category-group h4 { margin: 0 0 9px; color: var(--text); }
 .category-options { display: flex; flex-wrap: wrap; gap: 8px; }
 .category-option { display: flex; align-items: center; gap: 7px; padding: 8px 11px; border: 1px solid var(--border2); border-radius: 4px; background: var(--surface); color: var(--text); cursor: pointer; }
 .category-option:hover { border-color: var(--primary); }
@@ -417,7 +457,7 @@ mark { padding: 1px 2px; background: #ffe38a; color: #2a2100; }
   .page-content { padding: 26px 18px 50px; }
   .page-header, .section-heading, .chapter-preview-header { align-items: stretch; flex-direction: column; }
   .hero { padding: 28px; }
-  .upload-grid, .record-card dl, .test-details, .chart-grid, .readable-details { grid-template-columns: 1fr; }
+  .upload-grid, .record-card dl, .test-details, .chart-grid, .readable-details, .coverage-record-details, .metric-explanation { grid-template-columns: 1fr; }
   .test-details { padding: 22px 28px 26px 58px; }
   .test-details .wide, .readable-details .wide { grid-column: auto; }
   .test-summary { grid-template-columns: 28px 1fr; }

@@ -1,0 +1,45 @@
+# Coverage status aliases accepted when reading generated or manually supplied JSON.
+# Output writers still emit one canonical status for each group.
+[covered_statuses]
+covered
+fully covered
+fully_covered
+
+[partially_covered_statuses]
+partially covered
+partially_covered
+
+[ambiguous_statuses]
+ambiguous
+ambiguous / not yet plannable
+
+[not_covered_statuses]
+uncovered
+not covered
+not_covered
+
+# Any populated field below counts as explicit traceability evidence.
+[traceability_fields]
+requirement_id
+source_requirement_id
+source_section
+section
+section_id
+table_id
+figure_id
+rule_id
+page
+page_number
+paragraph
+source_reference
+source_refs
+traceability
+
+# Patterns find source references embedded in free-text traceability values.
+# Keep each entry on one line in name=regular-expression form.
+[regex_patterns]
+section=\b[A-Z]\d+(?:\.\d+)*\b
+requirement=\bREQ_[A-Z0-9_]+\b
+table=\bTABLE_[A-Z0-9_]+\b|\bTable\s+[A-Z]?\d+(?:\.\d+)*\b
+figure=\bFIG_[A-Z0-9_]+\b|\bFigure\s+[A-Z]?\d+(?:\.\d+)*\b
+page=\bpage\s+\d+\b

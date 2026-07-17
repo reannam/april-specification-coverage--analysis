@@ -5,7 +5,7 @@ export default function AmbiguitiesPage() {
     <div className="stack-lg">
       <PageHeader
         eyebrow="Review"
-        title="Analyse specification"
+        title="Check for Inconsistencies"
         description="Review broader specification quality findings outside the core vPlan workflow."
       />
 

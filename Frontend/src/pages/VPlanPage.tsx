@@ -13,13 +13,30 @@ import { cleanSourceFilename } from "../utils/formatters";
 const formatLabel = (value: string) =>
   value.replaceAll("_", " ").replace(/\b\w/g, (character) => character.toUpperCase());
 
+const MAX_PRIORITY_SELECTIONS = 12;
+const SELECTION_SEPARATOR = "::";
+
+type PriorityCategoryGroup = {
+  parent: string;
+  options: Array<{ label: string; value: string }>;
+};
+
 const normaliseVPlan = (document: VPlanDocument): VPlanDocument => ({
   ...document,
-  feature_list: (document.feature_list ?? []).map((test) => ({
-    ...test,
-    category: test.category || "Uncategorised",
-    priority: test.priority ?? 3,
-  })),
+  feature_list: (document.feature_list ?? []).map((test) => {
+    const isUncovered = test.coverage === "uncovered";
+
+    return {
+      ...test,
+      category: isUncovered ? "Uncategorised" : test.category || "Uncategorised",
+      priority: test.priority ?? 3,
+      coverage: test.coverage,
+      test_name: isUncovered ? "" : test.test_name,
+      test_description: isUncovered ? "" : test.test_description,
+      test_steps: isUncovered ? [] : test.test_steps,
+      expected_results: isUncovered ? [] : test.expected_results,
+    };
+  }),
 });
 
 const readMetadataString = (
@@ -96,7 +113,7 @@ export default function VPlanPage() {
     }
   }, [document, workflow]);
 
-  const tests = document?.feature_list ?? [];
+  const tests = useMemo(() => document?.feature_list ?? [], [document]);
 
   const displayName = document
     ? getDisplayName(document)
@@ -114,6 +131,36 @@ export default function VPlanPage() {
       ),
     [tests],
   );
+
+  const priorityCategoryGroups = useMemo<PriorityCategoryGroup[]>(() => {
+    const groups = new Map<string, Map<string, string>>();
+
+    tests.forEach((test) => {
+      const hasHierarchy =
+        test.requirement_category &&
+        test.requirement_category !== "Uncategorised" &&
+        test.requirement_subcategory;
+      const parent = hasHierarchy
+        ? test.requirement_category!
+        : "Legacy test categories";
+      const label = hasHierarchy ? test.requirement_subcategory! : test.category;
+      const value = hasHierarchy
+        ? `${parent}${SELECTION_SEPARATOR}${label}`
+        : label;
+
+      if (!groups.has(parent)) groups.set(parent, new Map());
+      groups.get(parent)!.set(value, label);
+    });
+
+    return [...groups.entries()]
+      .sort(([first], [second]) => first.localeCompare(second))
+      .map(([parent, options]) => ({
+        parent,
+        options: [...options.entries()]
+          .map(([value, label]) => ({ label, value }))
+          .sort((first, second) => first.label.localeCompare(second.label)),
+      }));
+  }, [tests]);
 
   const filteredTests = useMemo(() => {
     const normalisedQuery = query.trim().toLowerCase();
@@ -150,7 +197,8 @@ export default function VPlanPage() {
   const toggleExpanded = (testId: string) => {
     setExpandedTests((current) => {
       const next = new Set(current);
-      next.has(testId) ? next.delete(testId) : next.add(testId);
+      if (next.has(testId)) next.delete(testId);
+      else next.add(testId);
       return next;
     });
   };
@@ -192,8 +240,13 @@ export default function VPlanPage() {
       return;
     }
 
-    if (selectedCategoryCount < 2 || selectedCategoryCount > 3) {
-      setPrioritiseError("Select a total of two or three categories.");
+    if (
+      selectedCategoryCount < 2 ||
+      selectedCategoryCount > MAX_PRIORITY_SELECTIONS
+    ) {
+      setPrioritiseError(
+        `Select between 2 and ${MAX_PRIORITY_SELECTIONS} categories or subcategories.`,
+      );
       return;
     }
 
@@ -296,7 +349,7 @@ export default function VPlanPage() {
           <option value="all">All coverage</option>
           <option value="covered">Covered</option>
           <option value="partially_covered">Partially covered</option>
-          <option value="blocked">Blocked</option>
+          <option value="uncovered">Uncovered</option>
         </select>
 
         <select value={priorityFilter} onChange={(event) => setPriorityFilter(event.target.value)}>
@@ -359,7 +412,8 @@ export default function VPlanPage() {
                 <p className="eyebrow">vPlan ordering</p>
                 <h2 id="prioritise-title">Prioritise vPlan</h2>
                 <p>
-                  Select two or three categories in total. Unselected categories will receive Priority 3.
+                  Select 2–{MAX_PRIORITY_SELECTIONS} subcategories across the major
+                  categories. Unselected areas will receive Priority 3.
                 </p>
               </div>
               <button
@@ -377,7 +431,7 @@ export default function VPlanPage() {
               <CategorySelection
                 title="Priority 1 — highest"
                 description="Tests in these categories will be surfaced first."
-                categories={categories}
+                groups={priorityCategoryGroups}
                 selected={priorityOneCategories}
                 otherSelected={priorityTwoCategories}
                 onToggle={(category) => toggleCategory(category, "priority-one")}
@@ -386,7 +440,7 @@ export default function VPlanPage() {
               <CategorySelection
                 title="Priority 2"
                 description="Tests in these categories will follow Priority 1."
-                categories={categories}
+                groups={priorityCategoryGroups}
                 selected={priorityTwoCategories}
                 otherSelected={priorityOneCategories}
                 onToggle={(category) => toggleCategory(category, "priority-two")}
@@ -399,7 +453,8 @@ export default function VPlanPage() {
             </div>
 
             <div className="selection-count">
-              {selectedCategoryCount} of 2–3 categories selected
+              {selectedCategoryCount} of 2–{MAX_PRIORITY_SELECTIONS} categories or
+              subcategories selected
             </div>
 
             {prioritiseError && <p className="modal-error">{prioritiseError}</p>}
@@ -419,7 +474,7 @@ export default function VPlanPage() {
                 disabled={
                   prioritising ||
                   selectedCategoryCount < 2 ||
-                  selectedCategoryCount > 3 ||
+                  selectedCategoryCount > MAX_PRIORITY_SELECTIONS ||
                   priorityOneCategories.length === 0
                 }
                 onClick={applyPriorities}
@@ -437,14 +492,14 @@ export default function VPlanPage() {
 function CategorySelection({
   title,
   description,
-  categories,
+  groups,
   selected,
   otherSelected,
   onToggle,
 }: {
   title: string;
   description: string;
-  categories: string[];
+  groups: PriorityCategoryGroup[];
   selected: string[];
   otherSelected: string[];
   onToggle: (category: string) => void;
@@ -456,29 +511,36 @@ function CategorySelection({
         <p>{description}</p>
       </header>
 
-      <div className="category-options">
-        {categories.map((category) => {
-          const isSelected = selected.includes(category);
-          const isSelectedElsewhere = otherSelected.includes(category);
+      <div className="category-groups">
+        {groups.map((group) => (
+          <section className="category-group" key={group.parent}>
+            <h4>{group.parent}</h4>
+            <div className="category-options">
+              {group.options.map((option) => {
+                const isSelected = selected.includes(option.value);
+                const isSelectedElsewhere = otherSelected.includes(option.value);
 
-          return (
-            <button
-              className={`category-option ${isSelected ? "selected" : ""}`}
-              type="button"
-              aria-pressed={isSelected}
-              key={category}
-              onClick={() => onToggle(category)}
-              title={
-                isSelectedElsewhere
-                  ? `${category} is currently assigned to the other priority group`
-                  : undefined
-              }
-            >
-              <span>{category}</span>
-              {isSelected && <strong>✓</strong>}
-            </button>
-          );
-        })}
+                return (
+                  <button
+                    className={`category-option ${isSelected ? "selected" : ""}`}
+                    type="button"
+                    aria-pressed={isSelected}
+                    key={option.value}
+                    onClick={() => onToggle(option.value)}
+                    title={
+                      isSelectedElsewhere
+                        ? `${option.label} is currently assigned to the other priority group`
+                        : undefined
+                    }
+                  >
+                    <span>{option.label}</span>
+                    {isSelected && <strong>✓</strong>}
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+        ))}
       </div>
     </section>
   );
@@ -493,6 +555,11 @@ function TestRow({
   expanded: boolean;
   toggle: () => void;
 }) {
+  const displayName =
+    test.coverage === "uncovered"
+      ? "Uncovered requirement"
+      : test.test_name || test.test_id;
+
   return (
     <article className={`test-row ${expanded ? "expanded" : ""}`}>
       <button className="test-summary" onClick={toggle} type="button">
@@ -501,8 +568,9 @@ function TestRow({
         </span>
 
         <span>
-          <strong>{test.test_id}</strong>
+          <strong>{displayName}</strong>
           <small>
+            {test.test_name && <>{test.test_id}{" · "}</>}
             <b>{formatLabel(test.scenario_type)}</b>
             {" · "}
             {test.category}
@@ -519,6 +587,30 @@ function TestRow({
       {expanded && (
         <dl className="test-details">
           <Field label="Related requirement" value={test.requirement_id} />
+          <Field
+            label="Test name"
+            value={
+              test.coverage === "uncovered"
+                ? "Not generated — requirement is uncovered"
+                : test.test_name || test.test_id
+            }
+          />
+          <Field
+            label="Requirement category"
+            value={test.requirement_category || "Uncategorised"}
+          />
+          <Field
+            label="Requirement subcategory"
+            value={test.requirement_subcategory || "Uncategorised"}
+          />
+          <Field
+            label="Supporting requirements"
+            value={
+              test.supporting_requirement_ids?.length
+                ? test.supporting_requirement_ids.join(", ")
+                : "None"
+            }
+          />
           <Field label="Category" value={test.category} />
           <Field label="Priority" value={`Priority ${test.priority}`} />
           <Field label="Scenario type" value={formatLabel(test.scenario_type)} />

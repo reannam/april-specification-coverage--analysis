@@ -131,6 +131,12 @@ export default function ExtractChaptersPage() {
         description="Choose a broad chapter such as A2. All of its subsections are included, and the extracted requirement text can be reviewed before download."
       />
 
+      <section className="warning-notice" role="alert">
+        <strong>Warning:</strong> This tool is for testing purposes only. Cutting the
+        specification to just one chapter can remove key related context from other
+        chapters.
+      </section>
+
       <section className="panel chapter-extraction-panel">
         <FileUpload
           label="Extracted specification"

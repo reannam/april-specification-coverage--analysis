@@ -39,3 +39,6 @@ dist-ssr
 *.sw?
 
 /.pytest_cache/
+/.ruff_cache__/
+.ruff_cache/
+Backend/.ruff_cache/

@@ -1,5 +1,6 @@
 from pathlib import Path
 from urllib.parse import urlparse
+from datetime import datetime
 import shutil
 import uuid
 import json
@@ -7,13 +8,26 @@ import json
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
+from starlette.concurrency import run_in_threadpool
 
-from Backend.config import UPLOAD_DIR, OUTPUT_DIR
-from Backend.pre_processing.agent_scheduler import build_workflow
-from Backend.coverage.coverage_workflow import run_coverage_workflow
-from Backend.post_processing.prioritise_vplan import (
+from Backend.config import (
+    CORS_ORIGINS,
+    DOWNLOAD_SEARCH_DIRS,
+    EXTRACTION_OUTPUT_DIR,
+    PRIORITISED_VPLAN_DIR,
+    PROJECT_ROOT,
+    QUALITY_REPORT_DIR,
+    UPLOAD_DIR,
+    USAGE_CHARTS_DIR,
+)
+from Backend.vPlan.pre_processing.agent_scheduler import build_workflow
+from Backend.Coverage.coverage_workflow import run_coverage_workflow
+from Backend.vPlan.post_processing.prioritise_vplan import (
     prioritise_vplan,
 )
+from Backend.AnalyseAndCompareSpecs.comparator import run_comparison
+from Backend.AnalyseAndCompareSpecs.quality_check import run_quality_check
+from Backend.Extraction import parse_pdf, write_requirements_file
 
 app = FastAPI(
     title="Specification Coverage Analysis API",
@@ -27,10 +41,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-    ],
+    allow_origins=CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -46,8 +57,6 @@ def health_check():
 
 
 def save_and_validate_uploaded_json(uploaded_file: UploadFile) -> Path:
-    UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
-
     if not uploaded_file.filename:
         raise HTTPException(status_code=400, detail="No file uploaded.")
 
@@ -66,7 +75,7 @@ def save_and_validate_uploaded_json(uploaded_file: UploadFile) -> Path:
 
     try:
         with uploaded_file_path.open("r", encoding="utf-8") as file:
-            json.load(file)
+            uploaded_data = json.load(file)
     except json.JSONDecodeError as error:
         uploaded_file_path.unlink(missing_ok=True)
         raise HTTPException(
@@ -74,10 +83,33 @@ def save_and_validate_uploaded_json(uploaded_file: UploadFile) -> Path:
             detail=f"Uploaded file is not valid JSON: {error}",
         ) from error
 
+    if not isinstance(uploaded_data, dict):
+        uploaded_file_path.unlink(missing_ok=True)
+        raise HTTPException(
+            status_code=400,
+            detail="Uploaded JSON must contain an object at the top level.",
+        )
+
     return uploaded_file_path
 
 
+def save_uploaded_pdf(uploaded_file: UploadFile) -> Path:
+    """Persist an optional source PDF used by the extraction-quality checker."""
+
+    if not uploaded_file.filename:
+        raise HTTPException(status_code=400, detail="No PDF file uploaded.")
+    if Path(uploaded_file.filename).suffix.casefold() != ".pdf":
+        raise HTTPException(status_code=400, detail="Source document must be a PDF.")
+
+    destination = UPLOAD_DIR / f"{uuid.uuid4().hex}_{Path(uploaded_file.filename).name}"
+    with destination.open("wb") as buffer:
+        shutil.copyfileobj(uploaded_file.file, buffer)
+    return destination
+
+
 def normalise_existing_output_path(path_value: str) -> Path:
+    """Resolve API paths from current and legacy frontend response formats."""
+
     cleaned = path_value.strip().replace("\\", "/")
     cleaned = cleaned.removeprefix("./")
 
@@ -87,57 +119,55 @@ def normalise_existing_output_path(path_value: str) -> Path:
     if cleaned.startswith("/api/download/"):
         filename = Path(cleaned).name
         return resolve_downloadable_file(filename)
-
-    if cleaned.startswith("api/download/"):
+    elif cleaned.startswith("api/download/"):
         filename = Path(cleaned).name
         return resolve_downloadable_file(filename)
+    else:
+        if cleaned.startswith("/outputs/"):
+            candidate = PROJECT_ROOT / cleaned.removeprefix("/")
+        elif cleaned.startswith("outputs/"):
+            candidate = PROJECT_ROOT / cleaned
+        elif cleaned.startswith("/backend/outputs/"):
+            candidate = PROJECT_ROOT / cleaned.removeprefix("/backend/")
+        elif cleaned.startswith("backend/outputs/"):
+            candidate = PROJECT_ROOT / cleaned.removeprefix("backend/")
+        else:
+            path = Path(cleaned)
+            candidate = path if path.is_absolute() else PROJECT_ROOT / path
 
-    if cleaned.startswith("/outputs/"):
-        return OUTPUT_DIR.parent / cleaned.removeprefix("/")
+        resolved_path = candidate.resolve()
 
-    if cleaned.startswith("outputs/"):
-        return OUTPUT_DIR.parent / cleaned
+    # Existing-path form values are not general filesystem access. They may
+    # identify only files generated or uploaded within this project.
+    if not resolved_path.is_relative_to(PROJECT_ROOT):
+        raise HTTPException(
+            status_code=400,
+            detail="Input path must remain within the project runtime directory.",
+        )
 
-    if cleaned.startswith("/backend/outputs/"):
-        return OUTPUT_DIR.parent / cleaned.removeprefix("/backend/")
-
-    if cleaned.startswith("backend/outputs/"):
-        return OUTPUT_DIR.parent / cleaned.removeprefix("backend/")
-
-    path = Path(cleaned)
-
-    if path.is_absolute():
-        return path
-
-    return OUTPUT_DIR.parent / path
+    return resolved_path
 
 
 def resolve_downloadable_file(filename: str) -> Path:
-    safe_filename = Path(filename).name
+    """Resolve one generated artifact by basename across configured folders."""
 
-    possible_paths = [
-        OUTPUT_DIR / safe_filename,
-        OUTPUT_DIR / "edge_cases" / safe_filename,
-        OUTPUT_DIR / "langsmith_logs" / safe_filename,
-        OUTPUT_DIR / "traceability" / safe_filename,
-        OUTPUT_DIR / "requirement_test_links" / safe_filename,
-        OUTPUT_DIR / "blocked_tests" / safe_filename,
-        OUTPUT_DIR / "coverage_status" / safe_filename,
-        OUTPUT_DIR / "final_coverage_report" / safe_filename,
-        OUTPUT_DIR / "coverage_summary" / safe_filename,
-        OUTPUT_DIR / "usage_charts" / safe_filename,
-        OUTPUT_DIR / "weak_words" / safe_filename,
-        OUTPUT_DIR / "vplans" / safe_filename,
-        OUTPUT_DIR / "coverage_upload_cache" / safe_filename,
-        OUTPUT_DIR / "prioritised_vplans" / safe_filename,
+    safe_filename = Path(filename).name
+    matches = [
+        directory / safe_filename
+        for directory in DOWNLOAD_SEARCH_DIRS
+        if (directory / safe_filename).is_file()
     ]
 
-    file_path = next((path for path in possible_paths if path.exists()), None)
-
-    if file_path is None:
+    if not matches:
         raise HTTPException(status_code=404, detail=f"File not found: {safe_filename}")
 
-    return file_path
+    if len(matches) > 1:
+        raise HTTPException(
+            status_code=409,
+            detail=f"Filename is ambiguous across output folders: {safe_filename}",
+        )
+
+    return matches[0]
 
 
 async def resolve_coverage_input(
@@ -180,6 +210,96 @@ def make_filename(file_path: str | Path | None) -> str | None:
     return Path(file_path).name
 
 
+def extraction_summary(document: dict) -> dict:
+    """Return counts useful to reviewers without echoing every source page."""
+
+    return {
+        "document_name": document.get("document_name"),
+        "total_pages": document.get("total_pages", 0),
+        "sections": len(document.get("sections", [])),
+        "requirements": len(document.get("requirements", [])),
+        "tables": len(document.get("tables", [])),
+        "figures": len(document.get("figures", [])),
+        "notes": len(document.get("notes", [])),
+        "acronyms": len(document.get("acronyms", [])),
+        "cross_references": len(document.get("cross_references", [])),
+        "semantic_chunks": len(document.get("semantic_chunks", [])),
+    }
+
+
+@app.post("/api/extract-pdf")
+async def extract_pdf(source_pdf: UploadFile = File(...)):
+    """Extract one PDF into a complete structured-document artifact."""
+
+    pdf_path: Path | None = None
+    try:
+        original_name = Path(source_pdf.filename or "specification.pdf").name
+        pdf_path = save_uploaded_pdf(source_pdf)
+        run_id = pdf_path.stem
+        result = await run_in_threadpool(
+            lambda: parse_pdf(
+                pdf_path,
+                EXTRACTION_OUTPUT_DIR,
+                output_stem=run_id,
+                document_name=original_name,
+            )
+        )
+        document = result["document"]
+        return {
+            "message": "PDF extraction completed successfully.",
+            "summary": extraction_summary(document),
+            "document_file": str(result["document_path"]),
+            "document_filename": result["document_path"].name,
+            "document_download_url": make_download_url(result["document_path"]),
+        }
+    except HTTPException:
+        raise
+    except Exception as error:
+        raise HTTPException(
+            status_code=500,
+            detail=f"PDF extraction failed: {error}",
+        ) from error
+    finally:
+        source_pdf.file.close()
+
+
+@app.post("/api/extract-requirements")
+async def extract_requirements(
+    extracted_json: UploadFile | None = File(None),
+    extracted_path: str | None = Form(None),
+):
+    """Create a vPlan-ready requirements file from an extracted document."""
+
+    try:
+        source_path = await resolve_coverage_input(
+            label="complete extracted document",
+            existing_path=extracted_path,
+            uploaded_file=extracted_json,
+        )
+        result = await run_in_threadpool(write_requirements_file, source_path)
+        requirements_document = result["document"]
+
+        return {
+            "message": "Requirements extraction completed successfully.",
+            "requirements_document": requirements_document,
+            "requirement_count": len(requirements_document["requirements"]),
+            "requirements_filename": result["output_path"].name,
+            "requirements_download_url": make_download_url(result["output_path"]),
+        }
+    except HTTPException:
+        raise
+    except ValueError as error:
+        raise HTTPException(status_code=400, detail=str(error)) from error
+    except Exception as error:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Requirements extraction failed: {error}",
+        ) from error
+    finally:
+        if extracted_json:
+            extracted_json.file.close()
+
+
 @app.post("/api/run-agents")
 async def run_agents(requirements_file: UploadFile = File(...)):
     try:
@@ -192,7 +312,7 @@ async def run_agents(requirements_file: UploadFile = File(...)):
         langsmith_log_file = result.get("langsmith_log_file")
         requirement_test_links_file = result.get("requirement_test_links_file")
         preprocessed_requirements_file = result.get("preprocessed_requirements_file")
-        blocked_test_report_file = result.get("blocked_test_report_file")
+        uncovered_test_report_file = result.get("uncovered_test_report_file")
         weak_words_file = result.get("weak_words_file") or result.get(
             "weak_words_output_file"
         )
@@ -306,10 +426,10 @@ async def run_agents(requirements_file: UploadFile = File(...)):
             "preprocessed_requirements_filename": make_filename(
                 preprocessed_requirements_file
             ),
-            "blocked_test_report_download_url": make_download_url(
-                blocked_test_report_file
+            "uncovered_test_report_download_url": make_download_url(
+                uncovered_test_report_file
             ),
-            "blocked_test_report_filename": make_filename(blocked_test_report_file),
+            "uncovered_test_report_filename": make_filename(uncovered_test_report_file),
             "requirements_file": str(uploaded_file_path),
         }
 
@@ -450,6 +570,22 @@ async def run_coverage(
             "coverage_status_filename": make_filename(coverage_status_file),
             "coverage_summary": coverage_summary,
             "coverage_percentages": coverage_percentages,
+            "coverage_details": {
+                "coverage_status": result.get("coverage_status_result", {}),
+                "requirement_mapping": result.get("requirement_mapping_result", {}),
+                "weighted_coverage": result.get("full_vs_partial_result", {}),
+                "traceability": result.get("traceability_result", {}),
+                "ambiguity_uncovered": result.get("ambiguity_uncovered_result", {}),
+                "orphan_rate": result.get("orphan_rate_result", {}),
+                "granularity_adequacy": granularity_result,
+                "testability": final_report.get("supporting_metrics", {}).get(
+                    "testability",
+                    {},
+                ),
+                "model_testability": result.get("testability_result", {}),
+                "gap_report": final_report.get("gap_report", []),
+                "ambiguity_report": final_report.get("ambiguity_report", []),
+            },
             "granularity_result": granularity_result,
             "coverage_output_files": {
                 key: {
@@ -500,6 +636,92 @@ async def run_coverage(
                 uploaded_file.file.close()
 
 
+@app.post("/api/compare-specifications")
+async def compare_specifications(
+    old_specification: UploadFile = File(...),
+    new_specification: UploadFile = File(...),
+):
+    """Compare two extractor JSON documents and return reviewer-ready changes."""
+
+    try:
+        old_path = save_and_validate_uploaded_json(old_specification)
+        new_path = save_and_validate_uploaded_json(new_specification)
+        result = await run_in_threadpool(run_comparison, old_path, new_path)
+
+        return {
+            "message": "Specification comparison completed successfully.",
+            "comparison": result["report"],
+            "output_files": {
+                key: {
+                    "filename": Path(path).name,
+                    "download_url": make_download_url(path),
+                }
+                for key, path in result["output_files"].items()
+            },
+        }
+    except HTTPException:
+        raise
+    except Exception as error:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Specification comparison failed: {error}",
+        ) from error
+    finally:
+        old_specification.file.close()
+        new_specification.file.close()
+
+
+@app.post("/api/check-specification-quality")
+async def check_specification_quality(
+    extracted_json: UploadFile = File(...),
+    source_pdf: UploadFile | None = File(None),
+    gold_json: UploadFile | None = File(None),
+    threshold: float = Form(95.0),
+):
+    """Score completeness, accuracy, and table/figure capture quality."""
+
+    try:
+        extracted_path = save_and_validate_uploaded_json(extracted_json)
+        pdf_path = save_uploaded_pdf(source_pdf) if source_pdf else None
+        gold_path = save_and_validate_uploaded_json(gold_json) if gold_json else None
+
+        report = await run_in_threadpool(
+            lambda: run_quality_check(
+                extracted_path,
+                pdf_path=pdf_path,
+                gold_json_path=gold_path,
+                threshold=threshold,
+            )
+        )
+
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
+        report_path = QUALITY_REPORT_DIR / f"quality_report_{timestamp}.json"
+        with report_path.open("w", encoding="utf-8") as report_file:
+            json.dump(report, report_file, indent=2, ensure_ascii=False)
+
+        return {
+            "message": "Specification quality check completed successfully.",
+            "quality_report": report,
+            "report_filename": report_path.name,
+            "report_download_url": make_download_url(report_path),
+        }
+    except HTTPException:
+        raise
+    except ValueError as error:
+        raise HTTPException(status_code=400, detail=str(error)) from error
+    except Exception as error:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Specification quality check failed: {error}",
+        ) from error
+    finally:
+        extracted_json.file.close()
+        if source_pdf:
+            source_pdf.file.close()
+        if gold_json:
+            gold_json.file.close()
+
+
 @app.post("/api/prioritise-vplan")
 async def prioritise_vplan_endpoint(
     vplan_file: str | None = Form(None),
@@ -510,9 +732,11 @@ async def prioritise_vplan_endpoint(
     """
     Applies deterministic priorities to an existing categorised vPlan.
 
-    The category selections are supplied as JSON arrays:
-    - priority_1_categories: highest-priority categories
-    - priority_2_categories: medium-priority categories
+    The selections are supplied as JSON arrays. Current vPlans use
+    ``Parent::Subcategory`` selectors; legacy flat test-category values remain
+    readable:
+    - priority_1_categories: highest-priority areas
+    - priority_2_categories: medium-priority areas
 
     All remaining categories receive Priority 3.
     """
@@ -548,17 +772,11 @@ async def prioritise_vplan_endpoint(
         priority_one = [str(category) for category in priority_one]
         priority_two = [str(category) for category in priority_two]
 
-        prioritised_output_dir = OUTPUT_DIR / "prioritised_vplans"
-        prioritised_output_dir.mkdir(
-            parents=True,
-            exist_ok=True,
-        )
-
         output_path = prioritise_vplan(
             vplan_file=vplan_path,
             priority_1_categories=priority_one,
             priority_2_categories=priority_two,
-            output_dir=prioritised_output_dir,
+            output_dir=PRIORITISED_VPLAN_DIR,
         )
 
         with output_path.open("r", encoding="utf-8") as file:
@@ -600,6 +818,8 @@ def download_file(filename: str):
         media_type = "text/csv"
     elif file_path.suffix == ".png":
         media_type = "image/png"
+    elif file_path.suffix == ".md":
+        media_type = "text/markdown"
     else:
         media_type = "application/json"
 
@@ -613,7 +833,7 @@ def download_file(filename: str):
 @app.get("/api/usage-chart/{filename}")
 def get_usage_chart(filename: str):
     safe_filename = Path(filename).name
-    file_path = OUTPUT_DIR / "usage_charts" / safe_filename
+    file_path = USAGE_CHARTS_DIR / safe_filename
 
     if not file_path.exists():
         raise HTTPException(status_code=404, detail="Usage chart not found.")

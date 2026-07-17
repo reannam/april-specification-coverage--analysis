@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 import DownloadCard from "../components/common/DownloadCard";
 import FileUpload from "../components/common/FileUpload";
@@ -118,6 +119,8 @@ export default function CoveragePage() {
 
         setStatus("processing");
         setError("");
+        // Do not display a previous successful result beneath a failed rerun.
+        workflow.setCoverageResult(null);
 
         try {
             const formData = new FormData();
@@ -321,9 +324,10 @@ export default function CoveragePage() {
                         {Object.entries(
                             result.coverage_summary ?? {},
                         ).map(([key, value]) => (
-                            <div
-                                className="metric-card"
+                            <Link
+                                className="metric-card metric-link"
                                 key={key}
+                                to={`/verification/coverage/${key}`}
                             >
                                 <span>
                                     {humaniseLabel(key)}
@@ -332,7 +336,8 @@ export default function CoveragePage() {
                                 <strong>
                                     {value ?? "—"}
                                 </strong>
-                            </div>
+                                <small>View calculation →</small>
+                            </Link>
                         ))}
                     </div>
 
@@ -341,9 +346,10 @@ export default function CoveragePage() {
                             result.coverage_percentages ??
                                 {},
                         ).map(([key, value]) => (
-                            <div
-                                className="metric-card"
+                            <Link
+                                className="metric-card metric-link"
                                 key={key}
+                                to={`/verification/coverage/${key}`}
                             >
                                 <span>
                                     {humaniseLabel(key)}
@@ -352,7 +358,8 @@ export default function CoveragePage() {
                                 <strong>
                                     {formatPercentage(value)}
                                 </strong>
-                            </div>
+                                <small>View calculation →</small>
+                            </Link>
                         ))}
                     </div>
 

@@ -4,7 +4,8 @@ import { useTheme } from "../../context/ThemeContext";
 
 const names:Record<string,string> = {
   "/":"Home","/prepare/pdf":"Extract from PDF","/prepare/requirements":"Extract requirements","/prepare/chapters":"Extract chapters",
-  "/review/inconsistencies":"Compare specification versions","/review/ambiguities":"Analyse specification",
+  "/review/inconsistencies":"Compare specification versions","/review/ambiguities":"Check for Inconsistencies",
+  "/review/quality":"Quality checker",
   "/verification/generate":"Generate vPlan","/verification/vplan":"vPlan","/verification/edge-cases":"Edge cases",
   "/verification/weak-language":"Weak language","/verification/coverage":"Coverage","/reports/metrics":"Usage and cost"
 };

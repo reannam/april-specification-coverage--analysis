@@ -1,8 +1,4 @@
-import {
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import FileUpload from "../components/common/FileUpload";
@@ -29,25 +25,6 @@ export default function GenerateVPlanPage() {
   >("idle");
 
   const [error, setError] = useState("");
-  const [progress, setProgress] = useState(0);
-
-  const timer = useRef<number | null>(null);
-
-  useEffect(() => {
-    return () => {
-      if (timer.current !== null) {
-        window.clearInterval(timer.current);
-      }
-    };
-  }, []);
-
-  const stopProgressTimer = () => {
-    if (timer.current !== null) {
-      window.clearInterval(timer.current);
-      timer.current = null;
-    }
-  };
-
   const run = async () => {
     if (!workflow.requirementsFile) {
       setStatus("error");
@@ -58,19 +35,7 @@ export default function GenerateVPlanPage() {
     }
 
     setStatus("processing");
-    setProgress(6);
     setError("");
-
-    timer.current = window.setInterval(() => {
-      setProgress((current) =>
-        Math.min(
-          92,
-          current +
-            Math.floor(Math.random() * 7) +
-            2,
-        ),
-      );
-    }, 700);
 
     try {
       const formData = new FormData();
@@ -137,13 +102,10 @@ export default function GenerateVPlanPage() {
 
       workflow.setWeakLanguage(weakLanguage);
 
-      stopProgressTimer();
-      setProgress(100);
       setStatus("idle");
 
       navigate("/verification/vplan");
     } catch (requestError) {
-      stopProgressTimer();
       setStatus("error");
 
       setError(
@@ -185,7 +147,6 @@ export default function GenerateVPlanPage() {
           <StatusPanel
             status="processing"
             message="Generating the vPlan, edge cases and weak-language report."
-            progress={progress}
           />
         )}
 
