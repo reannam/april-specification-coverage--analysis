@@ -27,6 +27,9 @@ from Backend.vPlan.post_processing.prioritise_vplan import (
 )
 from Backend.AnalyseAndCompareSpecs.comparator import run_comparison
 from Backend.AnalyseAndCompareSpecs.quality_check import run_quality_check
+from Backend.AnalyseAndCompareSpecs.inconsistency_identifier import (
+    run_inconsistency_check,
+)
 from Backend.Extraction import parse_pdf, write_requirements_file
 
 app = FastAPI(
@@ -669,6 +672,41 @@ async def compare_specifications(
     finally:
         old_specification.file.close()
         new_specification.file.close()
+
+
+@app.post("/api/check-inconsistencies")
+async def check_inconsistencies(specification_pdf: UploadFile = File(...)):
+    """Find internal contradictions supported by majority reviewer consensus."""
+
+    try:
+        pdf_path = save_uploaded_pdf(specification_pdf)
+        result = await run_in_threadpool(run_inconsistency_check, pdf_path)
+        report_path = result["report_path"]
+
+        return {
+            "message": "Inconsistency check completed successfully.",
+            "report": result["report"],
+            "report_filename": report_path.name,
+            "report_download_url": make_download_url(report_path),
+            "reviewer_outputs": [
+                {
+                    "filename": path.name,
+                    "download_url": make_download_url(path),
+                }
+                for path in result["reviewer_output_paths"]
+            ],
+        }
+    except HTTPException:
+        raise
+    except ValueError as error:
+        raise HTTPException(status_code=400, detail=str(error)) from error
+    except Exception as error:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Inconsistency check failed: {error}",
+        ) from error
+    finally:
+        specification_pdf.file.close()
 
 
 @app.post("/api/check-specification-quality")

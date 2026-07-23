@@ -6,6 +6,7 @@ import re
 
 from Backend.config import EXTRACTION_OUTPUT_DIR
 from Backend.Extraction.regex_patterns import (
+    CONDITIONAL_BEHAVIOUR_REGEX,
     DECLARATIVE_BEHAVIOUR_REGEX,
     FEATURE_REGEX,
     REQUIREMENT_REGEX,
@@ -34,6 +35,7 @@ def is_vplan_relevant(text: str) -> bool:
     return bool(
         REQUIREMENT_REGEX.search(normalised)
         or DECLARATIVE_BEHAVIOUR_REGEX.search(normalised)
+        or CONDITIONAL_BEHAVIOUR_REGEX.search(normalised)
         or FEATURE_REGEX.search(normalised)
     )
 

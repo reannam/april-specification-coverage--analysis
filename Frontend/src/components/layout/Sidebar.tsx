@@ -24,12 +24,15 @@ const groups: { label: string; items: NavigationItem[] }[] = [
   {
     label: "Analyse and compare",
     items: [
-      { to: "/review/inconsistencies", label: "Compare specification versions", icon: <ReviewIcon /> },
       {
-        to: "/review/ambiguities",
+        to: "/review/compare-specifications",
+        label: "Compare specification versions",
+        icon: <ReviewIcon />,
+      },
+      {
+        to: "/review/inconsistencies",
         label: "Check for Inconsistencies",
         icon: <ReviewIcon />,
-        badge: "Unused",
       },
       {
         to: "/review/quality",

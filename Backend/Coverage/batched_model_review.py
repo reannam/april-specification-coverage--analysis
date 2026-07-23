@@ -135,12 +135,8 @@ def run_review_batches(
                         for test_id in assessments_by_id[requirement_id].linked_tests
                     }
                     if returned_test_ids != expected_test_ids:
-                        missing_tests = sorted(
-                            expected_test_ids - returned_test_ids
-                        )
-                        unexpected_tests = sorted(
-                            returned_test_ids - expected_test_ids
-                        )
+                        missing_tests = sorted(expected_test_ids - returned_test_ids)
+                        unexpected_tests = sorted(returned_test_ids - expected_test_ids)
                         raise ValueError(
                             f"Assessment for {requirement_id} did not acknowledge "
                             "every linked vPlan item. "

@@ -5,7 +5,7 @@ import ExtractPdfPage from "./pages/ExtractPdfPage";
 import ExtractRequirementsPage from "./pages/ExtractRequirementsPage";
 import ExtractChaptersPage from "./pages/ExtractChaptersPage";
 import InconsistenciesPage from "./pages/InconsistenciesPage";
-import AmbiguitiesPage from "./pages/AmbiguitiesPage";
+import CheckInconsistenciesPage from "./pages/CheckInconsistenciesPage";
 import QualityCheckerPage from "./pages/QualityCheckerPage";
 import GenerateVPlanPage from "./pages/GenerateVPlanPage";
 import VPlanPage from "./pages/VPlanPage";
@@ -24,8 +24,8 @@ export default function App() {
         <Route path="/prepare/pdf" element={<ExtractPdfPage />} />
         <Route path="/prepare/requirements" element={<ExtractRequirementsPage />} />
         <Route path="/prepare/chapters" element={<ExtractChaptersPage />} />
-        <Route path="/review/inconsistencies" element={<InconsistenciesPage />} />
-        <Route path="/review/ambiguities" element={<AmbiguitiesPage />} />
+        <Route path="/review/compare-specifications" element={<InconsistenciesPage />} />
+        <Route path="/review/inconsistencies" element={<CheckInconsistenciesPage />} />
         <Route path="/review/quality" element={<QualityCheckerPage />} />
         <Route path="/verification/generate" element={<GenerateVPlanPage />} />
         <Route path="/verification/vplan" element={<VPlanPage />} />

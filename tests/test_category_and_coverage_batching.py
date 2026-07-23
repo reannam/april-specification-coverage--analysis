@@ -207,9 +207,7 @@ def test_granularity_cannot_call_a_linked_requirement_not_mapped(monkeypatch):
     assert result["mapped_requirements"] == 1
     assert result["requirements_not_mapped"] == 0
     assert result["assessments"][0]["granularity_label"] == "unclear"
-    assert result["vplan_item_audit"]["test_ids_submitted_to_model"] == [
-        "TEST_1"
-    ]
+    assert result["vplan_item_audit"]["test_ids_submitted_to_model"] == ["TEST_1"]
 
 
 def test_testability_returns_batch_usage(monkeypatch):

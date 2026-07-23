@@ -82,7 +82,5 @@ def test_requirements_file_excludes_non_vplan_descriptions(tmp_path):
 
     result = write_requirements_file(source, output_dir=tmp_path / "outputs")
 
-    assert [item["id"] for item in result["document"]["requirements"]] == [
-        "REQ_2"
-    ]
+    assert [item["id"] for item in result["document"]["requirements"]] == ["REQ_2"]
     assert result["document"]["refinement_summary"]["excluded_requirements"] == 1

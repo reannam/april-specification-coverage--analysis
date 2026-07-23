@@ -111,6 +111,8 @@ VPLAN_CATEGORY_BATCH_SIZE=40
 MAX_PRIORITY_SELECTIONS=12
 COVERAGE_MODEL_BATCH_SIZE=10
 COVERAGE_MODEL_BATCH_RETRIES=2
+INCONSISTENCY_MODEL=gpt-5.6-sol
+INCONSISTENCY_AGENT_COUNT=6
 GRANULARITY_MODEL=openai:gpt-5.4
 TESTABILITY_MODEL=openai:gpt-5.4
 ```
@@ -154,6 +156,7 @@ python -m Backend.vPlan.main path/to/requirements.json
 - `POST /api/run-coverage` — use cached paths or upload all four coverage inputs.
 - `POST /api/prioritise-vplan` — apply deterministic category-based priorities.
 - `POST /api/compare-specifications` — compare older and newer extractor JSON files.
+- `POST /api/check-inconsistencies` — run independent internal-consistency reviews of one specification PDF.
 - `POST /api/check-specification-quality` — score extractor JSON, optionally using its source PDF and a gold JSON.
 - `GET /api/download/{filename}` — download generated JSON/CSV files.
 - `GET /api/usage-chart/{filename}` — download generated usage charts or CSVs.
@@ -185,9 +188,9 @@ Unique, non-empty requirement IDs are essential. Duplicate IDs make mapping and 
 
 Implemented as four distinct stages: **Extract from PDF → Extract requirements → Generate vPlan → Check coverage**. PDF extraction creates complete document JSON and table CSVs. The requirements page then validates and refines that document into the compact vPlan input; only this second stage selects a file for vPlan generation.
 
-### Analyse specification
+### Check for Inconsistencies
 
-Header/placeholder only. Weak-language results belong to the vPlan workflow; a broader standalone analysis endpoint is not implemented.
+Implemented. Upload one complete specification PDF. Independent structured-output reviewers identify explicit internal contradictions, and deterministic voting retains only findings that reach the configured majority threshold. Consensus and individual reviewer JSON files can be inspected and downloaded.
 
 ### Compare specification versions
 
@@ -212,6 +215,7 @@ Implemented as a separate item under **Analyse and compare**. Upload extractor J
 - Runtime filenames are timestamp-based. Concurrent runs in the same second may target the same filename.
 - Downloads are resolved by basename across known output folders; identical basenames in different folders can be ambiguous.
 - Version comparison works on extracted JSON, so extractor differences can look like source-specification changes and similarity matches still require engineering review.
+- Inconsistency checking makes multiple full-document model calls and can be slow or expensive. Majority agreement reduces one-off findings but does not prove that a reported contradiction is real or that every contradiction was found.
 - PDF extraction requires selectable text and uses rule-based heading, requirement, and table detection. Image-only PDFs, unusual layouts, and unconfigured normative wording can be missed.
 - Extraction-quality scores are less authoritative without a source PDF or manually checked gold JSON. Empty expected/captured F1 sets score 100% by definition.
 - The backend writes uploads and outputs locally and has no retention policy or authentication. It is suitable for local/research use, not an exposed production service.

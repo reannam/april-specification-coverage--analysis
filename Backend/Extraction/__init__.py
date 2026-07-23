@@ -16,4 +16,5 @@ def parse_pdf(*args: Any, **kwargs: Any) -> dict:
 
     return parse_pdf_impl(*args, **kwargs)
 
+
 __all__ = ["parse_pdf", "write_requirements_file"]

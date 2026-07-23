@@ -10229,5 +10229,1802 @@
         }
       ]
     }
+  },
+  {
+    "timestamp": "2026-07-20T11:28:08",
+    "output_file": "generated_vplan_2026-07-20_11-25-05.json",
+    "trace_ids": {
+      "vplan_trace_id": "1eac5961-ec59-4f4d-855a-2b9efbdcd94e",
+      "edge_case_trace_id": "60c9dfd6-912b-4364-a04a-75d9a7c2c72a",
+      "category_trace_id": "be951f6e-3d9b-4e35-b522-fdb3bb3929eb,4a1fd57b-2e87-4fbd-9680-765e77b5fb35,1aaf0557-64d8-404e-828e-1819d803fe16,af1a529f-117e-4562-aaae-0831202132fc",
+      "requirement_category_trace_ids": [
+        "21c7ad8f-9693-4b43-b29c-26b0d7b97e2c",
+        "d9f34730-caa3-408e-b924-6e30d572c839",
+        "45e949e3-5c10-42d7-96a4-b54f9ddcb07c"
+      ]
+    },
+    "summary": {
+      "prompt_tokens": 69367,
+      "completion_tokens": 30045,
+      "input_tokens": 69367,
+      "output_tokens": 30045,
+      "total_tokens": 99412,
+      "total_cost": 0.589873,
+      "agents": [
+        {
+          "agent_name": "vplan_generator",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 30852,
+          "completion_tokens": 22186,
+          "input_tokens": 30852,
+          "output_tokens": 22186,
+          "total_tokens": 53038,
+          "total_cost": "0.40992000",
+          "number_of_batches": 9,
+          "batches": [
+            {
+              "agent_name": "vplan_generator_batch_1",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 2827,
+              "completion_tokens": 1527,
+              "input_tokens": 2827,
+              "output_tokens": 1527,
+              "total_tokens": 4354,
+              "total_cost": "0.02997250"
+            },
+            {
+              "agent_name": "vplan_generator_batch_2",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 2670,
+              "completion_tokens": 1622,
+              "input_tokens": 2670,
+              "output_tokens": 1622,
+              "total_tokens": 4292,
+              "total_cost": "0.03100500"
+            },
+            {
+              "agent_name": "vplan_generator_batch_3",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 4624,
+              "completion_tokens": 3565,
+              "input_tokens": 4624,
+              "output_tokens": 3565,
+              "total_tokens": 8189,
+              "total_cost": "0.06503500"
+            },
+            {
+              "agent_name": "vplan_generator_batch_4",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 4340,
+              "completion_tokens": 4305,
+              "input_tokens": 4340,
+              "output_tokens": 4305,
+              "total_tokens": 8645,
+              "total_cost": "0.07542500"
+            },
+            {
+              "agent_name": "vplan_generator_batch_5",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 2809,
+              "completion_tokens": 1118,
+              "input_tokens": 2809,
+              "output_tokens": 1118,
+              "total_tokens": 3927,
+              "total_cost": "0.02379250"
+            },
+            {
+              "agent_name": "vplan_generator_batch_6",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 5561,
+              "completion_tokens": 5676,
+              "input_tokens": 5561,
+              "output_tokens": 5676,
+              "total_tokens": 11237,
+              "total_cost": "0.09904250"
+            },
+            {
+              "agent_name": "vplan_generator_batch_7",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 2304,
+              "completion_tokens": 832,
+              "input_tokens": 2304,
+              "output_tokens": 832,
+              "total_tokens": 3136,
+              "total_cost": "0.01824000"
+            },
+            {
+              "agent_name": "vplan_generator_batch_8",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3214,
+              "completion_tokens": 2947,
+              "input_tokens": 3214,
+              "output_tokens": 2947,
+              "total_tokens": 6161,
+              "total_cost": "0.05224000"
+            },
+            {
+              "agent_name": "vplan_generator_batch_9",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 2503,
+              "completion_tokens": 594,
+              "input_tokens": 2503,
+              "output_tokens": 594,
+              "total_tokens": 3097,
+              "total_cost": "0.01516750"
+            }
+          ]
+        },
+        {
+          "agent_name": "edge_case_extractor",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 18698,
+          "completion_tokens": 2145,
+          "input_tokens": 18698,
+          "output_tokens": 2145,
+          "total_tokens": 20843,
+          "total_cost": "0.07892000"
+        },
+        {
+          "agent_name": "vplan_category_agent",
+          "model_name": "gpt-5.4-mini",
+          "prompt_tokens": 6600,
+          "completion_tokens": 2159,
+          "input_tokens": 6600,
+          "output_tokens": 2159,
+          "total_tokens": 8759,
+          "total_cost": "0.01466550"
+        },
+        {
+          "agent_name": "vplan_generator",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 13217,
+          "completion_tokens": 3555,
+          "input_tokens": 13217,
+          "output_tokens": 3555,
+          "total_tokens": 16772,
+          "total_cost": "0.08636750",
+          "number_of_batches": 3,
+          "batches": [
+            {
+              "agent_name": "requirement_taxonomy",
+              "model_name": "gpt-5.6-terra",
+              "prompt_tokens": 6078,
+              "completion_tokens": 481,
+              "input_tokens": 6078,
+              "output_tokens": 481,
+              "total_tokens": 6559,
+              "total_cost": "0.02241000"
+            },
+            {
+              "agent_name": "requirement_category_batch_1",
+              "model_name": "gpt-5.6-terra",
+              "prompt_tokens": 5268,
+              "completion_tokens": 2469,
+              "input_tokens": 5268,
+              "output_tokens": 2469,
+              "total_tokens": 7737,
+              "total_cost": "0.05020500"
+            },
+            {
+              "agent_name": "requirement_category_batch_2",
+              "model_name": "gpt-5.6-terra",
+              "prompt_tokens": 1871,
+              "completion_tokens": 605,
+              "input_tokens": 1871,
+              "output_tokens": 605,
+              "total_tokens": 2476,
+              "total_cost": "0.01375250"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-07-20T11:34:50",
+    "output_file": "coverage_workflow.json",
+    "trace_ids": {
+      "coverage_status": null,
+      "granularity": null,
+      "testability": null
+    },
+    "summary": {
+      "prompt_tokens": 79524,
+      "completion_tokens": 21379,
+      "input_tokens": 79524,
+      "output_tokens": 21379,
+      "total_tokens": 100903,
+      "total_cost": 0.519495,
+      "agents": [
+        {
+          "agent_name": "granularity_adequacy_batch_1",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 2948,
+          "completion_tokens": 867,
+          "input_tokens": 2948,
+          "output_tokens": 867,
+          "total_tokens": 3815,
+          "total_cost": "0.02037500"
+        },
+        {
+          "agent_name": "granularity_adequacy_batch_2",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 3228,
+          "completion_tokens": 826,
+          "input_tokens": 3228,
+          "output_tokens": 826,
+          "total_tokens": 4054,
+          "total_cost": "0.02046000"
+        },
+        {
+          "agent_name": "granularity_adequacy_batch_3",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 2744,
+          "completion_tokens": 854,
+          "input_tokens": 2744,
+          "output_tokens": 854,
+          "total_tokens": 3598,
+          "total_cost": "0.01967000"
+        },
+        {
+          "agent_name": "granularity_adequacy_batch_4",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 2533,
+          "completion_tokens": 843,
+          "input_tokens": 2533,
+          "output_tokens": 843,
+          "total_tokens": 3376,
+          "total_cost": "0.01897750"
+        },
+        {
+          "agent_name": "granularity_adequacy_batch_5",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 2321,
+          "completion_tokens": 770,
+          "input_tokens": 2321,
+          "output_tokens": 770,
+          "total_tokens": 3091,
+          "total_cost": "0.01735250"
+        },
+        {
+          "agent_name": "granularity_adequacy_batch_6",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 4059,
+          "completion_tokens": 929,
+          "input_tokens": 4059,
+          "output_tokens": 929,
+          "total_tokens": 4988,
+          "total_cost": "0.02408250"
+        },
+        {
+          "agent_name": "granularity_adequacy_batch_7",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 3094,
+          "completion_tokens": 815,
+          "input_tokens": 3094,
+          "output_tokens": 815,
+          "total_tokens": 3909,
+          "total_cost": "0.01996000"
+        },
+        {
+          "agent_name": "granularity_adequacy_batch_8",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 3082,
+          "completion_tokens": 779,
+          "input_tokens": 3082,
+          "output_tokens": 779,
+          "total_tokens": 3861,
+          "total_cost": "0.01939000"
+        },
+        {
+          "agent_name": "granularity_adequacy_batch_9",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 2839,
+          "completion_tokens": 870,
+          "input_tokens": 2839,
+          "output_tokens": 870,
+          "total_tokens": 3709,
+          "total_cost": "0.02014750"
+        },
+        {
+          "agent_name": "granularity_adequacy_batch_10",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 2393,
+          "completion_tokens": 814,
+          "input_tokens": 2393,
+          "output_tokens": 814,
+          "total_tokens": 3207,
+          "total_cost": "0.01819250"
+        },
+        {
+          "agent_name": "granularity_adequacy_batch_11",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 4071,
+          "completion_tokens": 882,
+          "input_tokens": 4071,
+          "output_tokens": 882,
+          "total_tokens": 4953,
+          "total_cost": "0.02340750"
+        },
+        {
+          "agent_name": "granularity_adequacy_batch_12",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 2772,
+          "completion_tokens": 786,
+          "input_tokens": 2772,
+          "output_tokens": 786,
+          "total_tokens": 3558,
+          "total_cost": "0.01872000"
+        },
+        {
+          "agent_name": "granularity_adequacy_batch_13",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 1568,
+          "completion_tokens": 351,
+          "input_tokens": 1568,
+          "output_tokens": 351,
+          "total_tokens": 1919,
+          "total_cost": "0.00918500"
+        },
+        {
+          "agent_name": "testability_coverage_batch_1",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 3241,
+          "completion_tokens": 978,
+          "input_tokens": 3241,
+          "output_tokens": 978,
+          "total_tokens": 4219,
+          "total_cost": "0.02277250"
+        },
+        {
+          "agent_name": "testability_coverage_batch_2",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 3504,
+          "completion_tokens": 948,
+          "input_tokens": 3504,
+          "output_tokens": 948,
+          "total_tokens": 4452,
+          "total_cost": "0.02298000"
+        },
+        {
+          "agent_name": "testability_coverage_batch_3",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 3046,
+          "completion_tokens": 873,
+          "input_tokens": 3046,
+          "output_tokens": 873,
+          "total_tokens": 3919,
+          "total_cost": "0.02071000"
+        },
+        {
+          "agent_name": "testability_coverage_batch_4",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 2829,
+          "completion_tokens": 848,
+          "input_tokens": 2829,
+          "output_tokens": 848,
+          "total_tokens": 3677,
+          "total_cost": "0.01979250"
+        },
+        {
+          "agent_name": "testability_coverage_batch_5",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 2650,
+          "completion_tokens": 860,
+          "input_tokens": 2650,
+          "output_tokens": 860,
+          "total_tokens": 3510,
+          "total_cost": "0.0195250"
+        },
+        {
+          "agent_name": "testability_coverage_batch_6",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 4492,
+          "completion_tokens": 994,
+          "input_tokens": 4492,
+          "output_tokens": 994,
+          "total_tokens": 5486,
+          "total_cost": "0.02614000"
+        },
+        {
+          "agent_name": "testability_coverage_batch_7",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 3386,
+          "completion_tokens": 906,
+          "input_tokens": 3386,
+          "output_tokens": 906,
+          "total_tokens": 4292,
+          "total_cost": "0.02205500"
+        },
+        {
+          "agent_name": "testability_coverage_batch_8",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 3425,
+          "completion_tokens": 854,
+          "input_tokens": 3425,
+          "output_tokens": 854,
+          "total_tokens": 4279,
+          "total_cost": "0.02137250"
+        },
+        {
+          "agent_name": "testability_coverage_batch_9",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 3170,
+          "completion_tokens": 733,
+          "input_tokens": 3170,
+          "output_tokens": 733,
+          "total_tokens": 3903,
+          "total_cost": "0.01892000"
+        },
+        {
+          "agent_name": "testability_coverage_batch_10",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 2688,
+          "completion_tokens": 788,
+          "input_tokens": 2688,
+          "output_tokens": 788,
+          "total_tokens": 3476,
+          "total_cost": "0.01854000"
+        },
+        {
+          "agent_name": "testability_coverage_batch_11",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 4609,
+          "completion_tokens": 976,
+          "input_tokens": 4609,
+          "output_tokens": 976,
+          "total_tokens": 5585,
+          "total_cost": "0.02616250"
+        },
+        {
+          "agent_name": "testability_coverage_batch_12",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 3108,
+          "completion_tokens": 869,
+          "input_tokens": 3108,
+          "output_tokens": 869,
+          "total_tokens": 3977,
+          "total_cost": "0.02080500"
+        },
+        {
+          "agent_name": "testability_coverage_batch_13",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 1724,
+          "completion_tokens": 366,
+          "input_tokens": 1724,
+          "output_tokens": 366,
+          "total_tokens": 2090,
+          "total_cost": "0.00980000"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-07-20T14:06:25",
+    "output_file": "generated_vplan_2026-07-20_14-02-15.json",
+    "trace_ids": {
+      "vplan_trace_id": "8c681583-896d-4dba-abab-07650af45cea",
+      "edge_case_trace_id": "4bbd8cd1-2717-4259-85c7-fe8760f5b65f",
+      "category_trace_id": "",
+      "requirement_category_trace_ids": [
+        "422ada4a-d4ba-4763-a3b9-1607206d43c7",
+        "4f73da5d-4e23-4156-9e0b-c4468e2afcc1",
+        "fe7df35e-af91-488c-b904-d05881f57ac0",
+        "fad3153e-a958-44b3-8dec-f1ee88546f9b",
+        "a35d9002-d22c-499a-8c7a-0d1768afd9ea"
+      ]
+    },
+    "summary": {
+      "prompt_tokens": 119124,
+      "completion_tokens": 41111,
+      "input_tokens": 119124,
+      "output_tokens": 41111,
+      "total_tokens": 160235,
+      "total_cost": 0.914475,
+      "agents": [
+        {
+          "agent_name": "vplan_generator",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 49705,
+          "completion_tokens": 33202,
+          "input_tokens": 49705,
+          "output_tokens": 33202,
+          "total_tokens": 82907,
+          "total_cost": "0.62229250",
+          "number_of_batches": 13,
+          "batches": [
+            {
+              "agent_name": "vplan_generator_batch_1",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 4555,
+              "completion_tokens": 4194,
+              "input_tokens": 4555,
+              "output_tokens": 4194,
+              "total_tokens": 8749,
+              "total_cost": "0.07429750"
+            },
+            {
+              "agent_name": "vplan_generator_batch_2",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3391,
+              "completion_tokens": 2313,
+              "input_tokens": 3391,
+              "output_tokens": 2313,
+              "total_tokens": 5704,
+              "total_cost": "0.04317250"
+            },
+            {
+              "agent_name": "vplan_generator_batch_3",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3038,
+              "completion_tokens": 1703,
+              "input_tokens": 3038,
+              "output_tokens": 1703,
+              "total_tokens": 4741,
+              "total_cost": "0.03314000"
+            },
+            {
+              "agent_name": "vplan_generator_batch_4",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3014,
+              "completion_tokens": 1557,
+              "input_tokens": 3014,
+              "output_tokens": 1557,
+              "total_tokens": 4571,
+              "total_cost": "0.03089000"
+            },
+            {
+              "agent_name": "vplan_generator_batch_5",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 4531,
+              "completion_tokens": 3855,
+              "input_tokens": 4531,
+              "output_tokens": 3855,
+              "total_tokens": 8386,
+              "total_cost": "0.06915250"
+            },
+            {
+              "agent_name": "vplan_generator_batch_6",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 5325,
+              "completion_tokens": 4556,
+              "input_tokens": 5325,
+              "output_tokens": 4556,
+              "total_tokens": 9881,
+              "total_cost": "0.08165250"
+            },
+            {
+              "agent_name": "vplan_generator_batch_7",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3169,
+              "completion_tokens": 1705,
+              "input_tokens": 3169,
+              "output_tokens": 1705,
+              "total_tokens": 4874,
+              "total_cost": "0.03349750"
+            },
+            {
+              "agent_name": "vplan_generator_batch_8",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 2871,
+              "completion_tokens": 1220,
+              "input_tokens": 2871,
+              "output_tokens": 1220,
+              "total_tokens": 4091,
+              "total_cost": "0.02547750"
+            },
+            {
+              "agent_name": "vplan_generator_batch_9",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 6459,
+              "completion_tokens": 3935,
+              "input_tokens": 6459,
+              "output_tokens": 3935,
+              "total_tokens": 10394,
+              "total_cost": "0.07517250"
+            },
+            {
+              "agent_name": "vplan_generator_batch_10",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3685,
+              "completion_tokens": 2124,
+              "input_tokens": 3685,
+              "output_tokens": 2124,
+              "total_tokens": 5809,
+              "total_cost": "0.04107250"
+            },
+            {
+              "agent_name": "vplan_generator_batch_11",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3192,
+              "completion_tokens": 1969,
+              "input_tokens": 3192,
+              "output_tokens": 1969,
+              "total_tokens": 5161,
+              "total_cost": "0.03751500"
+            },
+            {
+              "agent_name": "vplan_generator_batch_12",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3213,
+              "completion_tokens": 2029,
+              "input_tokens": 3213,
+              "output_tokens": 2029,
+              "total_tokens": 5242,
+              "total_cost": "0.03846750"
+            },
+            {
+              "agent_name": "vplan_generator_batch_13",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3262,
+              "completion_tokens": 2042,
+              "input_tokens": 3262,
+              "output_tokens": 2042,
+              "total_tokens": 5304,
+              "total_cost": "0.03878500"
+            }
+          ]
+        },
+        {
+          "agent_name": "edge_case_extractor",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 42406,
+          "completion_tokens": 393,
+          "input_tokens": 42406,
+          "output_tokens": 393,
+          "total_tokens": 42799,
+          "total_cost": "0.11191000"
+        },
+        {
+          "agent_name": "vplan_category_agent",
+          "model_name": "gpt-5.4-mini",
+          "prompt_tokens": 0,
+          "completion_tokens": 0,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "total_tokens": 0,
+          "total_cost": "0"
+        },
+        {
+          "agent_name": "vplan_generator",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 27013,
+          "completion_tokens": 7516,
+          "input_tokens": 27013,
+          "output_tokens": 7516,
+          "total_tokens": 34529,
+          "total_cost": "0.18027250",
+          "number_of_batches": 5,
+          "batches": [
+            {
+              "agent_name": "requirement_taxonomy",
+              "model_name": "gpt-5.6-terra",
+              "prompt_tokens": 12042,
+              "completion_tokens": 596,
+              "input_tokens": 12042,
+              "output_tokens": 596,
+              "total_tokens": 12638,
+              "total_cost": "0.03904500"
+            },
+            {
+              "agent_name": "requirement_category_batch_1",
+              "model_name": "gpt-5.6-terra",
+              "prompt_tokens": 5458,
+              "completion_tokens": 2136,
+              "input_tokens": 5458,
+              "output_tokens": 2136,
+              "total_tokens": 7594,
+              "total_cost": "0.04568500"
+            },
+            {
+              "agent_name": "requirement_category_batch_2",
+              "model_name": "gpt-5.6-terra",
+              "prompt_tokens": 4250,
+              "completion_tokens": 2231,
+              "input_tokens": 4250,
+              "output_tokens": 2231,
+              "total_tokens": 6481,
+              "total_cost": "0.04409000"
+            },
+            {
+              "agent_name": "requirement_category_batch_3",
+              "model_name": "gpt-5.6-terra",
+              "prompt_tokens": 4315,
+              "completion_tokens": 2441,
+              "input_tokens": 4315,
+              "output_tokens": 2441,
+              "total_tokens": 6756,
+              "total_cost": "0.04740250"
+            },
+            {
+              "agent_name": "requirement_category_batch_4",
+              "model_name": "gpt-5.6-terra",
+              "prompt_tokens": 948,
+              "completion_tokens": 112,
+              "input_tokens": 948,
+              "output_tokens": 112,
+              "total_tokens": 1060,
+              "total_cost": "0.00405000"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-07-20T17:29:22",
+    "output_file": "generated_vplan_2026-07-20_17-25-48.json",
+    "trace_ids": {
+      "vplan_trace_id": "e66db970-151b-45a3-81cc-ce9f743912f0",
+      "edge_case_trace_id": "5b58ecbd-8ffb-4f34-a660-0a1d29b67120",
+      "category_trace_id": "253fb70e-c2cf-4426-82da-f50a705a36cd,fddc19e1-20bf-4d53-9fad-dcc6926b6c1a,30f28f6d-3413-44e3-a904-6726999c3396,d08a3bf7-0a03-4102-8b96-109013c5a51b",
+      "requirement_category_trace_ids": [
+        "276591be-cb90-4721-890b-c55a11f22424",
+        "88c49e18-b39f-445c-b077-c75c4c853750",
+        "2bb97d0f-549a-41d4-aed9-1baf74948bfd"
+      ]
+    },
+    "summary": {
+      "prompt_tokens": 69385,
+      "completion_tokens": 29584,
+      "input_tokens": 69385,
+      "output_tokens": 29584,
+      "total_tokens": 98969,
+      "total_cost": 0.583458,
+      "agents": [
+        {
+          "agent_name": "vplan_generator",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 31102,
+          "completion_tokens": 21591,
+          "input_tokens": 31102,
+          "output_tokens": 21591,
+          "total_tokens": 52693,
+          "total_cost": "0.40162000",
+          "number_of_batches": 9,
+          "batches": [
+            {
+              "agent_name": "vplan_generator_batch_1",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 2753,
+              "completion_tokens": 1023,
+              "input_tokens": 2753,
+              "output_tokens": 1023,
+              "total_tokens": 3776,
+              "total_cost": "0.02222750"
+            },
+            {
+              "agent_name": "vplan_generator_batch_2",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3421,
+              "completion_tokens": 2346,
+              "input_tokens": 3421,
+              "output_tokens": 2346,
+              "total_tokens": 5767,
+              "total_cost": "0.04374250"
+            },
+            {
+              "agent_name": "vplan_generator_batch_3",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 2867,
+              "completion_tokens": 1963,
+              "input_tokens": 2867,
+              "output_tokens": 1963,
+              "total_tokens": 4830,
+              "total_cost": "0.03661250"
+            },
+            {
+              "agent_name": "vplan_generator_batch_4",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 4614,
+              "completion_tokens": 3806,
+              "input_tokens": 4614,
+              "output_tokens": 3806,
+              "total_tokens": 8420,
+              "total_cost": "0.06862500"
+            },
+            {
+              "agent_name": "vplan_generator_batch_5",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 4224,
+              "completion_tokens": 4160,
+              "input_tokens": 4224,
+              "output_tokens": 4160,
+              "total_tokens": 8384,
+              "total_cost": "0.07296000"
+            },
+            {
+              "agent_name": "vplan_generator_batch_6",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 5531,
+              "completion_tokens": 5390,
+              "input_tokens": 5531,
+              "output_tokens": 5390,
+              "total_tokens": 10921,
+              "total_cost": "0.09467750"
+            },
+            {
+              "agent_name": "vplan_generator_batch_7",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 2286,
+              "completion_tokens": 874,
+              "input_tokens": 2286,
+              "output_tokens": 874,
+              "total_tokens": 3160,
+              "total_cost": "0.01882500"
+            },
+            {
+              "agent_name": "vplan_generator_batch_8",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 2722,
+              "completion_tokens": 1066,
+              "input_tokens": 2722,
+              "output_tokens": 1066,
+              "total_tokens": 3788,
+              "total_cost": "0.02279500"
+            },
+            {
+              "agent_name": "vplan_generator_batch_9",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 2684,
+              "completion_tokens": 963,
+              "input_tokens": 2684,
+              "output_tokens": 963,
+              "total_tokens": 3647,
+              "total_cost": "0.02115500"
+            }
+          ]
+        },
+        {
+          "agent_name": "edge_case_extractor",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 18694,
+          "completion_tokens": 2288,
+          "input_tokens": 18694,
+          "output_tokens": 2288,
+          "total_tokens": 20982,
+          "total_cost": "0.08105500"
+        },
+        {
+          "agent_name": "vplan_category_agent",
+          "model_name": "gpt-5.4-mini",
+          "prompt_tokens": 6394,
+          "completion_tokens": 2150,
+          "input_tokens": 6394,
+          "output_tokens": 2150,
+          "total_tokens": 8544,
+          "total_cost": "0.01447050"
+        },
+        {
+          "agent_name": "vplan_generator",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 13195,
+          "completion_tokens": 3555,
+          "input_tokens": 13195,
+          "output_tokens": 3555,
+          "total_tokens": 16750,
+          "total_cost": "0.08631250",
+          "number_of_batches": 3,
+          "batches": [
+            {
+              "agent_name": "requirement_taxonomy",
+              "model_name": "gpt-5.6-terra",
+              "prompt_tokens": 6078,
+              "completion_tokens": 470,
+              "input_tokens": 6078,
+              "output_tokens": 470,
+              "total_tokens": 6548,
+              "total_cost": "0.02224500"
+            },
+            {
+              "agent_name": "requirement_category_batch_1",
+              "model_name": "gpt-5.6-terra",
+              "prompt_tokens": 5257,
+              "completion_tokens": 2479,
+              "input_tokens": 5257,
+              "output_tokens": 2479,
+              "total_tokens": 7736,
+              "total_cost": "0.05032750"
+            },
+            {
+              "agent_name": "requirement_category_batch_2",
+              "model_name": "gpt-5.6-terra",
+              "prompt_tokens": 1860,
+              "completion_tokens": 606,
+              "input_tokens": 1860,
+              "output_tokens": 606,
+              "total_tokens": 2466,
+              "total_cost": "0.01374000"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-07-21T13:41:36",
+    "output_file": "coverage_workflow.json",
+    "trace_ids": {
+      "coverage_status": null,
+      "granularity": null,
+      "testability": null
+    },
+    "summary": {
+      "prompt_tokens": 77534,
+      "completion_tokens": 21906,
+      "input_tokens": 77534,
+      "output_tokens": 21906,
+      "total_tokens": 99440,
+      "total_cost": 0.522425,
+      "agents": [
+        {
+          "agent_name": "granularity_adequacy_batch_1",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 2536,
+          "completion_tokens": 808,
+          "input_tokens": 2536,
+          "output_tokens": 808,
+          "total_tokens": 3344,
+          "total_cost": "0.01846000"
+        },
+        {
+          "agent_name": "granularity_adequacy_batch_2",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 3061,
+          "completion_tokens": 859,
+          "input_tokens": 3061,
+          "output_tokens": 859,
+          "total_tokens": 3920,
+          "total_cost": "0.02053750"
+        },
+        {
+          "agent_name": "granularity_adequacy_batch_3",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 2874,
+          "completion_tokens": 913,
+          "input_tokens": 2874,
+          "output_tokens": 913,
+          "total_tokens": 3787,
+          "total_cost": "0.02088000"
+        },
+        {
+          "agent_name": "granularity_adequacy_batch_4",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 2711,
+          "completion_tokens": 869,
+          "input_tokens": 2711,
+          "output_tokens": 869,
+          "total_tokens": 3580,
+          "total_cost": "0.01981250"
+        },
+        {
+          "agent_name": "granularity_adequacy_batch_5",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 2342,
+          "completion_tokens": 806,
+          "input_tokens": 2342,
+          "output_tokens": 806,
+          "total_tokens": 3148,
+          "total_cost": "0.01794500"
+        },
+        {
+          "agent_name": "granularity_adequacy_batch_6",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 3982,
+          "completion_tokens": 954,
+          "input_tokens": 3982,
+          "output_tokens": 954,
+          "total_tokens": 4936,
+          "total_cost": "0.02426500"
+        },
+        {
+          "agent_name": "granularity_adequacy_batch_7",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 3072,
+          "completion_tokens": 775,
+          "input_tokens": 3072,
+          "output_tokens": 775,
+          "total_tokens": 3847,
+          "total_cost": "0.01930500"
+        },
+        {
+          "agent_name": "granularity_adequacy_batch_8",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 2823,
+          "completion_tokens": 894,
+          "input_tokens": 2823,
+          "output_tokens": 894,
+          "total_tokens": 3717,
+          "total_cost": "0.02046750"
+        },
+        {
+          "agent_name": "granularity_adequacy_batch_9",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 2909,
+          "completion_tokens": 847,
+          "input_tokens": 2909,
+          "output_tokens": 847,
+          "total_tokens": 3756,
+          "total_cost": "0.01997750"
+        },
+        {
+          "agent_name": "granularity_adequacy_batch_10",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 2440,
+          "completion_tokens": 732,
+          "input_tokens": 2440,
+          "output_tokens": 732,
+          "total_tokens": 3172,
+          "total_cost": "0.01708000"
+        },
+        {
+          "agent_name": "granularity_adequacy_batch_11",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 3270,
+          "completion_tokens": 913,
+          "input_tokens": 3270,
+          "output_tokens": 913,
+          "total_tokens": 4183,
+          "total_cost": "0.02187000"
+        },
+        {
+          "agent_name": "granularity_adequacy_batch_12",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 3088,
+          "completion_tokens": 912,
+          "input_tokens": 3088,
+          "output_tokens": 912,
+          "total_tokens": 4000,
+          "total_cost": "0.02140000"
+        },
+        {
+          "agent_name": "granularity_adequacy_batch_13",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 1617,
+          "completion_tokens": 353,
+          "input_tokens": 1617,
+          "output_tokens": 353,
+          "total_tokens": 1970,
+          "total_cost": "0.00933750"
+        },
+        {
+          "agent_name": "testability_coverage_batch_1",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 2801,
+          "completion_tokens": 860,
+          "input_tokens": 2801,
+          "output_tokens": 860,
+          "total_tokens": 3661,
+          "total_cost": "0.01990250"
+        },
+        {
+          "agent_name": "testability_coverage_batch_2",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 3337,
+          "completion_tokens": 788,
+          "input_tokens": 3337,
+          "output_tokens": 788,
+          "total_tokens": 4125,
+          "total_cost": "0.02016250"
+        },
+        {
+          "agent_name": "testability_coverage_batch_3",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 3176,
+          "completion_tokens": 866,
+          "input_tokens": 3176,
+          "output_tokens": 866,
+          "total_tokens": 4042,
+          "total_cost": "0.02093000"
+        },
+        {
+          "agent_name": "testability_coverage_batch_4",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 3007,
+          "completion_tokens": 951,
+          "input_tokens": 3007,
+          "output_tokens": 951,
+          "total_tokens": 3958,
+          "total_cost": "0.02178250"
+        },
+        {
+          "agent_name": "testability_coverage_batch_5",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 2671,
+          "completion_tokens": 936,
+          "input_tokens": 2671,
+          "output_tokens": 936,
+          "total_tokens": 3607,
+          "total_cost": "0.02071750"
+        },
+        {
+          "agent_name": "testability_coverage_batch_6",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 4415,
+          "completion_tokens": 1004,
+          "input_tokens": 4415,
+          "output_tokens": 1004,
+          "total_tokens": 5419,
+          "total_cost": "0.02609750"
+        },
+        {
+          "agent_name": "testability_coverage_batch_7",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 3364,
+          "completion_tokens": 928,
+          "input_tokens": 3364,
+          "output_tokens": 928,
+          "total_tokens": 4292,
+          "total_cost": "0.02233000"
+        },
+        {
+          "agent_name": "testability_coverage_batch_8",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 3166,
+          "completion_tokens": 986,
+          "input_tokens": 3166,
+          "output_tokens": 986,
+          "total_tokens": 4152,
+          "total_cost": "0.02270500"
+        },
+        {
+          "agent_name": "testability_coverage_batch_9",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 3240,
+          "completion_tokens": 939,
+          "input_tokens": 3240,
+          "output_tokens": 939,
+          "total_tokens": 4179,
+          "total_cost": "0.02218500"
+        },
+        {
+          "agent_name": "testability_coverage_batch_10",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 2735,
+          "completion_tokens": 732,
+          "input_tokens": 2735,
+          "output_tokens": 732,
+          "total_tokens": 3467,
+          "total_cost": "0.01781750"
+        },
+        {
+          "agent_name": "testability_coverage_batch_11",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 3700,
+          "completion_tokens": 975,
+          "input_tokens": 3700,
+          "output_tokens": 975,
+          "total_tokens": 4675,
+          "total_cost": "0.02387500"
+        },
+        {
+          "agent_name": "testability_coverage_batch_12",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 3424,
+          "completion_tokens": 903,
+          "input_tokens": 3424,
+          "output_tokens": 903,
+          "total_tokens": 4327,
+          "total_cost": "0.02210500"
+        },
+        {
+          "agent_name": "testability_coverage_batch_13",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 1773,
+          "completion_tokens": 403,
+          "input_tokens": 1773,
+          "output_tokens": 403,
+          "total_tokens": 2176,
+          "total_cost": "0.01047750"
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-07-21T17:52:24",
+    "output_file": "generated_vplan_2026-07-21_17-49-33.json",
+    "trace_ids": {
+      "vplan_trace_id": "a00296c6-9f98-4ccf-afba-bc7b03ac1297",
+      "edge_case_trace_id": "fee08110-68bd-4a31-83af-55c2539a8de3",
+      "category_trace_id": "9f036b9c-fee6-4e55-9048-f9cca1a382ee,9162de9b-64e2-43aa-acca-8969c5d4e486",
+      "requirement_category_trace_ids": [
+        "0a1076f2-6761-4940-aa1e-52848649bc47",
+        "251bd231-faf0-4cf6-8903-cd4b04689f38"
+      ]
+    },
+    "summary": {
+      "prompt_tokens": 55322,
+      "completion_tokens": 22696,
+      "input_tokens": 55322,
+      "output_tokens": 22696,
+      "total_tokens": 78018,
+      "total_cost": 0.45842575,
+      "agents": [
+        {
+          "agent_name": "vplan_generator",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 25526,
+          "completion_tokens": 16883,
+          "input_tokens": 25526,
+          "output_tokens": 16883,
+          "total_tokens": 42409,
+          "total_cost": "0.31706000",
+          "number_of_batches": 8,
+          "batches": [
+            {
+              "agent_name": "vplan_generator_batch_1",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 2280,
+              "completion_tokens": 537,
+              "input_tokens": 2280,
+              "output_tokens": 537,
+              "total_tokens": 2817,
+              "total_cost": "0.01375500"
+            },
+            {
+              "agent_name": "vplan_generator_batch_2",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3532,
+              "completion_tokens": 1584,
+              "input_tokens": 3532,
+              "output_tokens": 1584,
+              "total_tokens": 5116,
+              "total_cost": "0.03259000"
+            },
+            {
+              "agent_name": "vplan_generator_batch_3",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 4604,
+              "completion_tokens": 4203,
+              "input_tokens": 4604,
+              "output_tokens": 4203,
+              "total_tokens": 8807,
+              "total_cost": "0.07455500"
+            },
+            {
+              "agent_name": "vplan_generator_batch_4",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3024,
+              "completion_tokens": 1233,
+              "input_tokens": 3024,
+              "output_tokens": 1233,
+              "total_tokens": 4257,
+              "total_cost": "0.02605500"
+            },
+            {
+              "agent_name": "vplan_generator_batch_5",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3370,
+              "completion_tokens": 5612,
+              "input_tokens": 3370,
+              "output_tokens": 5612,
+              "total_tokens": 8982,
+              "total_cost": "0.09260500"
+            },
+            {
+              "agent_name": "vplan_generator_batch_6",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 2876,
+              "completion_tokens": 1316,
+              "input_tokens": 2876,
+              "output_tokens": 1316,
+              "total_tokens": 4192,
+              "total_cost": "0.02693000"
+            },
+            {
+              "agent_name": "vplan_generator_batch_7",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 2604,
+              "completion_tokens": 1251,
+              "input_tokens": 2604,
+              "output_tokens": 1251,
+              "total_tokens": 3855,
+              "total_cost": "0.02527500"
+            },
+            {
+              "agent_name": "vplan_generator_batch_8",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3236,
+              "completion_tokens": 1147,
+              "input_tokens": 3236,
+              "output_tokens": 1147,
+              "total_tokens": 4383,
+              "total_cost": "0.02529500"
+            }
+          ]
+        },
+        {
+          "agent_name": "edge_case_extractor",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 16837,
+          "completion_tokens": 2262,
+          "input_tokens": 16837,
+          "output_tokens": 2262,
+          "total_tokens": 19099,
+          "total_cost": "0.07602250"
+        },
+        {
+          "agent_name": "vplan_category_agent",
+          "model_name": "gpt-5.4-mini",
+          "prompt_tokens": 3745,
+          "completion_tokens": 1311,
+          "input_tokens": 3745,
+          "output_tokens": 1311,
+          "total_tokens": 5056,
+          "total_cost": "0.00870825"
+        },
+        {
+          "agent_name": "vplan_generator",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 9214,
+          "completion_tokens": 2240,
+          "input_tokens": 9214,
+          "output_tokens": 2240,
+          "total_tokens": 11454,
+          "total_cost": "0.05663500",
+          "number_of_batches": 2,
+          "batches": [
+            {
+              "agent_name": "requirement_taxonomy",
+              "model_name": "gpt-5.6-terra",
+              "prompt_tokens": 4447,
+              "completion_tokens": 444,
+              "input_tokens": 4447,
+              "output_tokens": 444,
+              "total_tokens": 4891,
+              "total_cost": "0.01777750"
+            },
+            {
+              "agent_name": "requirement_category_batch_1",
+              "model_name": "gpt-5.6-terra",
+              "prompt_tokens": 4767,
+              "completion_tokens": 1796,
+              "input_tokens": 4767,
+              "output_tokens": 1796,
+              "total_tokens": 6563,
+              "total_cost": "0.03885750"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-07-21T18:03:15",
+    "output_file": "generated_vplan_2026-07-21_17-59-08.json",
+    "trace_ids": {
+      "vplan_trace_id": "f81b3791-4037-44c1-81ad-e64d74ed0a90",
+      "edge_case_trace_id": "76e7a3c6-db15-48e2-a183-9f87365a3805",
+      "category_trace_id": "b3139c73-17b7-4966-8030-6ac2fad41c8b,57e16857-f4f2-407a-a7ba-de34714f4f70,e0b16362-43bc-4262-a43b-6323ec7d614f,bd777f77-b1ce-4236-a9c5-8453101382b6",
+      "requirement_category_trace_ids": [
+        "35726f16-8548-4204-96fe-0b3eb7dfc981",
+        "3a255ec9-f911-44bc-86b5-875fe004723f",
+        "fa1a8b04-2025-40ef-878f-4a8b45df2aa2"
+      ]
+    },
+    "summary": {
+      "prompt_tokens": 69492,
+      "completion_tokens": 29227,
+      "input_tokens": 69492,
+      "output_tokens": 29227,
+      "total_tokens": 98719,
+      "total_cost": 0.5730925,
+      "agents": [
+        {
+          "agent_name": "vplan_generator",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 30401,
+          "completion_tokens": 21450,
+          "input_tokens": 30401,
+          "output_tokens": 21450,
+          "total_tokens": 51851,
+          "total_cost": "0.39775250",
+          "number_of_batches": 9,
+          "batches": [
+            {
+              "agent_name": "vplan_generator_batch_1",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 2971,
+              "completion_tokens": 1436,
+              "input_tokens": 2971,
+              "output_tokens": 1436,
+              "total_tokens": 4407,
+              "total_cost": "0.02896750"
+            },
+            {
+              "agent_name": "vplan_generator_batch_2",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 2684,
+              "completion_tokens": 1662,
+              "input_tokens": 2684,
+              "output_tokens": 1662,
+              "total_tokens": 4346,
+              "total_cost": "0.03164000"
+            },
+            {
+              "agent_name": "vplan_generator_batch_3",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 4690,
+              "completion_tokens": 4784,
+              "input_tokens": 4690,
+              "output_tokens": 4784,
+              "total_tokens": 9474,
+              "total_cost": "0.08348500"
+            },
+            {
+              "agent_name": "vplan_generator_batch_4",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 4135,
+              "completion_tokens": 3992,
+              "input_tokens": 4135,
+              "output_tokens": 3992,
+              "total_tokens": 8127,
+              "total_cost": "0.07021750"
+            },
+            {
+              "agent_name": "vplan_generator_batch_5",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 2787,
+              "completion_tokens": 1143,
+              "input_tokens": 2787,
+              "output_tokens": 1143,
+              "total_tokens": 3930,
+              "total_cost": "0.02411250"
+            },
+            {
+              "agent_name": "vplan_generator_batch_6",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 5119,
+              "completion_tokens": 5074,
+              "input_tokens": 5119,
+              "output_tokens": 5074,
+              "total_tokens": 10193,
+              "total_cost": "0.08890750"
+            },
+            {
+              "agent_name": "vplan_generator_batch_7",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 2355,
+              "completion_tokens": 701,
+              "input_tokens": 2355,
+              "output_tokens": 701,
+              "total_tokens": 3056,
+              "total_cost": "0.01640250"
+            },
+            {
+              "agent_name": "vplan_generator_batch_8",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 3006,
+              "completion_tokens": 1775,
+              "input_tokens": 3006,
+              "output_tokens": 1775,
+              "total_tokens": 4781,
+              "total_cost": "0.03414000"
+            },
+            {
+              "agent_name": "vplan_generator_batch_9",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 2654,
+              "completion_tokens": 883,
+              "input_tokens": 2654,
+              "output_tokens": 883,
+              "total_tokens": 3537,
+              "total_cost": "0.01988000"
+            }
+          ]
+        },
+        {
+          "agent_name": "edge_case_extractor",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 18648,
+          "completion_tokens": 1760,
+          "input_tokens": 18648,
+          "output_tokens": 1760,
+          "total_tokens": 20408,
+          "total_cost": "0.07302000"
+        },
+        {
+          "agent_name": "vplan_category_agent",
+          "model_name": "gpt-5.4-mini",
+          "prompt_tokens": 7208,
+          "completion_tokens": 2517,
+          "input_tokens": 7208,
+          "output_tokens": 2517,
+          "total_tokens": 9725,
+          "total_cost": "0.01673250"
+        },
+        {
+          "agent_name": "vplan_generator",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 13235,
+          "completion_tokens": 3500,
+          "input_tokens": 13235,
+          "output_tokens": 3500,
+          "total_tokens": 16735,
+          "total_cost": "0.08558750",
+          "number_of_batches": 3,
+          "batches": [
+            {
+              "agent_name": "requirement_taxonomy",
+              "model_name": "gpt-5.6-terra",
+              "prompt_tokens": 6078,
+              "completion_tokens": 490,
+              "input_tokens": 6078,
+              "output_tokens": 490,
+              "total_tokens": 6568,
+              "total_cost": "0.02254500"
+            },
+            {
+              "agent_name": "requirement_category_batch_1",
+              "model_name": "gpt-5.6-terra",
+              "prompt_tokens": 5277,
+              "completion_tokens": 2426,
+              "input_tokens": 5277,
+              "output_tokens": 2426,
+              "total_tokens": 7703,
+              "total_cost": "0.04958250"
+            },
+            {
+              "agent_name": "requirement_category_batch_2",
+              "model_name": "gpt-5.6-terra",
+              "prompt_tokens": 1880,
+              "completion_tokens": 584,
+              "input_tokens": 1880,
+              "output_tokens": 584,
+              "total_tokens": 2464,
+              "total_cost": "0.01346000"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-07-21T18:21:57",
+    "output_file": "generated_vplan_2026-07-21_18-20-26.json",
+    "trace_ids": {
+      "vplan_trace_id": "b5cc8a1a-7d80-41a9-95f2-e92bac6e5cd2",
+      "edge_case_trace_id": "f0d7274c-8733-4a6b-afc5-2da2ca7f4563",
+      "category_trace_id": "903aacd1-022b-4b5b-938b-191634b938af",
+      "requirement_category_trace_ids": [
+        "cd27d62d-131e-4807-bbd4-faad3b835e7a",
+        "24896e4d-945b-4e3a-a959-d456e7604234"
+      ]
+    },
+    "summary": {
+      "prompt_tokens": 22352,
+      "completion_tokens": 8484,
+      "input_tokens": 22352,
+      "output_tokens": 8484,
+      "total_tokens": 30836,
+      "total_cost": 0.17315625,
+      "agents": [
+        {
+          "agent_name": "vplan_generator",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 15025,
+          "completion_tokens": 6254,
+          "input_tokens": 15025,
+          "output_tokens": 6254,
+          "total_tokens": 21279,
+          "total_cost": "0.13137250",
+          "number_of_batches": 6,
+          "batches": [
+            {
+              "agent_name": "vplan_generator_batch_1",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 2373,
+              "completion_tokens": 717,
+              "input_tokens": 2373,
+              "output_tokens": 717,
+              "total_tokens": 3090,
+              "total_cost": "0.01668750"
+            },
+            {
+              "agent_name": "vplan_generator_batch_2",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 1991,
+              "completion_tokens": 133,
+              "input_tokens": 1991,
+              "output_tokens": 133,
+              "total_tokens": 2124,
+              "total_cost": "0.00697250"
+            },
+            {
+              "agent_name": "vplan_generator_batch_3",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 2474,
+              "completion_tokens": 996,
+              "input_tokens": 2474,
+              "output_tokens": 996,
+              "total_tokens": 3470,
+              "total_cost": "0.02112500"
+            },
+            {
+              "agent_name": "vplan_generator_batch_4",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 2815,
+              "completion_tokens": 2009,
+              "input_tokens": 2815,
+              "output_tokens": 2009,
+              "total_tokens": 4824,
+              "total_cost": "0.03717250"
+            },
+            {
+              "agent_name": "vplan_generator_batch_5",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 2638,
+              "completion_tokens": 1196,
+              "input_tokens": 2638,
+              "output_tokens": 1196,
+              "total_tokens": 3834,
+              "total_cost": "0.02453500"
+            },
+            {
+              "agent_name": "vplan_generator_batch_6",
+              "model_name": "gpt-5.4",
+              "prompt_tokens": 2734,
+              "completion_tokens": 1203,
+              "input_tokens": 2734,
+              "output_tokens": 1203,
+              "total_tokens": 3937,
+              "total_cost": "0.02488000"
+            }
+          ]
+        },
+        {
+          "agent_name": "edge_case_extractor",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 1233,
+          "completion_tokens": 260,
+          "input_tokens": 1233,
+          "output_tokens": 260,
+          "total_tokens": 1493,
+          "total_cost": "0.00698250"
+        },
+        {
+          "agent_name": "vplan_category_agent",
+          "model_name": "gpt-5.4-mini",
+          "prompt_tokens": 1805,
+          "completion_tokens": 650,
+          "input_tokens": 1805,
+          "output_tokens": 650,
+          "total_tokens": 2455,
+          "total_cost": "0.00427875"
+        },
+        {
+          "agent_name": "vplan_generator",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 4289,
+          "completion_tokens": 1320,
+          "input_tokens": 4289,
+          "output_tokens": 1320,
+          "total_tokens": 5609,
+          "total_cost": "0.03052250",
+          "number_of_batches": 2,
+          "batches": [
+            {
+              "agent_name": "requirement_taxonomy",
+              "model_name": "gpt-5.6-terra",
+              "prompt_tokens": 2037,
+              "completion_tokens": 329,
+              "input_tokens": 2037,
+              "output_tokens": 329,
+              "total_tokens": 2366,
+              "total_cost": "0.01002750"
+            },
+            {
+              "agent_name": "requirement_category_batch_1",
+              "model_name": "gpt-5.6-terra",
+              "prompt_tokens": 2252,
+              "completion_tokens": 991,
+              "input_tokens": 2252,
+              "output_tokens": 991,
+              "total_tokens": 3243,
+              "total_cost": "0.02049500"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-07-21T18:23:33",
+    "output_file": "coverage_workflow.json",
+    "trace_ids": {
+      "coverage_status": null,
+      "granularity": null,
+      "testability": null
+    },
+    "summary": {
+      "prompt_tokens": 22338,
+      "completion_tokens": 6332,
+      "input_tokens": 22338,
+      "output_tokens": 6332,
+      "total_tokens": 28670,
+      "total_cost": 0.150825,
+      "agents": [
+        {
+          "agent_name": "granularity_adequacy_batch_1",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 2344,
+          "completion_tokens": 734,
+          "input_tokens": 2344,
+          "output_tokens": 734,
+          "total_tokens": 3078,
+          "total_cost": "0.01687000"
+        },
+        {
+          "agent_name": "granularity_adequacy_batch_2",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 2942,
+          "completion_tokens": 766,
+          "input_tokens": 2942,
+          "output_tokens": 766,
+          "total_tokens": 3708,
+          "total_cost": "0.01884500"
+        },
+        {
+          "agent_name": "granularity_adequacy_batch_3",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 2758,
+          "completion_tokens": 781,
+          "input_tokens": 2758,
+          "output_tokens": 781,
+          "total_tokens": 3539,
+          "total_cost": "0.01861000"
+        },
+        {
+          "agent_name": "granularity_adequacy_batch_4",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 2573,
+          "completion_tokens": 711,
+          "input_tokens": 2573,
+          "output_tokens": 711,
+          "total_tokens": 3284,
+          "total_cost": "0.01709750"
+        },
+        {
+          "agent_name": "testability_coverage_batch_1",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 2641,
+          "completion_tokens": 798,
+          "input_tokens": 2641,
+          "output_tokens": 798,
+          "total_tokens": 3439,
+          "total_cost": "0.01857250"
+        },
+        {
+          "agent_name": "testability_coverage_batch_2",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 3235,
+          "completion_tokens": 887,
+          "input_tokens": 3235,
+          "output_tokens": 887,
+          "total_tokens": 4122,
+          "total_cost": "0.02139250"
+        },
+        {
+          "agent_name": "testability_coverage_batch_3",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 3021,
+          "completion_tokens": 894,
+          "input_tokens": 3021,
+          "output_tokens": 894,
+          "total_tokens": 3915,
+          "total_cost": "0.02096250"
+        },
+        {
+          "agent_name": "testability_coverage_batch_4",
+          "model_name": "gpt-5.4",
+          "prompt_tokens": 2824,
+          "completion_tokens": 761,
+          "input_tokens": 2824,
+          "output_tokens": 761,
+          "total_tokens": 3585,
+          "total_cost": "0.01847500"
+        }
+      ]
+    }
   }
 ]

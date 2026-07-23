@@ -25,6 +25,7 @@ except ImportError:
         ) from error
 
 from Backend.Extraction.regex_patterns import (
+    CONDITIONAL_BEHAVIOUR_REGEX,
     DECLARATIVE_BEHAVIOUR_REGEX,
     SECTION_REGEX,
     VALID_VPLAN_SECTION_REGEX,
@@ -42,35 +43,79 @@ from Backend.Extraction.regex_patterns import (
 # ACRONYM STOPLIST
 # ==========================================================
 ACRONYM_STOPLIST = {
-    "THE", "AND", "FOR", "WITH", "FROM", "THIS", "THAT",
-    "ARE", "NOT", "BUT", "ITS", "ALL", "ANY", "CAN",
-    "HAS", "HAVE", "BEEN", "WILL", "MAY", "SHALL", "MUST",
-    "WHEN", "THEN", "EACH", "SUCH", "BOTH", "ALSO", "INTO",
-    "OVER", "UPON", "USED", "ONLY", "MORE", "THAN", "BEEN",
-    "WHICH", "THERE", "THEIR", "THESE", "THOSE", "WHAT",
-    "PAGE", "NOTE", "TYPE", "DATA", "BASE", "TRUE", "FALSE"
+    "THE",
+    "AND",
+    "FOR",
+    "WITH",
+    "FROM",
+    "THIS",
+    "THAT",
+    "ARE",
+    "NOT",
+    "BUT",
+    "ITS",
+    "ALL",
+    "ANY",
+    "CAN",
+    "HAS",
+    "HAVE",
+    "BEEN",
+    "WILL",
+    "MAY",
+    "SHALL",
+    "MUST",
+    "WHEN",
+    "THEN",
+    "EACH",
+    "SUCH",
+    "BOTH",
+    "ALSO",
+    "INTO",
+    "OVER",
+    "UPON",
+    "USED",
+    "ONLY",
+    "MORE",
+    "THAN",
+    "BEEN",
+    "WHICH",
+    "THERE",
+    "THEIR",
+    "THESE",
+    "THOSE",
+    "WHAT",
+    "PAGE",
+    "NOTE",
+    "TYPE",
+    "DATA",
+    "BASE",
+    "TRUE",
+    "FALSE",
 }
 
 # ==========================================================
 # METADATA
 # ==========================================================
 
+
 def extract_document_metadata(pdf):
     metadata = pdf.metadata or {}
     return {
-        "title":             metadata.get("title"),
-        "author":            metadata.get("author"),
-        "subject":           metadata.get("subject"),
-        "keywords":          metadata.get("keywords"),
-        "creator":           metadata.get("creator"),
-        "producer":          metadata.get("producer"),
-        "creation_date":     metadata.get("creationDate"),
-        "modification_date": metadata.get("modDate")
+        "title": metadata.get("title"),
+        "author": metadata.get("author"),
+        "subject": metadata.get("subject"),
+        "keywords": metadata.get("keywords"),
+        "creator": metadata.get("creator"),
+        "producer": metadata.get("producer"),
+        "creation_date": metadata.get("creationDate"),
+        "modification_date": metadata.get("modDate"),
     }
+
 
 # ==========================================================
 # HEADING EXTRACTION
 # ==========================================================
+
 
 def remove_detected_headings(text, headings):
     clean_text = text
@@ -81,21 +126,47 @@ def remove_detected_headings(text, headings):
 
         if section_id:
             clean_text = re.sub(
-                rf'^\s*{re.escape(section_id)}\s+.*$',
-                '',
+                rf"^\s*{re.escape(section_id)}\s+.*$",
+                "",
                 clean_text,
-                flags=re.MULTILINE
+                flags=re.MULTILINE,
             )
 
         if title:
             clean_text = re.sub(
-                rf'^\s*{re.escape(title)}\s*$',
-                '',
+                rf"^\s*{re.escape(title)}\s*",
+                "",
                 clean_text,
-                flags=re.MULTILINE
+                count=1,
+                flags=re.MULTILINE,
             )
 
     return clean_text
+
+
+_DATE_LIKE_TITLE = re.compile(r"^[A-Z][a-z]{2,8}\s+\d{4}$")
+
+
+def is_plausible_heading_title(title):
+    """Reject common page furniture that resembles a numbered heading."""
+
+    title = title.strip()
+    if not title or title[0].islower():
+        return False
+    if title.endswith((".", ",", ";", ":")):
+        return False
+    if _DATE_LIKE_TITLE.fullmatch(title):
+        return False
+    return len(title.split()) <= 12
+
+
+def normalize_header(cell):
+    """Normalise a table heading before matching semantic column names."""
+
+    if cell is None:
+        return ""
+    return re.sub(r"[^a-z0-9]+", " ", str(cell).lower()).strip()
+
 
 def extract_tables(page, page_num, table_folder, file_prefix, section_id=None):
     tables_found = []
@@ -112,37 +183,60 @@ def extract_tables(page, page_num, table_folder, file_prefix, section_id=None):
                 csv_name = f"{file_prefix}_table_p{page_num+1}_{idx+1}.csv"
                 csv_path = table_folder / csv_name
                 df.to_csv(csv_path, index=False)
-                tables_found.append({
-                    "page":     page_num + 1,
-                    "csv_file": str(csv_path)
-                })
-                
-                for row in extracted:
-                    cells = [
-                        str(cell).replace("\n", " ").strip()
-                        for cell in row
-                        if cell and str(cell).strip()
-                    ]
+                tables_found.append({"page": page_num + 1, "csv_file": str(csv_path)})
 
-                    if len(cells) < 2:
+                header = [normalize_header(cell) for cell in extracted[0]]
+                description_names = {
+                    "description",
+                    "meaning",
+                    "behavior",
+                    "behaviour",
+                    "function",
+                    "definition",
+                    "operation",
+                    "effect",
+                }
+                description_index = next(
+                    (
+                        column_index
+                        for column_index, column_name in enumerate(header)
+                        if column_name in description_names
+                    ),
+                    len(header) - 1,
+                )
+
+                for row in extracted[1:]:
+                    if not row:
                         continue
+                    cells = [
+                        str(cell).replace("\n", " ").strip() if cell is not None else ""
+                        for cell in row
+                    ]
+                    if description_index >= len(cells):
+                        continue
+                    description = cells[description_index]
+                    if not description or not re.search(r"[A-Za-z]", description):
+                        continue
+                    row_text = " | ".join(cell for cell in cells if cell)
 
-                    row_text = " ".join(cells)
-    
-                    if REQUIREMENT_REGEX.search(row_text) or FEATURE_REGEX.search(row_text):
+                    if (
+                        REQUIREMENT_REGEX.search(description)
+                        or FEATURE_REGEX.search(description)
+                        or DECLARATIVE_BEHAVIOUR_REGEX.search(description)
+                    ):
                         table_requirements.append(
                             make_requirement(
-                                None,
-                                row_text,
-                                section_id,
-                                "table_requirement"
+                                None, row_text, section_id, "table_requirement"
                             )
                         )
 
-            except Exception as e:
-                print(f"Table extraction error page {page_num+1}:", e)
-    except Exception:
-        pass
+            except Exception as error:
+                print(
+                    f"Table extraction error page {page_num + 1}, "
+                    f"table {idx + 1}: {error}"
+                )
+    except Exception as error:
+        print(f"Table detection error page {page_num + 1}: {error}")
     return tables_found, table_requirements
 
 
@@ -165,8 +259,8 @@ def extract_encoding_table_requirements(text, section_id=None):
     # )
 
     for code, operation, meaning in ENCODING_TABLE_REGEX.findall(text):
-        meaning = re.sub(r'(?<=[a-z])(?=[A-Z])', ' ', meaning)
-        meaning = re.sub(r'\s+', ' ', meaning).strip()
+        meaning = re.sub(r"(?<=[a-z])(?=[A-Z])", " ", meaning)
+        meaning = re.sub(r"\s+", " ", meaning).strip()
 
         if REQUIREMENT_REGEX.search(meaning) or FEATURE_REGEX.search(meaning):
             requirements.append(
@@ -174,25 +268,24 @@ def extract_encoding_table_requirements(text, section_id=None):
                     None,
                     f"{code} | {operation} | {meaning}",
                     section_id,
-                    "encoding_rule"
+                    "encoding_rule",
                 )
             )
 
     return requirements
 
+
 # ==========================================================
 # TEXT ANALYSIS
 # ==========================================================
 
+
 def is_chapter_cover_page(text):
-    lines = [l.strip() for l in text.splitlines() if l.strip()]
-    
-    if lines and re.match(r'^Chapter\s+[A-Z]\d+', lines[0]):
+    lines = [line.strip() for line in text.splitlines() if line.strip()]
+
+    if lines and re.match(r"^Chapter\s+[A-Z]\d+", lines[0]):
         if len(lines) > 1 and not lines[1].startswith("A"):
-            if sum(
-                bool(re.match(r'^•?\s*A\d+\.\d+', l))
-                for l in lines
-            ) >= 3:
+            if sum(bool(re.match(r"^•?\s*A\d+\.\d+", line)) for line in lines) >= 3:
                 return True
     return False
 
@@ -215,10 +308,10 @@ def extract_headings_from_layout(layout):
             if not spans:
                 continue
             text = "".join(span["text"] for span in spans).strip()
-            if re.search(r'\.{3,}\s*\d+$', text):
+            if re.search(r"\.{3,}\s*\d+$", text):
                 continue
-            
-            if re.fullmatch(r'\d+', text):
+
+            if re.fullmatch(r"\d+", text):
                 continue
 
             if not text:
@@ -226,22 +319,29 @@ def extract_headings_from_layout(layout):
             match = SECTION_REGEX.match(text)
             if match:
                 sid = match.group(1)
+                title = match.group(2).strip()
 
                 if not VALID_VPLAN_SECTION_REGEX.fullmatch(sid):
                     continue
+                if not is_plausible_heading_title(title):
+                    continue
 
-                headings.append({
-                    "section_id": sid,
-                    "title": match.group(2),
-                    "font_size": max(span["size"] for span in spans)
-                })
+                headings.append(
+                    {
+                        "section_id": sid,
+                        "title": title,
+                        "font_size": max(span["size"] for span in spans),
+                    }
+                )
     return headings
 
 
 def classify_requirement(text):
     lower = text.lower()
-    if any(x in lower for x in ["latency", "throughput", "timing",
-                                  "frequency", "bandwidth"]):
+    if any(
+        x in lower
+        for x in ["latency", "throughput", "timing", "frequency", "bandwidth"]
+    ):
         return "Performance"
     if any(x in lower for x in ["voltage", "current", "power"]):
         return "Electrical"
@@ -254,9 +354,8 @@ def classify_requirement(text):
     return "Functional"
 
 
-
 def extract_signals(text):
-    return sorted(set(re.findall(r'\b[A-Z][A-Z0-9_]{2,}\b', text)))
+    return sorted(set(re.findall(r"\b[A-Z][A-Z0-9_]{2,}\b", text)))
 
 
 def make_requirement(req_id, text, section_id, category):
@@ -265,8 +364,9 @@ def make_requirement(req_id, text, section_id, category):
         "text": text,
         "source_section": section_id,
         "signals": extract_signals(text),
-        "type": category
+        "type": category,
     }
+
 
 def requirement_text_key(text):
     """Create a consistent comparison key for requirement text."""
@@ -280,31 +380,23 @@ def assign_unique_requirement_ids(requirements):
     for requirement in requirements:
         raw_section = requirement.get("source_section") or "UNKNOWN"
 
-        section = re.sub(
-            r"[^A-Za-z0-9]+",
-            "_",
-            str(raw_section)
-        ).strip("_")
+        section = re.sub(r"[^A-Za-z0-9]+", "_", str(raw_section)).strip("_")
 
         if not section:
             section = "UNKNOWN"
 
         section_counters[section] = section_counters.get(section, 0) + 1
 
-        req_id = (
-            f"REQ_{section}_"
-            f"{section_counters[section]:03d}"
-        )
+        req_id = f"REQ_{section}_" f"{section_counters[section]:03d}"
 
         if req_id in assigned_ids:
-            raise ValueError(
-                f"Duplicate requirement ID generated: {req_id}"
-            )
+            raise ValueError(f"Duplicate requirement ID generated: {req_id}")
 
         requirement["id"] = req_id
         assigned_ids.add(req_id)
 
     return requirements
+
 
 def is_vplan_relevant(line):
     line = " ".join(line.split()).strip()
@@ -312,44 +404,45 @@ def is_vplan_relevant(line):
     if not line:
         return False
 
-    if re.search(
-        r'\b(?:Figure|Fig\.?)\s+[A-Za-z]?\d+(?:\.\d+)*',
-        line,
-        re.IGNORECASE
-    ):
+    if re.search(r"\b(?:Figure|Fig\.?)\s+[A-Za-z]?\d+(?:\.\d+)*", line, re.IGNORECASE):
         return False
 
     if re.match(
-        r'^(?:'
-        r'In Figure|'
-        r'As shown in Figure|'
-        r'The figure shows|'
-        r'This assertion indicates|'
-        r'In this case|'
-        r'For example'
-        r')\b',
+        r"^(?:"
+        r"In Figure|"
+        r"As shown in Figure|"
+        r"The figure shows|"
+        r"This assertion indicates|"
+        r"In this case|"
+        r"For example"
+        r")\b",
         line,
-        re.IGNORECASE
+        re.IGNORECASE,
     ):
         return False
-    
-     # Existing high-confidence requirement detection
+
+    # Existing high-confidence requirement detection
     if REQUIREMENT_REGEX.search(line):
         return True
-    
+
     if DECLARATIVE_BEHAVIOUR_REGEX.search(line):
         return True
-    
+
+    if CONDITIONAL_BEHAVIOUR_REGEX.search(line):
+        return True
+
     return False
 
     # return REQUIREMENT_REGEX.search(line) is not None
+
 
 def extract_requirements(text, section_id=None):
     requirements = []
 
     lines = [
-        line for line in text.splitlines()
-        if not re.match(r'^\s*(Figure|Table)\s+', line, re.IGNORECASE)
+        line
+        for line in text.splitlines()
+        if not re.match(r"^\s*(Figure|Table)\s+", line, re.IGNORECASE)
     ]
 
     text = "\n".join(lines)
@@ -357,46 +450,40 @@ def extract_requirements(text, section_id=None):
     clean_text = " ".join(text.split())
 
     clean_text = re.sub(
-        r'Figure\s+[A-Za-z]?\d+(?:\.\d+)*:\s*[^\n.]*',
-        '',
+        r"Figure\s+[A-Za-z]?\d+(?:\.\d+)*:\s*[^\n.]*",
+        "",
         clean_text,
-        flags=re.IGNORECASE
+        flags=re.IGNORECASE,
     )
 
     clean_text = re.sub(
-        r'Table\s+[A-Za-z]?\d+(?:\.\d+)*:\s*[^\n.]*',
-        '',
+        r"Table\s+[A-Za-z]?\d+(?:\.\d+)*:\s*[^\n.]*",
+        "",
         clean_text,
-        flags=re.IGNORECASE
+        flags=re.IGNORECASE,
     )
 
     clean_text = re.sub(
-        r'(?:\b\d+\s+){3,}[A-Z][A-Z\s]{10,}',
-        '',
-        clean_text
+        r"(?:\b\d+\s+){3,}" r"(?:[A-Z][A-Z0-9_-]*(?:\s+|$)){2,}", "", clean_text
     )
 
     clean_text = re.sub(
-        r'(Must use an ID that is unique in-flight on the same channels:)\s*•',
-        r'\1 •',
-        clean_text
+        r"(Must use an ID that is unique in-flight on the same channels:)\s*•",
+        r"\1 •",
+        clean_text,
     )
 
     clean_text = re.sub(
-        r'(Must not use the same ID for in-flight transactions on the same channels:)\s*•',
-        r'\1 •',
-        clean_text
+        r"(Must not use the same ID for in-flight transactions on the same channels:)\s*•",
+        r"\1 •",
+        clean_text,
     )
 
-    clean_text = re.sub(
-        r'(Must use the same ID:)\s*•',
-        r'\1 •',
-        clean_text
-    )
+    clean_text = re.sub(r"(Must use the same ID:)\s*•", r"\1 •", clean_text)
 
-    sentences = re.split(r'(?=•)|(?<=[.!?])\s+', clean_text)
+    sentences = re.split(r"(?=•)|(?<=[.!?])\s+", clean_text)
 
-    raw_sentences = re.split(r'(?=•)|(?<=[.!?])\s+', clean_text)
+    raw_sentences = re.split(r"(?=•)|(?<=[.!?])\s+", clean_text)
 
     sentences = []
     current_parent = ""
@@ -407,9 +494,13 @@ def extract_requirements(text, section_id=None):
         # parent line = contains requirement language and ends with ":"
         if s.endswith(":") and REQUIREMENT_REGEX.search(s):
             # keep only from the first requirement word, remove merged heading before it
-            m = re.search(r'\b(Must|Must not|Shall|Should|Cannot|Can|May|If|When|The)\b', s, re.IGNORECASE)
+            m = re.search(
+                r"\b(Must|Must not|Shall|Should|Cannot|Can|May|If|When|The)\b",
+                s,
+                re.IGNORECASE,
+            )
             if m:
-                current_parent = s[m.start():]
+                current_parent = s[m.start() :]
             else:
                 current_parent = s
             continue
@@ -419,45 +510,38 @@ def extract_requirements(text, section_id=None):
 
         sentences.append(s)
 
-
     for line in sentences:
         line = line.strip()
 
         line = re.sub(
-            r'^[A-Z][A-Za-z0-9\- ]{2,80}\s*[–-]\s*(?=(If|When|The|A|An|For|It)\b)',
-            '',
-            line
-        ).strip()
-        
-        line = re.sub(
-            r'^(Name\s+Width\s+Default\s+Description\s+)+',
-            '',
+            r"^[A-Z][A-Za-z0-9\- ]{2,80}\s+[–-]\s+"
+            r"(?=(?:If|When|The|A|An|For|It)\b)",
+            "",
             line,
-            flags=re.IGNORECASE
+        ).strip()
+
+        line = re.sub(
+            r"^(Name\s+Width\s+Default\s+Description\s+)+",
+            "",
+            line,
+            flags=re.IGNORECASE,
         ).strip()
 
         if re.match(
-            r'^[A-Z0-9_, ]+\s+(?:are|is)\s+(?:present|not present)\.?$',
+            r"^[A-Z0-9_, ]+\s+(?:are|is)\s+(?:present|not present)\.?$",
             line,
-            re.IGNORECASE
+            re.IGNORECASE,
         ):
             continue
 
         # line = re.sub(r'^•\s*', '', line)
-        line = re.sub(r'•\s*', '', line)
+        line = re.sub(r"•\s*", "", line)
 
         line = re.sub(
-            r'^.*?The required behavior .*?:\s*',
-            '',
-            line,
-            flags=re.IGNORECASE
+            r"^.*?The required behavior .*?:\s*", "", line, flags=re.IGNORECASE
         )
 
-        line = re.sub(
-            r'^[A-Z0-9_, ]+\s+\d+\s+0x[0-9A-Fa-f]+\s+',
-            '',
-            line
-        ).strip()
+        line = re.sub(r"^[A-Z0-9_, ]+\s+\d+\s+0x[0-9A-Fa-f]+\s+", "", line).strip()
 
         if not line:
             continue
@@ -465,28 +549,24 @@ def extract_requirements(text, section_id=None):
         if line.endswith(":"):
             continue
 
-        if re.match(
-            r'^(?:Name|Width|Default|Description)(?:\s+\w+){2,}$',
+        if re.match(r"^(?:Name|Width|Default|Description)(?:\s+\w+){2,}$", line):
+            continue
+
+        if re.match(r"^.*This section describes .*$", line):
+            continue
+
+        if re.match(r"^[A-C]\d+(?:\.\d+)*\s+", line) and not REQUIREMENT_REGEX.search(
             line
         ):
             continue
 
-        if re.match(r'^.*This section describes .*$', line):
-            continue
-
-        if (
-            re.match(r'^[A-C]\d+(?:\.\d+)*\s+', line)
-            and not REQUIREMENT_REGEX.search(line)
-        ):
-            continue
-
-        if re.match(r'^\[\d+\]\s+', line):
+        if re.match(r"^\[\d+\]\s+", line):
             continue
 
         if line.startswith("Table "):
             continue
 
-        if re.match(r'^[A-C]\d+(?:\.\d+)*\s+', line):
+        if re.match(r"^[A-C]\d+(?:\.\d+)*\s+", line):
             continue
 
         if line.startswith("In this specification"):
@@ -494,10 +574,10 @@ def extract_requirements(text, section_id=None):
 
         if line.lower().endswith("can either:"):
             continue
-        if re.match(r'^[A-Z][A-Za-z ]+\s+[A-C]\d+(?:\.\d+)*\.?$', line):
+        if re.match(r"^[A-Z][A-Za-z ]+\s+[A-C]\d+(?:\.\d+)*\.?$", line):
             continue
 
-        if re.match(r'^Chapter\s+[A-Z]\d+\.?$', line):
+        if re.match(r"^Chapter\s+[A-Z]\d+\.?$", line):
             continue
 
         if line.startswith("ARM IHI"):
@@ -509,7 +589,7 @@ def extract_requirements(text, section_id=None):
         if line == "All rights reserved.":
             continue
 
-        if re.match(r'^Non-confidential\s+\d+$', line):
+        if re.match(r"^Non-confidential\s+\d+$", line):
             continue
 
         if line.startswith("See "):
@@ -526,11 +606,12 @@ def extract_requirements(text, section_id=None):
                     None,
                     line,
                     section_id,
-                    "protocol_rule"
+                    "protocol_rule",
                 )
             )
 
     return requirements
+
 
 def extract_notes(text):
     notes = []
@@ -567,7 +648,7 @@ def extract_cross_references(text):
     correctly returns the full matched strings.
     """
     refs = []
-    refs.extend(SECTION_REF_REGEX.findall(text))   # now returns full match
+    refs.extend(SECTION_REF_REGEX.findall(text))  # now returns full match
     # refs.extend(FIGURE_REF_REGEX.findall(text))
     refs.extend(TABLE_REF_REGEX.findall(text))
     return refs
@@ -578,17 +659,14 @@ def build_section_tree(headings):
     for h in headings:
         sid = h["section_id"]
         parent = sid.rsplit(".", 1)[0] if "." in sid else None
-        sections.append({
-            "id":     sid,
-            "title":  h["title"],
-            "parent": parent
-        })
+        sections.append({"id": sid, "title": h["title"], "parent": parent})
     return sections
 
 
 # ==========================================================
 # SEMANTIC CHUNKS — rebuilt as section-level, not page-level
 # ==========================================================
+
 
 def build_semantic_chunks(pages):
     """
@@ -606,10 +684,9 @@ def build_semantic_chunks(pages):
         # If this page introduced new headings, flush the current buffer
         if page["headings"]:
             if buffer and current_section is not None:
-                chunks.append({
-                    "section": current_section,
-                    "text":    "\n".join(buffer).strip()
-                })
+                chunks.append(
+                    {"section": current_section, "text": "\n".join(buffer).strip()}
+                )
             buffer = []
             current_section = page["headings"][-1]["section_id"]
 
@@ -617,10 +694,7 @@ def build_semantic_chunks(pages):
 
     # Flush the last section
     if buffer and current_section is not None:
-        chunks.append({
-            "section": current_section,
-            "text":    "\n".join(buffer).strip()
-        })
+        chunks.append({"section": current_section, "text": "\n".join(buffer).strip()})
 
     return chunks
 
@@ -629,10 +703,12 @@ def build_semantic_chunks(pages):
 # CAPTION EXTRACTORS
 # ==========================================================
 
+
 def is_valid_vplan_section(section):
     if section is None:
         return False
     return VALID_VPLAN_SECTION_REGEX.match(str(section)) is not None
+
 
 def extract_table_captions(text):
     tables = []
@@ -641,6 +717,7 @@ def extract_table_captions(text):
         if TABLE_REGEX.match(line):
             tables.append({"caption": line})
     return tables
+
 
 def extract_heading_from_text(text):
     for line in text.splitlines()[:80]:
@@ -652,10 +729,10 @@ def extract_heading_from_text(text):
         if line.lower().startswith("chapter"):
             continue
 
-        if re.search(r'\.{3,}\s*\d+$', line):
+        if re.search(r"\.{3,}\s*\d+$", line):
             continue
 
-        if re.fullmatch(r'\d+', line):
+        if re.fullmatch(r"\d+", line):
             continue
 
         match = SECTION_REGEX.match(line)
@@ -670,22 +747,22 @@ def extract_heading_from_text(text):
             if not VALID_VPLAN_SECTION_REGEX.fullmatch(sid):
                 continue
 
-            if len(title) < 3:
+            if len(title) < 3 or not is_plausible_heading_title(title):
                 continue
 
-            return {
-                "section_id": sid,
-                "title": title,
-                "font_size": None
-            }
+            return {"section_id": sid, "title": title, "font_size": None}
 
     return None
 
+
 def normalize(text):
-    return re.sub(r'[\W_]+', '', text).lower()
+    return re.sub(r"[\W_]+", "", text).lower()
+
+
 # ==========================================================
 # MAIN PARSER
 # ==========================================================
+
 
 def parse_pdf(
     pdf_path: str | Path,
@@ -694,7 +771,7 @@ def parse_pdf(
     output_stem: str | None = None,
     document_name: str | None = None,
 ) -> dict:
-    """Extract a PDF and write both full-document and requirements-only JSON.
+    """Extract a PDF and write the complete structured-document JSON.
 
     ``output_dir`` is supplied by the API from the shared path configuration;
     the extractor never relies on the process working directory.
@@ -718,30 +795,30 @@ def parse_pdf(
     # image_records = extract_images(pdf)
 
     document = {
-        "document_name":    document_name or source_path.name,
-        "metadata":         extract_document_metadata(pdf),
-        "total_pages":      len(pdf),
-        "sections":         [],
-        "requirements":     [],
-        "figures":          [],
-        "tables":           [],
-        "notes":            [],
-        "acronyms":         [],
+        "document_name": document_name or source_path.name,
+        "metadata": extract_document_metadata(pdf),
+        "total_pages": len(pdf),
+        "sections": [],
+        "requirements": [],
+        "figures": [],
+        "tables": [],
+        "notes": [],
+        "acronyms": [],
         "cross_references": [],
-        "semantic_chunks":  [],
-        "pages":            []
+        "semantic_chunks": [],
+        "pages": [],
     }
 
     print("\nProcessing pages...")
 
     current_section = None
     seen_requirement_texts = set()
-    
+
     for page_num in range(len(pdf)):
 
-        page   = pdf[page_num]
+        page = pdf[page_num]
         layout = page.get_text("dict")
-        text   = page.get_text("text")
+        text = page.get_text("text")
 
         headings = extract_headings_from_layout(layout)
 
@@ -761,15 +838,14 @@ def parse_pdf(
                 match = SECTION_REGEX.match(line)
                 if match:
                     sid = match.group(1)
+                    title = match.group(2).strip()
 
                     if not VALID_VPLAN_SECTION_REGEX.fullmatch(sid):
                         continue
+                    if not is_plausible_heading_title(title):
+                        continue
 
-                    headings = [{
-                        "section_id": sid,
-                        "title": match.group(2),
-                        "font_size": None
-                    }]
+                    headings = [{"section_id": sid, "title": title, "font_size": None}]
                     break
 
         if headings:
@@ -782,19 +858,30 @@ def parse_pdf(
         if is_cover:
             requirements = []
             table_reqs = []
+            table_requirements = []
+            extracted_tables = []
         else:
-            # requirements = extract_requirements(text, current_section)
             clean_text = remove_detected_headings(text, headings)
             requirements = extract_requirements(clean_text, current_section)
-            table_reqs = extract_encoding_table_requirements(clean_text, current_section)
+            table_reqs = extract_encoding_table_requirements(
+                clean_text, current_section
+            )
+            extracted_tables, table_requirements = extract_tables(
+                page,
+                page_num,
+                table_folder,
+                file_prefix,
+                current_section,
+            )
 
         if table_reqs:
             requirements = [
-                r for r in requirements
+                r
+                for r in requirements
                 if not (
                     "as shown in Table" in r["text"]
                     or "Operation Meaning" in r["text"]
-                    or re.match(r'^0b[01]+', r["text"])
+                    or re.match(r"^0b[01]+", r["text"])
                     or any(
                         normalize(r["text"]) in normalize(tr["text"])
                         or normalize(tr["text"]) in normalize(r["text"])
@@ -805,18 +892,10 @@ def parse_pdf(
 
         requirements.extend(table_reqs)
 
-
-        notes         = extract_notes(text)
-        acronyms      = extract_acronyms(text)
-        cross_refs    = extract_cross_references(text)
+        notes = extract_notes(text)
+        acronyms = extract_acronyms(text)
+        cross_refs = extract_cross_references(text)
         table_captions = extract_table_captions(text)
-        extracted_tables, table_requirements = extract_tables(
-            page,
-            page_num,
-            table_folder,
-            file_prefix,
-            current_section,
-        )
         requirements.extend(table_requirements)
 
         # De-duplicate after all text and table rules have contributed records.
@@ -830,13 +909,13 @@ def parse_pdf(
         requirements = unique_page_requirements
 
         page_json = {
-            "page_number":   page_num + 1,
-            "text":          text,
-            "headings":      headings,
-            "figures":       [],
+            "page_number": page_num + 1,
+            "text": text,
+            "headings": headings,
+            "figures": [],
             "table_captions": table_captions,
-            "tables":        extracted_tables,
-            "images":        [],
+            "tables": extracted_tables,
+            "images": [],
         }
 
         for req in requirements:
@@ -867,7 +946,6 @@ def parse_pdf(
 
     # Deduplicate acronyms (unchanged)
     document["acronyms"] = sorted(set(document["acronyms"]))
-    
 
     # ----------------------------------------------------------
     # Random page checks for manual requirement validation
@@ -897,7 +975,7 @@ def parse_pdf(
     #         print("- None found")
 
     #     print("\nPage text preview:")
-    #     print(p["text"][:1500])                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
+    #     print(p["text"][:1500])
 
     # ----------------------------------------------------------
     # Write JSON

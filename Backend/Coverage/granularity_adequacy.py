@@ -345,9 +345,8 @@ def calculate_granularity_adequacy(
     }
     for assessment in model_assessments:
         if assessment.requirement_id in expected_model_ids:
-            if (
-                assessment.granularity_label == "not_mapped"
-                and linked_items_by_id.get(assessment.requirement_id)
+            if assessment.granularity_label == "not_mapped" and linked_items_by_id.get(
+                assessment.requirement_id
             ):
                 assessment = assessment.model_copy(
                     update={
@@ -449,9 +448,7 @@ def calculate_granularity_adequacy(
         "assessments": assessments,
         "vplan_item_audit": {
             "total_vplan_items": len(vplan_items),
-            "vplan_items_submitted_to_model": usage.get(
-                "vplan_items_submitted", 0
-            ),
+            "vplan_items_submitted_to_model": usage.get("vplan_items_submitted", 0),
             "test_ids_submitted_to_model": usage.get("test_ids_submitted", []),
             "failed_requirement_ids": usage.get("failed_requirement_ids", []),
             "quota_exhausted": usage.get("quota_exhausted", False),
