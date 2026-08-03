@@ -105,7 +105,7 @@ Architecture diagrams:
 
 ### Important layout note
 
-The current runnable frontend is `Frontend/`. This repository snapshot also contains `Frontend/Frontend/`, an older duplicate that does not include the current internal-inconsistency page. Do not use the nested copy for local development.
+The current runnable frontend is `Frontend/`. 
 
 The root `requirements.txt` currently duplicates `Backend/requirements.txt`; the commands below use the backend copy explicitly.
 
