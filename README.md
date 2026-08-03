@@ -34,6 +34,14 @@ Coverage includes requirement mapping, weighted full/partial coverage, traceabil
 
 Uncovered rows are traceability-only: they contain no test name, test description, steps, or expected results. Covered and partially covered rows must contain a specific description, at least one executable step, and at least one observable expected result. Final coverage files re-evaluate vPlan labels and are authoritative when the values differ.
 
+## Architecture Diagrams
+
+Within the folder:
+```
+architecture-diagrams/
+```
+You can find an SVG image for both a vPlan Generation Architecture Diagram, as well as a Coverage Architecture Diagram.
+
 ## Repository structure
 
 ```text
@@ -54,6 +62,7 @@ Frontend/
 tests/                  backend unit tests
 outputs/                runtime-generated files; not source data
 uploads/                runtime upload cache
+architecture-diagrams/  contains a diagram of both the coverage architecture, and the vPlan generation architecture.
 ```
 
 Do not commit `.env`, virtual environments, upload caches, generated outputs, or API keys.
