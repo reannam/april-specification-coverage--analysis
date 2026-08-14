@@ -1,4 +1,5 @@
-# Specification Coverage Analysis
+# APRIL AI Hub x Analog Devices
+## Specification-to-vPlan: Verification Coverage Analysis Tool
 
 AI-assisted tooling for extracting semiconductor specifications, generating requirement-linked verification plans (vPlans), and measuring specification-to-vPlan coverage.
 
@@ -29,7 +30,53 @@ The main UI workflow is:
 
 The separate **Extract chapters** screen performs a client-side chapter filter for testing. Chapter-only inputs can remove related requirements from elsewhere in the specification and should not be treated as complete coverage inputs.
 
-### vPlan generation sequence
+## Processing Pipeline
+
+<img src="workflow diagram.png" width="350">
+
+### 1. Extract from PDF — Deterministic Specification Extraction
+
+A selectable-text specification PDF is processed using a deterministic extraction pipeline.
+
+The extractor identifies and structures:
+
+- Sections and headings
+- Requirements
+- Tables and table references
+- Figures and figure references
+- Notes
+- Acronyms
+- Cross-references
+- Requirement features and conditions
+- Semantic document chunks
+
+The extraction stage produces a complete structured-document JSON while
+preserving source traceability such as section and page information.
+
+This stage does **not** use an LLM. It provides a deterministic representation
+of the original specification for downstream processing.
+
+### 2. Extract Requirements — vPlan-Relevant Content Selection
+
+The complete extracted document is then filtered to retain only content relevant
+to verification and downstream vPlan generation.
+
+The requirement-selection pipeline:
+
+- Identifies normative, declarative, conditional, and feature-based requirements.
+- Selects verification-relevant protocol behaviour.
+- Preserves timing, reset, error, and corner-case semantics.
+- Removes duplicate requirements.
+- Normalises requirement text for comparison.
+- Assigns unique requirement IDs.
+- Preserves section- and page-level traceability.
+- Extracts related signals where applicable.
+- Classifies requirements by type.
+
+The result is a compact, structured requirements JSON that forms the input to
+the downstream vPlan-generation workflow.
+
+### 3. vPlan generation sequence
 
 1. Keep the top-level `requirements` array and write a preprocessed copy.
 2. Use one whole-specification model call to create a controlled taxonomy of at most 12 parent categories, then assign every requirement to that fixed hierarchy in batches.
@@ -41,7 +88,7 @@ The separate **Extract chapters** screen performs a client-side chapter filter f
 
 Every requirement should retain at least one traceability row. An `uncovered` row is not a proposed test: its name, description, steps, and expected results are cleared, while its constraint explains the missing information. A `partially_covered` row must still contain a real requirement-grounded action and observable expected result.
 
-### Coverage sequence
+### 4. Coverage sequence
 
 Coverage requires four JSON inputs: requirements, vPlan, edge cases, and weak-language findings. It produces:
 
