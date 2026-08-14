@@ -32,7 +32,7 @@ The separate **Extract chapters** screen performs a client-side chapter filter f
 
 ## Processing Pipeline
 
-<img src="workflow diagram.png" width="350">
+<img src="workflow.png" width="170">
 
 ### 1. Extract from PDF — Deterministic Specification Extraction
 
